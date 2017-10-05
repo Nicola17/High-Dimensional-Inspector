@@ -1,4 +1,4 @@
-# ![HDI logo](logoi.png) High Dimensional Inspector (HDI)
+# ![HDI logo](logo.png)
 HDI is a library for the scalable analysis of large and high-dimensional data.
 It contains scalable manifold-learning algorithms, visualizations and visual-analytics frameworks.
 HDI is implemented in C++, OpenGL and JavaScript.

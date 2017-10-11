@@ -1,0 +1,11 @@
+<RCC>
+    <qresource prefix="/">
+        <file alias="brick32.png">images/brick32.png</file>
+        <file alias="brick128.png">images/brick128.png</file>
+        <file alias="hdi16.png">images/hdi16.png</file>
+        <file alias="hdi32.png">images/hdi32.png</file>
+        <file alias="hdi64.png">images/hdi64.png</file>
+        <file alias="hdi128.png">images/hdi128.png</file>
+        <file alias="hdi256.png">images/hdi256.png</file>
+    </qresource>
+</RCC>

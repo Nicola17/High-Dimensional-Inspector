@@ -6,6 +6,7 @@ It is developed within a joint collaboration between the [Computer Graphics & Vi
 
 ## Authors
 - [Nicola Pezzotti](http://nicola17.github.io/) initiated the HDI project, developed the A-tSNE and HSNE algorithms and implemented most of the visualizations and frameworks.
+- [Thomas Höllt](https://www.thomashollt.com/) ported the library to macOS.
 
 ## Used
 HDI is used in the following projects:

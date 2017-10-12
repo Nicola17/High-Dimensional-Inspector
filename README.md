@@ -10,7 +10,7 @@ It is developed within a joint collaboration between the [Computer Graphics & Vi
 
 ## Used
 HDI is used in the following projects:
-- [Cytosplore](https://www.cytosplore.org/): interactive system for understandin how the immune system works
+- [Cytosplore](https://www.cytosplore.org/): interactive system for understanding how the immune system works
 - [Brainscope](http://www.brainscope.nl/brainscope): web portal for fast,
 interactive visual exploration of the [Allen Atlases](http://www.brain-map.org/) of the adult and developing human brain
 transcriptome

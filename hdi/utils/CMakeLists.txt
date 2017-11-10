@@ -14,8 +14,10 @@ else(APPLE)
     endif()
 endif(APPLE)
 
-find_package(Qt5Widgets REQUIRED)
-find_package(Qt5OpenGL REQUIRED)
+find_package(Qt5 REQUIRED
+  Core
+  Widgets
+)
 
 # Gather list of all .h files in "/"
 file(GLOB HeaderFiles *.h)
@@ -29,13 +31,9 @@ qt5_add_resources(Resources ${ResourceFiles})
 
 add_library   (hdiutils ${HeaderFiles} ${SourceFiles} ${UiHeaders} ${MocSources} ${Resources} )
 
-target_link_libraries (hdiutils Qt5::Widgets)
-target_link_libraries (hdiutils Qt5::OpenGL)
+target_link_libraries (hdiutils Qt5::Core Qt5::Widgets)
 
 
 ########### INSTALL ##############
 install (TARGETS hdiutils DESTINATION bin/hdi)
 install (FILES ${HeaderFiles} ${UiHeaders} DESTINATION include/hdi/utils)
-
-
- 

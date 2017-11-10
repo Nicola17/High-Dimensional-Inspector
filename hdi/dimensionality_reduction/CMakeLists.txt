@@ -12,7 +12,10 @@ else(APPLE)
     endif()
 endif(APPLE)
 
-find_package(Qt5Widgets REQUIRED)
+find_package(Qt5 REQUIRED
+  Core
+  Gui
+)
 
 include_directories("$ENV{FLANN_DIR}/include")
 message (STATUS "$ENV{FLANN_DIR}/include")
@@ -23,7 +26,7 @@ file(GLOB SourceFiles *.cpp)
 
 add_library   (hdidimensionalityreduction ${HeaderFiles} ${SourceFiles} )
 
-target_link_libraries (hdidimensionalityreduction Qt5::Widgets)
+target_link_libraries (hdidimensionalityreduction Qt5::Core Qt5::Gui)
 
 
 ########### INSTALL ##############

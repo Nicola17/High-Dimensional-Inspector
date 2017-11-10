@@ -50,20 +50,10 @@
 #include <fstream>
 #include <stdio.h>
 
-
-
 int main(int argc, char *argv[])
 {
 	try{
-        QApplication app(argc, argv);
-        QIcon icon;
-        icon.addFile(":/hdi16.png");
-        icon.addFile(":/hdi32.png");
-        icon.addFile(":/hdi64.png");
-        icon.addFile(":/hdi128.png");
-        icon.addFile(":/hdi256.png");
-        app.setWindowIcon(icon);
-
+        QCoreApplication app(argc, argv);
         QCoreApplication::setApplicationName("tSNE from distance matrix");
 		QCoreApplication::setApplicationVersion("0.1");
 

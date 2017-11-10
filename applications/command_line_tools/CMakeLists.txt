@@ -26,6 +26,24 @@ MACRO(ADD_PROJECT Name Sources MocSources)
     set_target_properties(${Name} PROPERTIES FOLDER "Applications/Command line tools")
 ENDMACRO()
 
+MACRO(ADD_COMMANDLINE_PROJECT Name Sources)
+    add_executable (${Name} ${Sources})
+    target_link_libraries (${Name} hdidimensionalityreduction)
+    target_link_libraries (${Name} hdiclustering)
+    target_link_libraries (${Name} hdidata)
+    target_link_libraries (${Name} hdiutils)
+    IF(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+	    target_link_libraries (${Name} "$ENV{FLANN_DIR}/lib/flann_cpp_s.lib")
+    ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+    IF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+	    target_link_libraries(${Name} "libflann_cpp.so")
+    ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+
+    MESSAGE( STATUS "Command line project: " ${Name} )
+
+    set_target_properties(${Name} PROPERTIES FOLDER "Applications/Command line tools")
+ENDMACRO()
+
 ########################################################################################################
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
@@ -35,9 +53,11 @@ include_directories ("${CMAKE_SOURCE_DIR}")
 include_directories ("${CMAKE_CURRENT_BINARY_DIR}/../../hdi/visualization")
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
-find_package(Qt5Widgets REQUIRED)
-find_package(Qt5OpenGL REQUIRED)
-find_package(Qt5WebKit REQUIRED)
+find_package(Qt5 REQUIRED 
+	Widgets 
+	OpenGL 
+	WebKit
+)
 IF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
         find_package(OpenGL REQUIRED)
 ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
@@ -51,6 +71,7 @@ else(APPLE)
 	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
     endif()
 endif(APPLE)
+set(CMAKE_EXE_LINKER_FLAGS "-static-libgcc -static-libstdc++")
 
 file(GLOB VisualizationQObjHeaderFiles ${CMAKE_SOURCE_DIR}/hdi/visualization/*qobj.h)
 file(GLOB AnalyticsQObjHeaderFiles ${CMAKE_SOURCE_DIR}/hdi/analytics/*qobj.h)
@@ -58,7 +79,7 @@ qt5_wrap_cpp(MocSources ${AnalyticsQObjHeaderFiles} ${VisualizationQObjHeaderFil
 qt5_add_resources(Resources "../shared_resources/shared_resources.qrc")
 
 ADD_PROJECT(tsne_cmd tsne_cmd.cpp "${MocSources};${Resources}")
-ADD_PROJECT(atsne_cmd atsne_cmd.cpp "${MocSources};${Resources}")
+ADD_COMMANDLINE_PROJECT(atsne_cmd atsne_cmd.cpp)
 ADD_PROJECT(tsne_distance_matrix_cmd tsne_distance_matrix_cmd.cpp "${MocSources};${Resources}")
 ADD_PROJECT(hsne_cmd hsne_cmd.cpp "${MocSources};${Resources}")
 ADD_PROJECT(simple_embedding_viewer simple_embedding_viewer.cpp "${MocSources};${Resources}")

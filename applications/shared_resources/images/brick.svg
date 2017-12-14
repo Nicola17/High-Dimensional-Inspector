@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="722.14282"
+   height="618.04224"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.48.4 r9939"
+   sodipodi:docname="brick.svg"
+   inkscape:export-filename="/home/nicola/Dropbox/Nicola17.github.io/stylesheets/favicon.png"
+   inkscape:export-xdpi="29.91"
+   inkscape:export-ydpi="29.91">
+  <title
+     id="title3900">API Icon</title>
+  <defs
+     id="defs4" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.24748737"
+     inkscape:cx="-751.26051"
+     inkscape:cy="689.29051"
+     inkscape:document-units="px"
+     inkscape:current-layer="g3906"
+     showgrid="false"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:window-width="960"
+     inkscape:window-height="1028"
+     inkscape:window-x="2788"
+     inkscape:window-y="24"
+     inkscape:window-maximized="0" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title>API Icon</dc:title>
+        <cc:license
+           rdf:resource="http://creativecommons.org/licenses/publicdomain/" />
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>Benjamin Pavie</dc:title>
+          </cc:Agent>
+        </dc:creator>
+      </cc:Work>
+      <cc:License
+         rdf:about="http://creativecommons.org/licenses/publicdomain/">
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Reproduction" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Distribution" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-306.26351,190.84496)">
+    <g
+       id="g3876"
+       style="fill:#7f00ff;fill-opacity:1;stroke:none">
+      <g
+         id="g3906"
+         transform="matrix(5.3492074,0,0,5.3492074,-1332.0035,-1857.9695)"
+         style="fill:#000000">
+        <rect
+           transform="matrix(0.8727351,-0.48819407,0.8727351,0.48819407,0,0)"
+           y="535.70752"
+           x="-180.9753"
+           height="73.943825"
+           width="73.943825"
+           id="rect2999"
+           style="fill:#fa9600;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-opacity:1;stroke-width:4.05030836999999977;stroke-miterlimit:4;stroke-dasharray:none"
+           inkscape:export-filename="/home/nicola/Dropbox/HighDimInspector/applications/shared_resources/images/brick128.png"
+           inkscape:export-xdpi="15.55"
+           inkscape:export-ydpi="15.55" />
+        <rect
+           transform="matrix(0,-1,0.87273636,-0.48819182,0,0)"
+           y="431.13074"
+           x="-637.27216"
+           height="74.478394"
+           width="36.359962"
+           id="rect2999-5-6"
+           style="fill:#fa9600;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:4.00220218000000028;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           inkscape:export-filename="/home/nicola/Dropbox/HighDimInspector/applications/shared_resources/images/brick128.png"
+           inkscape:export-xdpi="15.55"
+           inkscape:export-ydpi="15.55" />
+        <rect
+           transform="matrix(0,-1,-0.87273636,-0.48819182,0,0)"
+           y="-425.40167"
+           x="-219.51965"
+           height="74.478394"
+           width="36.359962"
+           id="rect2999-5-6-6"
+           style="fill:#fa9600;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:4.00220218000000028;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           inkscape:export-filename="/home/nicola/Dropbox/HighDimInspector/applications/shared_resources/images/brick128.png"
+           inkscape:export-xdpi="15.55"
+           inkscape:export-ydpi="15.55" />
+        <path
+           transform="matrix(1.2439024,0,0,-0.69581913,305.94032,273.71926)"
+           d="m 40.714286,-106.42757 c 0,8.08703 -6.555831,14.642861 -14.642858,14.642861 -8.087027,0 -14.642857,-6.555831 -14.642857,-14.642861 0,-8.08702 6.55583,-14.64285 14.642857,-14.64285 8.087027,0 14.642858,6.55583 14.642858,14.64285 z"
+           sodipodi:ry="14.642858"
+           sodipodi:rx="14.642858"
+           sodipodi:cy="-106.42757"
+           sodipodi:cx="26.071428"
+           id="path3847-5"
+           style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none"
+           sodipodi:type="arc"
+           inkscape:export-filename="/home/nicola/Dropbox/HighDimInspector/applications/shared_resources/images/brick128.png"
+           inkscape:export-xdpi="15.55"
+           inkscape:export-ydpi="15.55" />
+        <path
+           transform="matrix(1.2439024,0,0,-0.69581913,305.94032,266.40121)"
+           d="m 40.714286,-106.42757 c 0,8.08703 -6.555831,14.642861 -14.642858,14.642861 -8.087027,0 -14.642857,-6.555831 -14.642857,-14.642861 0,-8.08702 6.55583,-14.64285 14.642857,-14.64285 8.087027,0 14.642858,6.55583 14.642858,14.64285 z"
+           sodipodi:ry="14.642858"
+           sodipodi:rx="14.642858"
+           sodipodi:cy="-106.42757"
+           sodipodi:cx="26.071428"
+           id="path3847"
+           style="fill:#fa9600;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-opacity:1;stroke-width:4.01882619000000041;stroke-miterlimit:4;stroke-dasharray:none"
+           sodipodi:type="arc"
+           inkscape:export-filename="/home/nicola/Dropbox/HighDimInspector/applications/shared_resources/images/brick128.png"
+           inkscape:export-xdpi="15.55"
+           inkscape:export-ydpi="15.55" />
+        <path
+           transform="matrix(1.2439024,0,0,-0.69581913,339.9046,291.47069)"
+           d="m 40.714286,-106.42757 c 0,8.08703 -6.555831,14.642861 -14.642858,14.642861 -8.087027,0 -14.642857,-6.555831 -14.642857,-14.642861 0,-8.08702 6.55583,-14.64285 14.642857,-14.64285 8.087027,0 14.642858,6.55583 14.642858,14.64285 z"
+           sodipodi:ry="14.642858"
+           sodipodi:rx="14.642858"
+           sodipodi:cy="-106.42757"
+           sodipodi:cx="26.071428"
+           id="path3847-5-2"
+           style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none"
+           sodipodi:type="arc"
+           inkscape:export-filename="/home/nicola/Dropbox/HighDimInspector/applications/shared_resources/images/brick128.png"
+           inkscape:export-xdpi="15.55"
+           inkscape:export-ydpi="15.55" />
+        <path
+           transform="matrix(1.2439024,0,0,-0.69581913,339.9046,284.15264)"
+           d="m 40.714286,-106.42757 c 0,8.08703 -6.555831,14.642861 -14.642858,14.642861 -8.087027,0 -14.642857,-6.555831 -14.642857,-14.642861 0,-8.08702 6.55583,-14.64285 14.642857,-14.64285 8.087027,0 14.642858,6.55583 14.642858,14.64285 z"
+           sodipodi:ry="14.642858"
+           sodipodi:rx="14.642858"
+           sodipodi:cy="-106.42757"
+           sodipodi:cx="26.071428"
+           id="path3847-3"
+           style="fill:#fa9600;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:4.01882619000000041;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           sodipodi:type="arc"
+           inkscape:export-filename="/home/nicola/Dropbox/HighDimInspector/applications/shared_resources/images/brick128.png"
+           inkscape:export-xdpi="15.55"
+           inkscape:export-ydpi="15.55" />
+        <path
+           transform="matrix(1.2439024,0,0,-0.69581913,374.90461,273.71925)"
+           d="m 40.714286,-106.42757 c 0,8.08703 -6.555831,14.642861 -14.642858,14.642861 -8.087027,0 -14.642857,-6.555831 -14.642857,-14.642861 0,-8.08702 6.55583,-14.64285 14.642857,-14.64285 8.087027,0 14.642858,6.55583 14.642858,14.64285 z"
+           sodipodi:ry="14.642858"
+           sodipodi:rx="14.642858"
+           sodipodi:cy="-106.42757"
+           sodipodi:cx="26.071428"
+           id="path3847-5-1"
+           style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none"
+           sodipodi:type="arc"
+           inkscape:export-filename="/home/nicola/Dropbox/HighDimInspector/applications/shared_resources/images/brick128.png"
+           inkscape:export-xdpi="15.55"
+           inkscape:export-ydpi="15.55" />
+        <path
+           transform="matrix(1.2439024,0,0,-0.69581913,374.90461,266.40121)"
+           d="m 40.714286,-106.42757 c 0,8.08703 -6.555831,14.642861 -14.642858,14.642861 -8.087027,0 -14.642857,-6.555831 -14.642857,-14.642861 0,-8.08702 6.55583,-14.64285 14.642857,-14.64285 8.087027,0 14.642858,6.55583 14.642858,14.64285 z"
+           sodipodi:ry="14.642858"
+           sodipodi:rx="14.642858"
+           sodipodi:cy="-106.42757"
+           sodipodi:cx="26.071428"
+           id="path3847-7"
+           style="fill:#fa9600;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-opacity:1;stroke-width:4.01882619000000041;stroke-miterlimit:4;stroke-dasharray:none"
+           sodipodi:type="arc"
+           inkscape:export-filename="/home/nicola/Dropbox/HighDimInspector/applications/shared_resources/images/brick128.png"
+           inkscape:export-xdpi="15.55"
+           inkscape:export-ydpi="15.55" />
+        <path
+           transform="matrix(1.2439024,0,0,-0.69581913,339.9046,255.11072)"
+           d="m 40.714286,-106.42757 c 0,8.08703 -6.555831,14.642861 -14.642858,14.642861 -8.087027,0 -14.642857,-6.555831 -14.642857,-14.642861 0,-8.08702 6.55583,-14.64285 14.642857,-14.64285 8.087027,0 14.642858,6.55583 14.642858,14.64285 z"
+           sodipodi:ry="14.642858"
+           sodipodi:rx="14.642858"
+           sodipodi:cy="-106.42757"
+           sodipodi:cx="26.071428"
+           id="path3847-5-3"
+           style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none"
+           sodipodi:type="arc"
+           inkscape:export-filename="/home/nicola/Dropbox/HighDimInspector/applications/shared_resources/images/brick128.png"
+           inkscape:export-xdpi="15.55"
+           inkscape:export-ydpi="15.55" />
+        <path
+           transform="matrix(1.2439024,0,0,-0.69581913,339.9046,247.79268)"
+           d="m 40.714286,-106.42757 c 0,8.08703 -6.555831,14.642861 -14.642858,14.642861 -8.087027,0 -14.642857,-6.555831 -14.642857,-14.642861 0,-8.08702 6.55583,-14.64285 14.642857,-14.64285 8.087027,0 14.642858,6.55583 14.642858,14.64285 z"
+           sodipodi:ry="14.642858"
+           sodipodi:rx="14.642858"
+           sodipodi:cy="-106.42757"
+           sodipodi:cx="26.071428"
+           id="path3847-4"
+           style="fill:#fa9600;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:4.01882619000000041;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           sodipodi:type="arc"
+           inkscape:export-filename="/home/nicola/Dropbox/HighDimInspector/applications/shared_resources/images/brick128.png"
+           inkscape:export-xdpi="15.55"
+           inkscape:export-ydpi="15.55" />
+      </g>
+    </g>
+  </g>
+</svg>

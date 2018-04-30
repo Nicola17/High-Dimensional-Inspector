@@ -4,17 +4,6 @@ language:
   - cpp
 compiler:
   - gcc
-addons:
-  apt:
-    sources:
-      - ubuntu-toolchain-r-test
-    packages:
-      #- gcc-6
-      #- g++-6
-      - cmake
-      - qtbase5-dev
-      - libqt5webkit5-dev
-      - libflann-dev
       
 before_install:
   - sudo add-apt-repository --yes ppa:ubuntu-sdk-team/ppa

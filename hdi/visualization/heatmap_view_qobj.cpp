@@ -9,6 +9,7 @@
 #include <QDir>
 #include <sstream>
 #include <iostream>
+#include <cmath>
 #include "hdi/data/text_data.h"
 
 
@@ -144,4 +145,3 @@ namespace hdi {
         }
     }
 }
-

@@ -9,6 +9,7 @@
 #include <QDir>
 #include <sstream>
 #include <iostream>
+#include <cmath>
 #include "hdi/utils/log_helper_functions.h"
 
 
@@ -111,4 +112,3 @@ namespace hdi {
         }
     }
 }
-

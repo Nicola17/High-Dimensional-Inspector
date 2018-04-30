@@ -35,6 +35,7 @@
 #include <array>
 #include <assert.h>
 #include <QSpinBox>
+#include <cmath>
 #include "hdi/utils/assert_by_exception.h"
 
 namespace hdi{

@@ -1,9 +1,9 @@
 cmake_minimum_required (VERSION 2.8.11)
 project (HighDimInspector)
 
-option(APP_TDD "Build TDD" OFF)
-option(APP_COMMAND_LINE "Build command line tools" OFF)
-option(APP_VISUAL_TESTS "Build visual tests" OFF)
+option(APP_TDD "Build TDD" ON)
+option(APP_COMMAND_LINE "Build command line tools" ON)
+option(APP_VISUAL_TESTS "Build visual tests" ON)
 
 add_subdirectory (hdi/dimensionality_reduction)
 add_subdirectory (hdi/analytics)

@@ -67,7 +67,7 @@ Here's couple worth checking:
 ./applications/visual_tests/linechart_view_test
 ```
 
-## Computing an Approximated-tSNE embedding (Without Progressive Visual Analytics)
+## Approximated-tSNE (Without Progressive Visual Analytics)
 You can run the Approximated-tSNE algorithm using the command line tool located
 in ./applications/command_line_tools
 
@@ -93,8 +93,8 @@ You can check the output by using the simple embedding viewer
 ./applications/command_line_tools/simple_embedding_viewer output.bin
 ```
 
-## Computing an Approximated-tSNE embedding (With Progressive Visual Analytics)
+## Approximated-tSNE (With Progressive Visual Analytics)
+ToDo
 
-
-## Computing the Hierarchical-SNE
+## Hierarchical-SNE
 ToDo

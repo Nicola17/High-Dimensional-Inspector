@@ -36,6 +36,7 @@
 #include "hdi/utils/visual_utils.h"
 #include <QColor>
 #include <assert.h>
+#include <cmath>
 
 namespace hdi{
 	namespace utils{

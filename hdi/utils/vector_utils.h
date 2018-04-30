@@ -35,7 +35,7 @@
 
 #include <vector>
 #include <assert.h>
-#include <math.h>
+#include <cmath>
 
 namespace hdi{
     namespace utils{

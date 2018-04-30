@@ -44,7 +44,7 @@ Reference to cite when you use HDI in a research paper:
 On Ubuntu 16.04 you can build and install HDI by running the following commands
 
 ```
-apt-get install libqt5webkit5-dev libflann-dev  
+sudo apt-get install libqt5webkit5-dev libflann-dev  
 mkdir build
 cd build
 cmake ../

@@ -43,7 +43,7 @@ Reference to cite when you use HDI in a research paper:
 ## Building
 On Ubuntu 16.04 you can build and install HDI by running the following commands
 
-```
+```bash
 apt-get install qtbase5-dev libqt5webkit5-dev libflann-dev
 mkdir build
 cd build
@@ -55,24 +55,24 @@ sudo make install
 ## Testing
 HDI uses Catch to implement a series of tests
 To test the library you can run the test program in the tdd folder
-```
+```bash
 ./applications/tdd/tdd
 ```
 
 Test for the visualization suit are located in the application/visual_tests
 Here's couple worth checking:
-```
+```bash
 ./applications/visual_tests/tsne_line
 ./applications/visual_tests/data_viewers
 ./applications/visual_tests/linechart_view_test
 ```
 
-## Computing an Approximated-tSNE embedding (Without Progressive Visual Analytics)
+## Approximated-tSNE (Without Progressive Visual Analytics)
 You can run the Approximated-tSNE algorithm using the command line tool located
 in ./applications/command_line_tools
 
 You can check the arguments and the options by asking for the help
-```
+```bash
 ./applications/command_line_tools/atsne_cmd -h
 ```
 
@@ -84,17 +84,17 @@ atsne_cmd accepts 4 options
 
 If you built the library in ./build you can run AtSNE on a subset of the MNIST by calling
 
-```
+```bash
 ./applications/command_line_tools/atsne_cmd ../MNIST_1000.bin output.bin 1000 784
 ```
 
 You can check the output by using the simple embedding viewer
-```
+```bash
 ./applications/command_line_tools/simple_embedding_viewer output.bin
 ```
 
-## Computing an Approximated-tSNE embedding (With Progressive Visual Analytics)
+## Approximated-tSNE (With Progressive Visual Analytics)
+ToDo
 
-
-## Computing the Hierarchical-SNE
+## Hierarchical-SNE
 ToDo

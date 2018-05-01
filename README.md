@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/Nicola17/High-Dimensional-Inspector.svg?branch=master)](https://travis-ci.org/Nicola17/High-Dimensional-Inspector)
+
 # ![High Dimensional Inspector](logo.png)
 HDI is a library for the scalable analysis of large and high-dimensional data.
 It contains scalable manifold-learning algorithms, visualizations and visual-analytics frameworks.

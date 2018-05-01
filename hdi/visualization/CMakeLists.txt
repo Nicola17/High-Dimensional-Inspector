@@ -22,16 +22,19 @@ find_package(Qt5WebKitWidgets REQUIRED)
 
 # Gather list of all .h files in "/"
 file(GLOB HeaderFiles *.h)
+file(GLOB QOBJHeaderFiles *.h)
 file(GLOB SourceFiles *.cpp)
 file(GLOB FormFiles *.ui)
 file(GLOB ResourceFiles *.qrc)
 file(GLOB_RECURSE WebFiles "web/*")
 
 qt5_wrap_ui(UiHeaders ${FormFiles})
-qt5_wrap_cpp(MocSources ${HeaderFiles} ${SourceFiles})
+qt5_wrap_cpp(MocSources ${QOBJHeaderFiles})
 qt5_add_resources(Resources ${ResourceFiles})
 
-add_library(hdivisualization ${HeaderFiles} ${SourceFiles} ${UiHeaders} ${MocSources} ${Resources} ${WebFiles})
+add_library(hdivisualization STATIC ${HeaderFiles} ${SourceFiles} ${UiHeaders} ${MocSources} ${Resources} ${WebFiles})
+
+SET_TARGET_PROPERTIES(hdivisualization PROPERTIES LINKER_LANGUAGE CXX)
 
 target_link_libraries (hdivisualization Qt5::Widgets)
 target_link_libraries (hdivisualization Qt5::OpenGL)

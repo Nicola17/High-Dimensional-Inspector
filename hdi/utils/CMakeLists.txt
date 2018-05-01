@@ -21,15 +21,16 @@ find_package(Qt5 REQUIRED
 
 # Gather list of all .h files in "/"
 file(GLOB HeaderFiles *.h)
+file(GLOB QOBJHeaderFiles *_qobj.h)
 file(GLOB SourceFiles *.cpp)
 file(GLOB FormFiles *.ui)
 file(GLOB ResourceFiles *.qrc)
 
 qt5_wrap_ui(UiHeaders ${FormFiles})
-qt5_wrap_cpp(MocSources ${HeaderFiles} ${SourceFiles})
+qt5_wrap_cpp(MocSources ${QOBJHeaderFiles})
 qt5_add_resources(Resources ${ResourceFiles})
 
-add_library   (hdiutils ${HeaderFiles} ${SourceFiles} ${UiHeaders} ${MocSources} ${Resources} )
+add_library(hdiutils ${HeaderFiles} ${SourceFiles} ${UiHeaders} ${MocSources} ${Resources} )
 
 target_link_libraries (hdiutils Qt5::Core Qt5::Widgets)
 

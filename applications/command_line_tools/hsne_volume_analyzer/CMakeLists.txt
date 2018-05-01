@@ -1,6 +1,6 @@
 MACRO(ADD_PROJECT Name Sources MocSources)
         #MESSAGE( STATUS "${MocSources}")
-	add_executable (${Name} ${Sources} ${MocSources})  
+	add_executable (${Name} ${Sources} ${MocSources})
 
     target_link_libraries (${Name} hdianalytics)
     target_link_libraries (${Name} hdidimensionalityreduction)
@@ -55,11 +55,6 @@ else(APPLE)
     endif()
 endif(APPLE)
 
-file(GLOB VisualizationQObjHeaderFiles ${CMAKE_SOURCE_DIR}/hdi/visualization/*qobj.h)
-file(GLOB AnalyticsQObjHeaderFiles ${CMAKE_SOURCE_DIR}/hdi/analytics/*qobj.h)
-qt5_wrap_cpp(MocSources ${AnalyticsQObjHeaderFiles} ${VisualizationQObjHeaderFiles})
-
 qt5_wrap_cpp(MocSourcesHyperspectral application.h)
 qt5_wrap_ui(UiSourcesHyperspectral application.ui)
-ADD_PROJECT(hsne_volume_analyzer "application.cpp;hsne_volume_analyzer.cpp" "${MocSources};${MocSourcesHyperspectral};${UiSourcesHyperspectral}")
-
+ADD_PROJECT(hsne_volume_analyzer "application.cpp;hsne_volume_analyzer.cpp" "${MocSourcesHyperspectral};${UiSourcesHyperspectral}")

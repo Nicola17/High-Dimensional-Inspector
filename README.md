@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.org/Nicola17/High-Dimensional-Inspector.svg?branch=master)](https://travis-ci.org/Nicola17/High-Dimensional-Inspector)
 
-# ![High Dimensional Inspector](logo.png)
+# ![High Dimensional Inspector](./images/logo.png)
 HDI is a library for the scalable analysis of large and high-dimensional data.
 It contains scalable manifold-learning algorithms, visualizations and visual-analytics frameworks.
 HDI is implemented in C++, OpenGL and JavaScript.
@@ -8,7 +8,7 @@ It is developed within a joint collaboration between the [Computer Graphics & Vi
 
 ## Authors
 - [Nicola Pezzotti](http://nicola17.github.io/) initiated the HDI project, developed the A-tSNE and HSNE algorithms and implemented most of the visualizations and frameworks.
-- [Thomas Höllt](https://www.thomashollt.com/) ported the library to macOS.
+- [Thomas Höllt](https://www.thomashollt.com/) ported the library to MacOS.
 
 ## Used
 HDI is used in the following projects:
@@ -55,14 +55,14 @@ sudo make install
 ```
 
 ## Testing
-HDI uses Catch to implement a series of tests
+A test-driven-development framework is implemented using [Catch2](https://github.com/catchorg/Catch2).
+
 To test the library you can run the test program in the tdd folder
 ```bash
 ./applications/tdd/tdd
 ```
 
-Test for the visualization suit are located in the application/visual_tests
-Here's couple worth checking:
+Test for the visualization suit are located in the application/visual_tests folder. Here's a couple of applications that areworth checking:
 ```bash
 ./applications/visual_tests/tsne_line
 ./applications/visual_tests/data_viewers

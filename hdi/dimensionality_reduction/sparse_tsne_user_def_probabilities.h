@@ -109,6 +109,8 @@ namespace hdi{
 			//! Compute the Kullback Leibler divergence
 			double computeKullbackLeiblerDivergence();
 
+            //! Set the current iterations
+            void setIteration(unsigned int iteration){_iteration = iteration;}
             //! iterations performed by the algo
             unsigned int iteration()const{return _iteration;}
 
@@ -116,6 +118,10 @@ namespace hdi{
             void setTheta(double theta){_theta = theta;}
             //! Barnes Hut approximation theta
             double theta(){return _theta;}
+
+            //! Exageration baseline
+            double& exaggeration_baseline(){return _exaggeration_baseline;}
+            const double& exaggeration_baseline()const{return _exaggeration_baseline;}
 
 		private:
 			//! Compute High-dimensional distribution
@@ -143,6 +149,8 @@ namespace hdi{
             data::Embedding<scalar_type>* _embedding; //! embedding
             typename data::Embedding<scalar_type>::scalar_vector_type* _embedding_container;
 			bool _initialized; //! Initialization flag
+
+            double _exaggeration_baseline;
 
             sparse_scalar_matrix_type _P; //! Conditional probalility distribution in the High-dimensional space
 			scalar_vector_type _Q; //! Conditional probalility distribution in the Low-dimensional space

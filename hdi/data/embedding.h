@@ -51,6 +51,7 @@ namespace hdi{
 
         public:
             Embedding();
+            Embedding(unsigned int num_dimensions, unsigned int num_data_points, scalar_type v = 0);
 
             //! Clear the container
             void clear();
@@ -94,6 +95,21 @@ namespace hdi{
         //!
         template <typename scalar_type, typename sparse_matrix_type>
         void interpolateEmbeddingPositions(const Embedding<scalar_type>& input, Embedding<scalar_type>& output, const sparse_matrix_type& weights);
+
+        //!
+        //! \brief Copies the 1D embedding in a 2D vertical embedding at the given coordinates
+        //! \author Nicola Pezzotti
+        //!
+        template <typename scalar_type>
+        void copyAndRemap1D2DVertical(const Embedding<scalar_type>& input, Embedding<scalar_type>& output, const std::vector<scalar_type>& limits);
+
+        //!
+        //! \brief Copies the 2D embedding in a 2D embedding at the given coordinates
+        //! \author Nicola Pezzotti
+        //!
+        template <typename scalar_type>
+        void copyAndRemap2D2D(const Embedding<scalar_type>& input, Embedding<scalar_type>& output, const std::vector<scalar_type>& limits, bool fix_aspect_ratio = true);
+
 
     }
 }

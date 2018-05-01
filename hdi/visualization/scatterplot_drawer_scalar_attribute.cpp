@@ -44,9 +44,11 @@ namespace hdi{
 			_program(nullptr),
 			_vshader(nullptr),
 			_fshader(nullptr),
-			_selection_color(qRgb(255,150,0)),
+            _color(qRgb(0,0,0)),
+            _selection_color(qRgb(255,150,0)),
 			_initialized(false),
             _point_size(20),
+            _min_point_size(2),
 			_alpha(.7),
 			_z_coord(0),
             _z_coord_selection(-0.5),
@@ -69,6 +71,9 @@ namespace hdi{
                     uniform highp float min_uniform;
                     uniform highp float max_uniform;
                     uniform highp float pnt_size_uniform;
+                    uniform highp float min_pnt_size_uniform;
+                    uniform highp vec4 color_uniform;
+                    uniform highp vec4 selection_color_uniform;
 					out lowp vec4 col;						
 
                     void main() {
@@ -77,17 +82,17 @@ namespace hdi{
                             v = 1;
                         if(v < 0)
                             v = 0;
-                        //col = vec4(v,0,0,1);
-                        //col.a = alpha_uniform;
+
                         if((int(0.01+flag_attribute)%2) == 1){
-                            col = vec4(1,0.6,0,0.2);
+                            col = selection_color_uniform;
                         }else{
-                            col = vec4(0,0,0,0.15);
+                            col = color_uniform;
                         }
+                        col.a = alpha_uniform;
 
 						gl_Position = matrix_uniform * pos_attribute;
 						gl_Position.z = z_coord_uniform;
-                        gl_PointSize = v * pnt_size_uniform;
+                        gl_PointSize = min_pnt_size_uniform + v * (pnt_size_uniform-min_pnt_size_uniform);
 					}										
 				);
 				const char *fsrc = GLSL(130,
@@ -119,60 +124,13 @@ namespace hdi{
                 _min_uniform        = _program->uniformLocation("min_uniform");
                 _max_uniform        = _program->uniformLocation("max_uniform");
                 _pnt_size_uniform   = _program->uniformLocation("pnt_size_uniform");
+                _color_uniform   = _program->uniformLocation("color_uniform");
+                _selection_color_uniform   = _program->uniformLocation("selection_color_uniform");
+                _min_pnt_size_uniform   = _program->uniformLocation("min_pnt_size_uniform");
 
 				_program->release();
 			}
 
-			{//selection
-				const char *vsrc = GLSL(130,
-					in highp vec4 pos_attribute;				
-					in highp float flag_attribute;		
-					uniform highp mat4 matrix_uniform;				
-					uniform highp float z_coord_uniform;			
-					uniform highp float alpha_uniform;			
-					uniform highp vec4 color_uniform;			
-					out lowp vec4 col;						
-
-					void main() {							
-						gl_Position = matrix_uniform * pos_attribute;
-						gl_Position.z = -0.5;//z_coord_uniform;
-                        if((int(0.01+flag_attribute)%2) == 1){
-                            col = color_uniform;
-							col.a = 1;
-                        }else{
-                            col.a = 0;
-                        }
-					}										
-				);
-				const char *fsrc = GLSL(130,
-					in lowp vec4 col;						
-					void main() {								
-					   gl_FragColor = col;
-					}											
-				);
-
-				_vshader_selection = std::unique_ptr<QGLShader>(new QGLShader(QGLShader::Vertex));
-				_fshader_selection = std::unique_ptr<QGLShader>(new QGLShader(QGLShader::Fragment));
-
-				_vshader_selection->compileSourceCode(vsrc);
-				_fshader_selection->compileSourceCode(fsrc);
-
-
-				_program_selection = std::unique_ptr<QGLShaderProgram>(new QGLShaderProgram());
-				_program_selection->addShader(_vshader_selection.get());
-				_program_selection->addShader(_fshader_selection.get());
-				_program_selection->link();
-
-				_coords_attribute_selection	= _program_selection->attributeLocation("pos_attribute");
-				_flags_attribute_selection	= _program_selection->attributeLocation("flag_attribute");
-
-				_matrix_uniform_selection	= _program_selection->uniformLocation("matrix_uniform");
-				_color_uniform_selection	= _program_selection->uniformLocation("color_uniform");
-				_alpha_uniform_selection	= _program_selection->uniformLocation("alpha_uniform");
-				_z_coord_uniform_selection	= _program_selection->uniformLocation("z_coord_uniform");
-
-				_program_selection->release();
-			}
 			_initialized = true;
 		}
 
@@ -186,30 +144,6 @@ namespace hdi{
 			glDepthMask(GL_FALSE);
 
 			{
-				glPointSize(_point_size*1.5);
-				_program_selection->bind();
-					QMatrix4x4 matrix;
-					matrix.ortho(bl.x(), tr.x(), bl.y(), tr.y(), 1, -1);
-
-
-					_program_selection->setUniformValue(_matrix_uniform, matrix);
-					_program_selection->setUniformValue(_alpha_uniform, _alpha);
-					_program_selection->setUniformValue(_z_coord_uniform, _z_coord_selection);
-					_program_selection->setUniformValue(_color_uniform_selection, _selection_color);
-
-					QOpenGLFunctions glFuncs(QOpenGLContext::currentContext());
-					glFuncs.glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE);
-					_program_selection->enableAttributeArray(_coords_attribute_selection);
-					glFuncs.glVertexAttribPointer(_coords_attribute_selection, 2, GL_FLOAT, GL_FALSE, 0, _embedding);
-
-					_program_selection->enableAttributeArray(_flags_attribute_selection);
-					glFuncs.glVertexAttribPointer(_flags_attribute_selection, 1, GL_UNSIGNED_INT, GL_FALSE, 0, _flags);
-
-					glDrawArrays(GL_POINTS, 0, _num_points);
-				_program_selection->release();
-			}
-
-			{
 				glPointSize(_point_size);
 				_program->bind();
 					QMatrix4x4 matrix;
@@ -218,9 +152,12 @@ namespace hdi{
                     _program->setUniformValue(_min_uniform, _min_val);
                     _program->setUniformValue(_max_uniform, _max_val);
                     _program->setUniformValue(_pnt_size_uniform, _point_size);
+                    _program->setUniformValue(_min_pnt_size_uniform, _min_point_size);
 					_program->setUniformValue(_matrix_uniform, matrix);
 					_program->setUniformValue(_alpha_uniform, _alpha);
 					_program->setUniformValue(_z_coord_uniform, _z_coord);
+                    _program->setUniformValue(_color_uniform, _color);
+                    _program->setUniformValue(_selection_color_uniform, _selection_color);
 
 					QOpenGLFunctions glFuncs(QOpenGLContext::currentContext());
 					glFuncs.glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE);
@@ -256,11 +193,6 @@ namespace hdi{
                 _max_val = std::max(_attribute[i],_max_val);
                 avg += _attribute[i];//QUICKPAPER
             }
-
-            //avg /= _num_points;
-            //_min_val = avg*0.3;
-            //_max_val = std::min<double>(avg*1.3,_max_val);
-
         }
 
 	}

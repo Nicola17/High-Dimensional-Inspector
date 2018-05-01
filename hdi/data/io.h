@@ -98,6 +98,45 @@ namespace hdi{
                 }
             }
 
+            template <typename uint_vector_vector, class output_stream_type>
+            void saveUIntVectorVector(const uint_vector_vector& vector, output_stream_type& stream, utils::AbstractLog* log = nullptr){
+                typedef float io_scalar_type;
+                typedef uint32_t io_unsigned_int_type;
+
+                io_unsigned_int_type num_elems = static_cast<io_unsigned_int_type>(vector.size());
+                stream.write(reinterpret_cast<char*>(&num_elems),sizeof(io_unsigned_int_type));
+                for(auto& inner_vector: vector){
+                    io_unsigned_int_type num_elems_inner = static_cast<io_unsigned_int_type>(inner_vector.size());
+                    stream.write(reinterpret_cast<char*>(&num_elems_inner),sizeof(io_unsigned_int_type));
+                    for(auto& elem: inner_vector){
+                        io_unsigned_int_type v = static_cast<io_unsigned_int_type>(elem);
+                        stream.write(reinterpret_cast<char*>(&v),sizeof(io_unsigned_int_type));
+                    }
+                }
+            }
+
+            //Probably I can use something in the Roaring -> no time now deadline
+            template <typename roaring_vector_vector, class output_stream_type>
+            void saveRoaringVectorVector(const roaring_vector_vector& vector, output_stream_type& stream, utils::AbstractLog* log = nullptr){
+                typedef float io_scalar_type;
+                typedef uint32_t io_unsigned_int_type;
+
+                io_unsigned_int_type num_elems = static_cast<io_unsigned_int_type>(vector.size());
+                stream.write(reinterpret_cast<char*>(&num_elems),sizeof(io_unsigned_int_type));
+                for(auto& inner_vector: vector){
+                    io_unsigned_int_type num_elems_inner = static_cast<io_unsigned_int_type>(inner_vector.size());
+                    stream.write(reinterpret_cast<char*>(&num_elems_inner),sizeof(io_unsigned_int_type));
+                    for(auto& roaring: inner_vector){
+                        io_unsigned_int_type num_elems_roaring = static_cast<io_unsigned_int_type>(roaring.cardinality());
+                        stream.write(reinterpret_cast<char*>(&num_elems_roaring),sizeof(io_unsigned_int_type));
+                        for(auto elem: roaring){
+                            io_unsigned_int_type v = static_cast<io_unsigned_int_type>(elem);
+                            stream.write(reinterpret_cast<char*>(&v),sizeof(io_unsigned_int_type));
+                        }
+                    }
+                }
+            }
+
         ///////////////////////////////////////////////////////////////////////
 
             template <typename sparse_scalar_matrix_type, class output_stream_type>
@@ -165,6 +204,50 @@ namespace hdi{
                     io_int_type v;
                     stream.read(reinterpret_cast<char*>(&v),sizeof(io_int_type));
                     vector.push_back(v);
+                }
+            }
+
+            template <typename uint_vector_vector, class output_stream_type>
+            void loadUIntVectorVector(uint_vector_vector& vector, output_stream_type& stream, utils::AbstractLog* log = nullptr){
+                typedef float io_scalar_type;
+                typedef uint32_t io_unsigned_int_type;
+
+                io_unsigned_int_type num_elems;
+                stream.read(reinterpret_cast<char*>(&num_elems),sizeof(io_unsigned_int_type));
+                vector.resize(num_elems);
+                for(int i  = 0; i < num_elems; ++i){
+                    io_unsigned_int_type num_elems_inner;
+                    stream.read(reinterpret_cast<char*>(&num_elems_inner),sizeof(io_unsigned_int_type));
+                    vector[i].reserve(num_elems_inner);
+                    for(int j  = 0; j < num_elems_inner; ++j){
+                        io_unsigned_int_type v;
+                        stream.read(reinterpret_cast<char*>(&v),sizeof(io_unsigned_int_type));
+                        vector[i].push_back(v);
+                    }
+                }
+            }
+
+            template <typename roaring_vector_vector, class output_stream_type>
+            void loadRoaringVectorVector(roaring_vector_vector& vector, output_stream_type& stream, utils::AbstractLog* log = nullptr){
+                typedef float io_scalar_type;
+                typedef uint32_t io_unsigned_int_type;
+
+                io_unsigned_int_type num_elems;
+                stream.read(reinterpret_cast<char*>(&num_elems),sizeof(io_unsigned_int_type));
+                vector.resize(num_elems);
+                for(int i  = 0; i < num_elems; ++i){
+                    io_unsigned_int_type num_elems_inner;
+                    stream.read(reinterpret_cast<char*>(&num_elems_inner),sizeof(io_unsigned_int_type));
+                    vector[i].resize(num_elems_inner);
+                    for(int j  = 0; j < num_elems_inner; ++j){
+                        io_unsigned_int_type num_elems_roaring;
+                        stream.read(reinterpret_cast<char*>(&num_elems_roaring),sizeof(io_unsigned_int_type));
+                        for(int k  = 0; k < num_elems_roaring; ++k){
+                            io_unsigned_int_type v;
+                            stream.read(reinterpret_cast<char*>(&v),sizeof(io_unsigned_int_type));
+                            vector[i][j].add(v);
+                        }
+                    }
                 }
             }
 

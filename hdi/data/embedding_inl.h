@@ -37,6 +37,7 @@
 #include <algorithm>
 #include <limits>
 #include <algorithm>
+#include "hdi/utils/assert_by_exception.h"
 
 namespace hdi{
     namespace data{
@@ -46,6 +47,11 @@ namespace hdi{
             _num_dimensions(0),
             _num_data_points(0)
         {}
+
+        template <typename scalar_type>
+        Embedding<scalar_type>::Embedding(unsigned int num_dimensions, unsigned int num_data_points, scalar_type v){
+            resize(num_dimensions,num_data_points, v);
+        }
 
         template <typename scalar_type>
         void Embedding<scalar_type>::resize(unsigned int num_dimensions, unsigned int num_data_points, scalar_type v){
@@ -166,6 +172,99 @@ namespace hdi{
                 }
                 for(int d = 0; d < num_dim; ++d){
                     output.dataAt(i,d) = output.dataAt(i,d) / total_weight;
+                }
+            }
+        }
+
+/////////////////////////////////////////////////////////////
+
+
+        template <typename scalar_type>
+        void copyAndRemap1D2DVertical(const Embedding<scalar_type>& input, Embedding<scalar_type>& output, const std::vector<scalar_type>& limits){
+            checkAndThrowLogic(input.numDimensions() == 1, "input embedding must be one-dimensional");
+            checkAndThrowLogic(limits.size() == 4, "invalid limits");
+
+            const unsigned int N = input.numDataPoints();
+            output.resize(2,N);
+
+            scalar_type min = std::numeric_limits<scalar_type>::max();
+            scalar_type max = -min;
+
+            const auto& input_container = input.getContainer();
+            auto& output_container = output.getContainer();
+
+            for(int i = 0; i < N; ++i){
+                auto v = input_container[i];
+                if(v > max){
+                    max = v;
+                }
+                if(v < min){
+                    min = v;
+                }
+            }
+
+            const scalar_type vertical_position = (limits[0]+limits[1])*0.5;
+            for(int i = 0; i < N; ++i){
+                output_container[i*2]   = vertical_position;
+                output_container[i*2+1] = (input_container[i]-min)/(max-min) * (limits[3]-limits[2]) + limits[2];
+            }
+
+        }
+
+
+        template <typename scalar_type>
+        void copyAndRemap2D2D(const Embedding<scalar_type>& input, Embedding<scalar_type>& output, const std::vector<scalar_type>& limits, bool fix_aspect_ratio){
+            checkAndThrowLogic(input.numDimensions() == 2, "input embedding must be two-dimensional");
+            output.resize(2,input.numDataPoints());
+
+            const unsigned int N = input.numDataPoints();
+            output.resize(2,N);
+
+            scalar_type min_x = std::numeric_limits<scalar_type>::max();
+            scalar_type max_x = -min_x;
+            scalar_type min_y = std::numeric_limits<scalar_type>::max();
+            scalar_type max_y = -min_y;
+
+            const auto& input_container = input.getContainer();
+            auto& output_container = output.getContainer();
+
+            for(int i = 0; i < N; ++i){
+                auto v_x = input_container[i*2];
+                auto v_y = input_container[i*2+1];
+                if(v_x > max_x){
+                    max_x = v_x;
+                }
+                if(v_x < min_x){
+                    min_x = v_x;
+                }
+                if(v_y > max_y){
+                    max_y = v_y;
+                }
+                if(v_y < min_y){
+                    min_y = v_y;
+                }
+            }
+
+            if(!fix_aspect_ratio){
+
+                for(int i = 0; i < N; ++i){
+                    output_container[i*2]   = (input_container[2*i  ]-min_x)/(max_x-min_x) * (limits[1]-limits[0]) + limits[0];
+                    output_container[i*2+1] = (input_container[2*i+1]-min_y)/(max_y-min_y) * (limits[3]-limits[2]) + limits[2];
+                }
+            }else{ //fix_aspect_ratio
+                if(max_x-min_x > max_y-min_y){ //x is bigger then y
+                    double ratio = (max_y-min_y)/(max_x-min_x);
+                    for(int i = 0; i < N; ++i){
+                        output_container[i*2]   = (input_container[2*i  ]-min_x)/(max_x-min_x) * (limits[1]-limits[0]) + limits[0];// it is spanning on all x
+                        output_container[i*2+1] = ((input_container[2*i+1]-min_y)/(max_x-min_x) + (1.-ratio)/2)* (limits[3]-limits[2]) + limits[2];
+                    }
+                }else{//y is bigger then x
+                    double ratio = (max_x-min_x)/(max_y-min_y);
+                    for(int i = 0; i < N; ++i){
+                        output_container[i*2]   = ((input_container[2*i  ]-min_x)/(max_y-min_y) + (1.-ratio)/2) * (limits[1]-limits[0]) + limits[0];
+                        output_container[i*2+1] = (input_container[2*i+1]-min_y)/(max_y-min_y) * (limits[3]-limits[2]) + limits[2];// it is spanning on all y
+                    }
+
                 }
             }
         }

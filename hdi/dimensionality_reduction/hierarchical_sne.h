@@ -219,8 +219,10 @@ namespace hdi{
 				checkAndThrowLogic(dimensionality > 0,"Invalid dimensionality");
 				_dimensionality = dimensionality;
 			}
-			//! Initialize the class with the current data-points
+            //! Initialize the class with the current data-points
             void initialize(scalar_type* high_dimensional_data, unsigned_int_type num_dps, Parameters params = Parameters());
+            //! Initialize the class with the current data-points from a given similarity matrix
+            void initialize(const sparse_scalar_matrix_type& similarities, Parameters params = Parameters());
 			//! Reset the internal state of the class but it keeps the inserted data-points
 			void reset();
 			//! Reset the class and remove all the data points
@@ -251,6 +253,11 @@ namespace hdi{
             //! Return a scale
             const scale_type& scale(unsigned_int_type scale_id)const{return _hierarchy[scale_id];}
 
+            //! Return the top scale
+            scale_type& top_scale(){return _hierarchy[_hierarchy.size()-1];}
+            //! Return the top scale
+            const scale_type& top_scale()const{return _hierarchy[_hierarchy.size()-1];}
+
 
 
             //! Return the indexes of landmarks at "scale_id-1" that are influenced by the landmarks in idxes of scale "scale_id"
@@ -265,6 +272,8 @@ namespace hdi{
             void getInfluenceOnDataPoint(unsigned_int_type dp, std::vector<std::unordered_map<unsigned_int_type,scalar_type>>& influence, scalar_type thresh = 0, bool normalized = true)const;
             //! Return the influence exercised on the data point by a subset of landmarks in a given scale
             void getAreaOfInfluence(unsigned_int_type scale_id, const std::vector<unsigned_int_type>& set_selected_idxes, std::vector<scalar_type>& aoi)const;
+            //! Return the influence exercised on the data point by a subset of landmarks in a given scale using a top-down approach
+            void getAreaOfInfluenceTopDown(unsigned_int_type scale_id, const std::vector<unsigned_int_type>& set_selected_idxes, std::vector<scalar_type>& aoi)const;
 
             //! TODO
             void getStochasticLocationAtHigherScale(unsigned_int_type orig_scale, unsigned_int_type dest_scale, const std::vector<unsigned_int_type>& subset_orig_scale, sparse_scalar_matrix_type& location)const;
@@ -280,6 +289,8 @@ namespace hdi{
             void computeNeighborhoodGraph(scalar_vector_type& distance_based_probabilities, std::vector<int>& neighborhood_graph);
             //! Initialize the first scale
             void initializeFirstScale();
+            //! Initialize the first scale
+            void initializeFirstScale(const sparse_scalar_matrix_type& similarities);
             //! Compute a new scale
             bool addScaleImpl();
             //! Compute a new scale with a out-of-core

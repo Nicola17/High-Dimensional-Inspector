@@ -4,7 +4,6 @@ include_directories ("${CMAKE_SOURCE_DIR}")
 include_directories ("${CMAKE_CURRENT_BINARY_DIR}")
 MESSAGE( STATUS "${CMAKE_CURRENT_BINARY_DIR}")
 
-
 if(APPLE)
 else(APPLE)
     find_package(OpenMP REQUIRED)

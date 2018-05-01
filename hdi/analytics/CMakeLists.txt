@@ -1,8 +1,7 @@
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 include_directories ("${CMAKE_SOURCE_DIR}")
-include_directories ("${CMAKE_CURRENT_BINARY_DIR}/hdi/visualization")
-
+include_directories ("${CMAKE_CURRENT_BINARY_DIR}/../visualization")
 
 if(APPLE)
 else(APPLE)

@@ -55,6 +55,7 @@ namespace hdi{
             typedef typename storage_type::iterator iterator;
             typedef typename storage_type::const_iterator const_iterator;
 
+            void clear(){_memory.clear();}
             size_t size()const{return _memory.size();}
             size_t capacity()const{return _memory.capacity();}
             void shrink_to_fit(){_memory.shrink_to_fit();}

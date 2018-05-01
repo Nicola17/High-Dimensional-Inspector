@@ -89,7 +89,8 @@ namespace hdi{
         SparseTSNEUserDefProbabilities<scalar, sparse_scalar_matrix>::SparseTSNEUserDefProbabilities():
 			_initialized(false),
             _logger(nullptr),
-            _theta(0)
+            _theta(0),
+            _exaggeration_baseline(1)
 		{
 	
 		}
@@ -248,13 +249,14 @@ namespace hdi{
 
         template <typename scalar, typename sparse_scalar_matrix>
         scalar SparseTSNEUserDefProbabilities<scalar, sparse_scalar_matrix>::exaggerationFactor(){
-            scalar_type exaggeration = 1;
+            scalar_type exaggeration = _exaggeration_baseline;
 
             if(_iteration <= _params._remove_exaggeration_iter){
                 exaggeration = _params._exaggeration_factor;
             }else if(_iteration <= (_params._remove_exaggeration_iter + _params._exponential_decay_iter)){
-                double decay = std::exp(-scalar_type(_iteration-_params._remove_exaggeration_iter)/30.);
-                exaggeration = 1 + (_params._exaggeration_factor-1)*decay;
+                //double decay = std::exp(-scalar_type(_iteration-_params._remove_exaggeration_iter)/30.);
+                double decay = 1. - double(_iteration-_params._remove_exaggeration_iter)/_params._exponential_decay_iter;
+                exaggeration = _exaggeration_baseline + (_params._exaggeration_factor-_exaggeration_baseline)*decay;
                 //utils::secureLogValue(_logger,"Exaggeration decay...",exaggeration);
             }
 

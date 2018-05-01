@@ -40,6 +40,8 @@
 #include "hdi/dimensionality_reduction/sparse_tsne_user_def_probabilities.h"
 #include "hdi/utils/visual_utils.h"
 #include "hdi/utils/scoped_timers.h"
+#include "hdi/visualization/scatterplot_canvas_qobj.h"
+#include "hdi/visualization/scatterplot_drawer_fixed_color.h"
 
 #include <QApplication>
 #include <QCommandLineParser>
@@ -53,9 +55,9 @@
 int main(int argc, char *argv[])
 {
 	try{
-		QCoreApplication app(argc, argv);
-		QCoreApplication::setApplicationName("Approximated tSNE");
-		QCoreApplication::setApplicationVersion("0.1");
+		QApplication app(argc, argv);
+		QApplication::setApplicationName("Approximated tSNE with Progressive Visualization");
+		QApplication::setApplicationVersion("0.1");
 
 		QCommandLineParser parser;
 		parser.setApplicationDescription("Command line version of the tSNE algorithm");
@@ -177,7 +179,7 @@ int main(int argc, char *argv[])
     float data_loading_time         = 0;
     float similarities_comp_time    = 0;
     float gradient_desc_comp_time   = 0;
-    float data_saving_time         = 0;
+    float data_saving_time          = 0;
 
 	////////////////////////////////////////////////
 	////////////////////////////////////////////////
@@ -218,22 +220,44 @@ int main(int argc, char *argv[])
       prob_gen.computeProbabilityDistributions(data.data(),num_dimensions,num_data_points,distributions,prob_gen_param);
     }
 
+		tSNE_param._embedding_dimensionality = num_target_dimensions;
+		tSNE_param._mom_switching_iter = exaggeration_iter;
+		tSNE_param._remove_exaggeration_iter = exaggeration_iter;
+		tSNE.initialize(distributions,&embedding,tSNE_param);
+		tSNE.setTheta(theta);
 
-    {
+		hdi::viz::ScatterplotCanvas canvas;
+		canvas.setBackgroundColors(qRgb(255,255,255),qRgb(255,255,255));
+		canvas.setSelectionColor(qRgb(255,155,0));
+		canvas.resize(800,800);
+		canvas.show();
+
+		std::vector<uint32_t> flags(num_data_points,0);
+		hdi::viz::ScatterplotDrawerFixedColor drawer;
+		drawer.initialize(canvas.context());
+	  drawer.setData(embedding.getContainer().data(), flags.data(), num_data_points);
+		drawer.setAlpha(0.5);
+		drawer.setPointSize(20);
+		canvas.addDrawer(&drawer);
+		{
 			hdi::utils::ScopedTimer<float,hdi::utils::Seconds> timer(gradient_desc_comp_time);
-			tSNE_param._embedding_dimensionality = num_target_dimensions;
-			tSNE_param._mom_switching_iter = exaggeration_iter;
-			tSNE_param._remove_exaggeration_iter = exaggeration_iter;
-			tSNE.initialize(distributions,&embedding,tSNE_param);
-			tSNE.setTheta(theta);
-
 			hdi::utils::secureLog(&log,"Computing gradient descent...");
 			for(int iter = 0; iter < iterations; ++iter){
 		    tSNE.doAnIteration();
+				{//Compute limits
+						std::vector<scalar_type> limits;
+						embedding.computeEmbeddingBBox(limits,0.25);
+						auto tr = QVector2D(limits[1],limits[3]);
+						auto bl = QVector2D(limits[0],limits[2]);
+						canvas.setTopRightCoordinates(tr);
+						canvas.setBottomLeftCoordinates(bl);
+				}
+				canvas.updateGL();
 		    hdi::utils::secureLogValue(&log,"Iter",iter,verbose);
+				QApplication::processEvents();
 			}
-			hdi::utils::secureLog(&log,"... done!");
-    }
+		}
+		hdi::utils::secureLog(&log,"... done!");
 
 		////////////////////////////////////////////////
 		////////////////////////////////////////////////
@@ -260,6 +284,8 @@ int main(int argc, char *argv[])
     hdi::utils::secureLogValue(&log,"Similarities computation (sec)",similarities_comp_time);
     hdi::utils::secureLogValue(&log,"Gradient descent (sec)",gradient_desc_comp_time);
     hdi::utils::secureLogValue(&log,"Data saving (sec)",data_saving_time);
+
+		return app.exec();
 	}
   catch(std::logic_error& ex){ std::cout << "Logic error: " << ex.what() << std::endl;}
   catch(std::runtime_error& ex){ std::cout << "Runtime error: " << ex.what() << std::endl;}

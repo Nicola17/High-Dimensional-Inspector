@@ -48,7 +48,6 @@ ENDMACRO()
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-set(CMAKE_AUTOMOC ON)
 
 include_directories ("${CMAKE_SOURCE_DIR}")
 include_directories ("${CMAKE_CURRENT_BINARY_DIR}/../../hdi/visualization")
@@ -79,6 +78,7 @@ file(GLOB AnalyticsQObjHeaderFiles ${CMAKE_SOURCE_DIR}/hdi/analytics/*qobj.h)
 qt5_wrap_cpp(MocSources ${AnalyticsQObjHeaderFiles} ${VisualizationQObjHeaderFiles})
 qt5_add_resources(Resources "../shared_resources/shared_resources.qrc")
 
+ADD_PROJECT(atsne_pva_cmd atsne_pva_cmd.cpp "${Resources}")
 ADD_PROJECT(hsne_cmd hsne_cmd.cpp "${Resources}")
 ADD_PROJECT(simple_embedding_viewer simple_embedding_viewer.cpp "${Resources}")
 ADD_PROJECT(pex_viewer pex_viewer.cpp  "${Resources}")

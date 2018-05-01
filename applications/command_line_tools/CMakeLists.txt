@@ -53,9 +53,9 @@ include_directories ("${CMAKE_SOURCE_DIR}")
 include_directories ("${CMAKE_CURRENT_BINARY_DIR}/../../hdi/visualization")
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
-find_package(Qt5 REQUIRED 
-	Widgets 
-	OpenGL 
+find_package(Qt5 REQUIRED
+	Widgets
+	OpenGL
 	WebKit
 )
 IF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
@@ -78,17 +78,17 @@ file(GLOB AnalyticsQObjHeaderFiles ${CMAKE_SOURCE_DIR}/hdi/analytics/*qobj.h)
 qt5_wrap_cpp(MocSources ${AnalyticsQObjHeaderFiles} ${VisualizationQObjHeaderFiles})
 qt5_add_resources(Resources "../shared_resources/shared_resources.qrc")
 
-ADD_PROJECT(tsne_cmd tsne_cmd.cpp "${MocSources};${Resources}")
-ADD_COMMANDLINE_PROJECT(atsne_cmd atsne_cmd.cpp)
-ADD_PROJECT(tsne_distance_matrix_cmd tsne_distance_matrix_cmd.cpp "${MocSources};${Resources}")
 ADD_PROJECT(hsne_cmd hsne_cmd.cpp "${MocSources};${Resources}")
 ADD_PROJECT(simple_embedding_viewer simple_embedding_viewer.cpp "${MocSources};${Resources}")
-ADD_PROJECT(csv_2_bin csv_2_bin.cpp "${MocSources};${Resources}")
-ADD_PROJECT(multiple_csv_2_bin multiple_csv_2_bin.cpp "${MocSources};${Resources}")
-ADD_PROJECT(mnist_2_data mnist_2_data.cpp "${MocSources};${Resources}")
-ADD_PROJECT(timit_2_data timit_2_data.cpp "${MocSources};${Resources}")
-ADD_PROJECT(cifar_2_data cifar_2_data.cpp "${MocSources};${Resources}")
-ADD_PROJECT(bin_2_data bin_2_data.cpp "${MocSources};${Resources}")
-ADD_PROJECT(pex_viewer pex_viewer.cpp "${MocSources};${Resources}")
-ADD_PROJECT(hyperspectral_image_2_hdvol hyperspectral_image_2_hdvol.cpp "${MocSources};${Resources}")
+ADD_PROJECT(pex_viewer pex_viewer.cpp  "${MocSources};${Resources}")
 
+ADD_COMMANDLINE_PROJECT(tsne_cmd tsne_cmd.cpp)
+ADD_COMMANDLINE_PROJECT(atsne_cmd atsne_cmd.cpp)
+ADD_COMMANDLINE_PROJECT(tsne_distance_matrix_cmd tsne_distance_matrix_cmd.cpp)
+ADD_COMMANDLINE_PROJECT(csv_2_bin csv_2_bin.cpp)
+ADD_COMMANDLINE_PROJECT(multiple_csv_2_bin multiple_csv_2_bin.cpp)
+ADD_COMMANDLINE_PROJECT(mnist_2_data mnist_2_data.cpp)
+ADD_COMMANDLINE_PROJECT(timit_2_data timit_2_data.cpp)
+ADD_COMMANDLINE_PROJECT(cifar_2_data cifar_2_data.cpp)
+ADD_COMMANDLINE_PROJECT(bin_2_data bin_2_data.cpp)
+ADD_COMMANDLINE_PROJECT(hyperspectral_image_2_hdvol hyperspectral_image_2_hdvol.cpp)

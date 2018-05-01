@@ -1,6 +1,6 @@
 MACRO(ADD_PROJECT Name Sources MocSources)
         #MESSAGE( STATUS "${MocSources}")
-	add_executable (${Name} ${Sources} ${MocSources})  
+	add_executable (${Name} ${Sources} ${MocSources})
 
     target_link_libraries (${Name} hdianalytics)
     target_link_libraries (${Name} hdidimensionalityreduction)
@@ -28,36 +28,6 @@ MACRO(ADD_PROJECT Name Sources MocSources)
 
     set_target_properties(${Name} PROPERTIES FOLDER "Applications/Visual Test")
 ENDMACRO()
-
-MACRO(ADD_CUDA_PROJECT Name Sources MocSources)
-	CUDA_ADD_EXECUTABLE (${Name} ${Sources} ${MocSources})  
-
-    target_link_libraries (${Name} hdianalytics)
-    target_link_libraries (${Name} hdidimensionalityreduction)
-    target_link_libraries (${Name} hdidata)
-    target_link_libraries (${Name} hdivisualization)
-    target_link_libraries (${Name} hdiutils)
-    target_link_libraries (${Name} Qt5::Widgets)
-    target_link_libraries (${Name} Qt5::OpenGL)
-    target_link_libraries (${Name} Qt5::WebKit)
-    target_link_libraries (${Name} Qt5::WebKitWidgets)
-
-	IF(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
-		target_link_libraries (${Name} Opengl32.lib)
-		target_link_libraries (${Name} "$ENV{FLANN_DIR}/lib/flann_cpp_s.lib")
-	ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
-	IF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-		target_link_libraries(${Name} ${OPENGL_LIBRARIES})
-		target_link_libraries(${Name} "libflann_cpp.so")
-	ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-
-	MESSAGE( STATUS "Visual Test project: " ${Name} )
-        #MESSAGE( STATUS "            Source Files: " ${Sources} )
-        #MESSAGE( STATUS "            Moc Source Files: " ${MocSources} )
-
-    set_target_properties(${Name} PROPERTIES FOLDER "Applications/Visual Test")
-ENDMACRO()
-
 
 ############################################################################################
 

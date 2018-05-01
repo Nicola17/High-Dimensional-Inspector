@@ -23,6 +23,7 @@ endif(APP_TDD)
 if(APP_COMMAND_LINE)
     add_subdirectory (applications/command_line_tools)
     add_subdirectory (applications/command_line_tools/hsne_volume_analyzer)
+    add_subdirectory (applications/command_line_tools/data_conversion)
 endif(APP_COMMAND_LINE)
 
 if(APP_VISUAL_TESTS)

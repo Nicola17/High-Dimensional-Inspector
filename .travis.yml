@@ -4,15 +4,17 @@ language:
   - cpp
 compiler:
   - gcc
-      
+
 before_install:
   - sudo add-apt-repository --yes ppa:ubuntu-sdk-team/ppa
   - sudo apt-get update -qq
   - sudo apt-get install -qq qtbase5-dev libqt5webkit5-dev libflann-dev
-  
+
 before_script:
   - mkdir build
   - cd build
   - cmake ..
 
-script: make -j 2
+script:
+  - make -j 2
+  - ./applications/tdd/tdd

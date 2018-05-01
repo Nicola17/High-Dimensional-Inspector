@@ -90,75 +90,75 @@ public:
 int main(int argc, char *argv[])
 {
 	try{
-        hdi::utils::CoutLog log;
-        QApplication app(argc, argv);
-        QIcon icon;
-        icon.addFile(":/hdi16.png");
-        icon.addFile(":/hdi32.png");
-        icon.addFile(":/hdi64.png");
-        icon.addFile(":/hdi128.png");
-        icon.addFile(":/hdi256.png");
-        app.setWindowIcon(icon);
+    hdi::utils::CoutLog log;
+    QApplication app(argc, argv);
+    QIcon icon;
+    icon.addFile(":/hdi16.png");
+    icon.addFile(":/hdi32.png");
+    icon.addFile(":/hdi64.png");
+    icon.addFile(":/hdi128.png");
+    icon.addFile(":/hdi256.png");
+    app.setWindowIcon(icon);
 
-        QApplication::setApplicationName("HSNE");
-        QApplication::setApplicationVersion("0.1");
+    QApplication::setApplicationName("HSNE");
+    QApplication::setApplicationVersion("0.1");
 
-		QCommandLineParser parser;
-        parser.setApplicationDescription("Command line version of the HSNE algorithm");
-		parser.addHelpOption();
-		parser.addVersionOption();
-		parser.addPositionalArgument("data", QCoreApplication::translate("main", "High dimensional data."));
-		parser.addPositionalArgument("num_data_points", QCoreApplication::translate("main", "Num of data-points."));
-		parser.addPositionalArgument("num_dimensions", QCoreApplication::translate("main", "Num of dimensions."));
+    QCommandLineParser parser;
+    parser.setApplicationDescription("Command line version of the HSNE algorithm");
+    parser.addHelpOption();
+    parser.addVersionOption();
+    parser.addPositionalArgument("data", QCoreApplication::translate("main", "High dimensional data."));
+    parser.addPositionalArgument("num_data_points", QCoreApplication::translate("main", "Num of data-points."));
+    parser.addPositionalArgument("num_dimensions", QCoreApplication::translate("main", "Num of dimensions."));
 
-        QCommandLineOption beta_option(QStringList() << "b" << "beta",
-                QCoreApplication::translate("main", "Beta treshold for landmark selection (default: 1.5)."),
-                QCoreApplication::translate("main", "beta"));
-        parser.addOption(beta_option);
+    QCommandLineOption beta_option(QStringList() << "b" << "beta",
+            QCoreApplication::translate("main", "Beta treshold for landmark selection (default: 1.5)."),
+            QCoreApplication::translate("main", "beta"));
+    parser.addOption(beta_option);
 
-        QCommandLineOption neigh_option(QStringList() << "n" << "num_neighbors",
-                QCoreApplication::translate("main", "Number of neighbors considered in the first level, aka perplexity*3 (default: 30)."),
-                QCoreApplication::translate("main", "num_neighbors"));
-        parser.addOption(neigh_option);
+    QCommandLineOption neigh_option(QStringList() << "n" << "num_neighbors",
+            QCoreApplication::translate("main", "Number of neighbors considered in the first level, aka perplexity*3 (default: 30)."),
+            QCoreApplication::translate("main", "num_neighbors"));
+    parser.addOption(neigh_option);
 
-        QCommandLineOption trees_option(QStringList() << "t" << "num_trees",
-                QCoreApplication::translate("main", "Number of trees used for the AKNN computation (default: 4)."),
-                QCoreApplication::translate("main", "num_trees"));
-        parser.addOption(trees_option);
+    QCommandLineOption trees_option(QStringList() << "t" << "num_trees",
+            QCoreApplication::translate("main", "Number of trees used for the AKNN computation (default: 4)."),
+            QCoreApplication::translate("main", "num_trees"));
+    parser.addOption(trees_option);
 
-        QCommandLineOption checks_option(QStringList() << "c" << "num_checks",
-                QCoreApplication::translate("main", "Number of checks used for the AKNN computation (default: 1024)."),
-                QCoreApplication::translate("main", "num_checks"));
-        parser.addOption(checks_option);
+    QCommandLineOption checks_option(QStringList() << "c" << "num_checks",
+            QCoreApplication::translate("main", "Number of checks used for the AKNN computation (default: 1024)."),
+            QCoreApplication::translate("main", "num_checks"));
+    parser.addOption(checks_option);
 
-        QCommandLineOption prune_option(QStringList() << "u" << "prune",
-                QCoreApplication::translate("main", "Pruning treshold for FMC computation, aka saves memory if greater than 0 (default: 1.5, be careful in increasing it, prbly max 5)."),
-                QCoreApplication::translate("main", "prune"));
-        parser.addOption(prune_option);
+    QCommandLineOption prune_option(QStringList() << "u" << "prune",
+            QCoreApplication::translate("main", "Pruning treshold for FMC computation, aka saves memory if greater than 0 (default: 1.5, be careful in increasing it, prbly max 5)."),
+            QCoreApplication::translate("main", "prune"));
+    parser.addOption(prune_option);
 
-        QCommandLineOption walks_landmark_option(QStringList() << "wl" << "num_walks_selection",
-                QCoreApplication::translate("main", "Number of walks used for the selection of landmarks (default: 200)."),
-                QCoreApplication::translate("main", "num_walks_selection"));
-        parser.addOption(walks_landmark_option);
+    QCommandLineOption walks_landmark_option(QStringList() << "wl" << "num_walks_selection",
+            QCoreApplication::translate("main", "Number of walks used for the selection of landmarks (default: 200)."),
+            QCoreApplication::translate("main", "num_walks_selection"));
+    parser.addOption(walks_landmark_option);
 
-        QCommandLineOption walks_similarities_option(QStringList() << "ws" << "num_walks_similarities",
-                QCoreApplication::translate("main", "Number of walks used for the selection of landmarks (default: 200)."),
-                QCoreApplication::translate("main", "num_walks_similarities"));
-        parser.addOption(walks_similarities_option);
+    QCommandLineOption walks_similarities_option(QStringList() << "ws" << "num_walks_similarities",
+            QCoreApplication::translate("main", "Number of walks used for the selection of landmarks (default: 200)."),
+            QCoreApplication::translate("main", "num_walks_similarities"));
+    parser.addOption(walks_similarities_option);
 
-        QCommandLineOption scale_option(QStringList() << "s" << "scales",
-                QCoreApplication::translate("main", "Number of scales (default: log10(num_data_points))."),
-                QCoreApplication::translate("main", "scales"));
-        parser.addOption(scale_option);
+    QCommandLineOption scale_option(QStringList() << "s" << "scales",
+            QCoreApplication::translate("main", "Number of scales (default: log10(num_data_points))."),
+            QCoreApplication::translate("main", "scales"));
+    parser.addOption(scale_option);
 
-        QCommandLineOption name_option(QStringList() << "a" << "analysis_name",
-                QCoreApplication::translate("main", "Number of scales (default: \"HSNE_Analysis\")."),
-                QCoreApplication::translate("main", "analysis_name"));
-        parser.addOption(name_option);
+    QCommandLineOption name_option(QStringList() << "a" << "analysis_name",
+            QCoreApplication::translate("main", "Number of scales (default: \"HSNE_Analysis\")."),
+            QCoreApplication::translate("main", "analysis_name"));
+    parser.addOption(name_option);
 
-        QCommandLineOption normalization_option(QStringList() << "z" << "normalization",
-                QCoreApplication::translate("main", "Apply a min-max normalization."));
-        parser.addOption(normalization_option);
+    QCommandLineOption normalization_option(QStringList() << "z" << "normalization",
+            QCoreApplication::translate("main", "Apply a min-max normalization."));
+    parser.addOption(normalization_option);
 
 	////////////////////////////////////////////////
 	///////////////   Arguments    /////////////////
@@ -174,17 +174,17 @@ int main(int argc, char *argv[])
 	////////////////////////////////////////////////
 	////////////////////////////////////////////////
 
-        if(args.size()!=3){
+    if(args.size()!=3){
 			std::cout << "Not enough arguments!" << std::endl;
 			return -1;
 		}
 
-        int num_data_points         = atoi(args.at(1).toStdString().c_str());
-        int num_dimensions          = atoi(args.at(2).toStdString().c_str());
+    int num_data_points         = atoi(args.at(1).toStdString().c_str());
+    int num_dimensions          = atoi(args.at(2).toStdString().c_str());
 
-        hdi::analytics::MultiscaleEmbedderSystem multiscale_embedder;
-        multiscale_embedder.setLogger(&log);
-        hdi::analytics::MultiscaleEmbedderSystem::panel_data_type& panel_data = multiscale_embedder.getPanelData();
+    hdi::analytics::MultiscaleEmbedderSystem multiscale_embedder;
+    multiscale_embedder.setLogger(&log);
+    hdi::analytics::MultiscaleEmbedderSystem::panel_data_type& panel_data = multiscale_embedder.getPanelData();
 
 	////////////////////////////////////////////////
 	////////////////////////////////////////////////
@@ -193,93 +193,91 @@ int main(int argc, char *argv[])
 		typedef float scalar_type;
 		//Input
 
-        {//initializing panel data
-            for(int j = 0; j < num_dimensions; ++j){
-                panel_data.addDimension(std::make_shared<hdi::data::EmptyData>(hdi::data::EmptyData()));
-            }
-            panel_data.initialize();
-            panel_data.reserve(num_data_points);
-        }
+    {//initializing panel data
+      for(int j = 0; j < num_dimensions; ++j){
+          panel_data.addDimension(std::make_shared<hdi::data::EmptyData>(hdi::data::EmptyData()));
+      }
+      panel_data.initialize();
+      panel_data.reserve(num_data_points);
+    }
 		{
-            std::ifstream input_file (args.at(0).toStdString(), std::ios::in|std::ios::binary);
-            for(int j = 0; j < num_data_points; ++j){
-                std::vector<scalar_type> data(num_dimensions);
-                input_file.read (reinterpret_cast<char*>(data.data()), sizeof(scalar_type) * num_dimensions);
-                panel_data.addDataPoint(std::make_shared<hdi::data::EmptyData>(hdi::data::EmptyData()),data);
-            }
-            input_file.close();
+      std::ifstream input_file (args.at(0).toStdString(), std::ios::in|std::ios::binary);
+      for(int j = 0; j < num_data_points; ++j){
+          std::vector<scalar_type> data(num_dimensions);
+          input_file.read (reinterpret_cast<char*>(data.data()), sizeof(scalar_type) * num_dimensions);
+          panel_data.addDataPoint(std::make_shared<hdi::data::EmptyData>(hdi::data::EmptyData()),data);
+      }
+      input_file.close();
 		}
-        if(parser.isSet(normalization_option)){
-            std::cout << "Applying a min-max normalization" << std::endl;
-            hdi::data::minMaxNormalization(panel_data);
-        }
+    if(parser.isSet(normalization_option)){
+      std::cout << "Applying a min-max normalization" << std::endl;
+      hdi::data::minMaxNormalization(panel_data);
+    }
 
 	////////////////////////////////////////////////
 	////////////////////////////////////////////////
 	////////////////////////////////////////////////
-	
-        hdi::analytics::MultiscaleEmbedderSystem::hsne_type::Parameters params;
-        params._seed = -1;
-        params._mcmcs_landmark_thresh = 1.5;
-        params._num_neighbors = 30;
-        params._aknn_num_trees = 4;
-        params._aknn_num_checks = 1024;
-        params._transition_matrix_prune_thresh = 1.5;
-        params._mcmcs_num_walks = 200;
-        params._num_walks_per_landmark = 200;
 
-        params._monte_carlo_sampling = true;
-        params._out_of_core_computation = true;
+    hdi::analytics::MultiscaleEmbedderSystem::hsne_type::Parameters params;
+    params._seed = -1;
+    params._mcmcs_landmark_thresh = 1.5;
+    params._num_neighbors = 30;
+    params._aknn_num_trees = 4;
+    params._aknn_num_checks = 1024;
+    params._transition_matrix_prune_thresh = 1.5;
+    params._mcmcs_num_walks = 200;
+    params._num_walks_per_landmark = 200;
 
-        int num_scales = std::log10(num_data_points);
-        std::string name("HSNE_Analysis");
+    params._monte_carlo_sampling = true;
+    params._out_of_core_computation = true;
 
-        if(parser.isSet(beta_option)){
-            params._mcmcs_landmark_thresh = std::atof(parser.value(beta_option).toStdString().c_str());
-        }
-        if(parser.isSet(neigh_option)){
-            params._num_neighbors = std::atoi(parser.value(neigh_option).toStdString().c_str());
-        }
-        if(parser.isSet(trees_option)){
-            params._aknn_num_trees = std::atoi(parser.value(trees_option).toStdString().c_str());
-        }
-        if(parser.isSet(checks_option)){
-            params._aknn_num_checks = std::atoi(parser.value(checks_option).toStdString().c_str());
-        }
-        if(parser.isSet(prune_option)){
-            params._transition_matrix_prune_thresh = std::atof(parser.value(prune_option).toStdString().c_str());
-        }
-        if(parser.isSet(walks_landmark_option)){
-            params._mcmcs_num_walks = std::atoi(parser.value(walks_landmark_option).toStdString().c_str());
-        }
-        if(parser.isSet(walks_similarities_option)){
-            params._num_walks_per_landmark = std::atoi(parser.value(walks_similarities_option).toStdString().c_str());
-        }
-        if(parser.isSet(scale_option)){
-            num_scales = std::atoi(parser.value(scale_option).toStdString().c_str());
-        }
-        if(parser.isSet(name_option)){
-            name = parser.value(scale_option).toStdString();
-        }
+    int num_scales = std::log10(num_data_points);
+    std::string name("HSNE_Analysis");
 
-        std::cout << "Scales: " << num_scales << std::endl;
+    if(parser.isSet(beta_option)){
+        params._mcmcs_landmark_thresh = std::atof(parser.value(beta_option).toStdString().c_str());
+    }
+    if(parser.isSet(neigh_option)){
+        params._num_neighbors = std::atoi(parser.value(neigh_option).toStdString().c_str());
+    }
+    if(parser.isSet(trees_option)){
+        params._aknn_num_trees = std::atoi(parser.value(trees_option).toStdString().c_str());
+    }
+    if(parser.isSet(checks_option)){
+        params._aknn_num_checks = std::atoi(parser.value(checks_option).toStdString().c_str());
+    }
+    if(parser.isSet(prune_option)){
+        params._transition_matrix_prune_thresh = std::atof(parser.value(prune_option).toStdString().c_str());
+    }
+    if(parser.isSet(walks_landmark_option)){
+        params._mcmcs_num_walks = std::atoi(parser.value(walks_landmark_option).toStdString().c_str());
+    }
+    if(parser.isSet(walks_similarities_option)){
+        params._num_walks_per_landmark = std::atoi(parser.value(walks_similarities_option).toStdString().c_str());
+    }
+    if(parser.isSet(scale_option)){
+        num_scales = std::atoi(parser.value(scale_option).toStdString().c_str());
+    }
+    if(parser.isSet(name_option)){
+        name = parser.value(scale_option).toStdString();
+    }
 
-        MyInterfaceInitializer interface_initializer;
-        multiscale_embedder.setName(name);
-        multiscale_embedder.setInterfaceInitializer(&interface_initializer);
-        multiscale_embedder.initialize(num_scales,params);
-        multiscale_embedder.createTopLevelEmbedder();
+    std::cout << "Scales: " << num_scales << std::endl;
 
-        while(true){
-            multiscale_embedder.doAnIterateOnAllEmbedder();
-            QApplication::processEvents();
-        }
-        return app.exec();
+    MyInterfaceInitializer interface_initializer;
+    multiscale_embedder.setName(name);
+    multiscale_embedder.setInterfaceInitializer(&interface_initializer);
+    multiscale_embedder.initialize(num_scales,params);
+    multiscale_embedder.createTopLevelEmbedder();
 
-
+    while(true){
+        multiscale_embedder.doAnIterateOnAllEmbedder();
+        QApplication::processEvents();
+    }
+    return app.exec();
 	}
-    catch(std::logic_error& ex){ std::cout << "Logic error: " << ex.what() << std::endl;}
-    catch(std::runtime_error& ex){ std::cout << "Runtime error: " << ex.what() << std::endl;}
-    catch(std::bad_alloc& ba){ std::cerr << "bad_alloc caught: " << ba.what() << std::endl; }
-    catch(...){ std::cout << "An unknown error occurred" << std::endl;}
+  catch(std::logic_error& ex){ std::cout << "Logic error: " << ex.what() << std::endl;}
+  catch(std::runtime_error& ex){ std::cout << "Runtime error: " << ex.what() << std::endl;}
+  catch(std::bad_alloc& ba){ std::cerr << "bad_alloc caught: " << ba.what() << std::endl; }
+  catch(...){ std::cout << "An unknown error occurred" << std::endl;}
 }

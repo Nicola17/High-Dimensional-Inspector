@@ -18,7 +18,7 @@ IF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 	find_package(OpenGL REQUIRED)
 ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 
-include_directories ("catch/include")
+include_directories ("catch")
 include_directories ("${CMAKE_SOURCE_DIR}")
 include_directories ("${CMAKE_CURRENT_BINARY_DIR}/../../hdi/visualization")
 

@@ -22,7 +22,7 @@ find_package(Qt5WebKitWidgets REQUIRED)
 
 # Gather list of all .h files in "/"
 file(GLOB HeaderFiles *.h)
-file(GLOB QOBJHeaderFiles *.h)
+file(GLOB QOBJHeaderFiles *_qobj.h)
 file(GLOB SourceFiles *.cpp)
 file(GLOB FormFiles *.ui)
 file(GLOB ResourceFiles *.qrc)

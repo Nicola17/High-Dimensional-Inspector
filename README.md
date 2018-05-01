@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.org/Nicola17/High-Dimensional-Inspector.svg?branch=master)](https://travis-ci.org/Nicola17/High-Dimensional-Inspector)
 
-# ![High Dimensional Inspector](logo.png)
+# ![High Dimensional Inspector](./images/logo.png)
 HDI is a library for the scalable analysis of large and high-dimensional data.
 It contains scalable manifold-learning algorithms, visualizations and visual-analytics frameworks.
 HDI is implemented in C++, OpenGL and JavaScript.
@@ -8,7 +8,7 @@ It is developed within a joint collaboration between the [Computer Graphics & Vi
 
 ## Authors
 - [Nicola Pezzotti](http://nicola17.github.io/) initiated the HDI project, developed the A-tSNE and HSNE algorithms and implemented most of the visualizations and frameworks.
-- [Thomas Höllt](https://www.thomashollt.com/) ported the library to macOS.
+- [Thomas Höllt](https://www.thomashollt.com/) ported the library to MacOS.
 
 ## Used
 HDI is used in the following projects:
@@ -55,14 +55,14 @@ sudo make install
 ```
 
 ## Testing
-HDI uses Catch to implement a series of tests
+A test-driven-development framework is implemented using [Catch2](https://github.com/catchorg/Catch2).
+
 To test the library you can run the test program in the tdd folder
 ```bash
 ./applications/tdd/tdd
 ```
 
-Test for the visualization suit are located in the application/visual_tests
-Here's couple worth checking:
+Test for the visualization suit are located in the application/visual_tests folder. Here's a couple of applications that are worth checking:
 ```bash
 ./applications/visual_tests/tsne_line
 ./applications/visual_tests/data_viewers
@@ -73,27 +73,30 @@ Here's couple worth checking:
 You can run the Approximated-tSNE algorithm using the command line tool located
 in ./applications/command_line_tools
 
-You can check the arguments and the options by asking for the help
+Information on the arguments and options is available by calling the application with *-h*
 ```bash
 ./applications/command_line_tools/atsne_cmd -h
 ```
 
-atsne_cmd accepts 4 options
+atsne_cmd requires 4 arguments:
 - path/to/data: row-major orderer binary data (4Bytes floating point)
 - path/to/output
 - number of data points
 - number of dimensions
 
-If you built the library in ./build you can run AtSNE on a subset of the MNIST by calling
+You can test the A-tSNE application on a subset of the MNIST that is available in the *data* folder.
 
 ```bash
-./applications/command_line_tools/atsne_cmd ../MNIST_1000.bin output.bin 1000 784
+./applications/command_line_tools/atsne_cmd ../data/MNIST_1000.bin output.bin 1000 784
 ```
 
-You can check the output by using the simple embedding viewer
+... and then check the output by using a simple viewer for the embedding.
 ```bash
 ./applications/command_line_tools/simple_embedding_viewer output.bin
 ```
+
+With this two simple programs you must already have quite a good idea on how to
+use HDI for dimensionality reduction and for visualizing the results.
 
 ## Approximated-tSNE (With Progressive Visual Analytics)
 ToDo

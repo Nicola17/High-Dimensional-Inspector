@@ -48,14 +48,14 @@
 int main(int argc, char *argv[])
 {
 	try{
-        QApplication app(argc, argv);
-        QIcon icon;
-        icon.addFile(":/hdi16.png");
-        icon.addFile(":/hdi32.png");
-        icon.addFile(":/hdi64.png");
-        icon.addFile(":/hdi128.png");
-        icon.addFile(":/hdi256.png");
-        app.setWindowIcon(icon);
+    QApplication app(argc, argv);
+    QIcon icon;
+    icon.addFile(":/hdi16.png");
+    icon.addFile(":/hdi32.png");
+    icon.addFile(":/hdi64.png");
+    icon.addFile(":/hdi128.png");
+    icon.addFile(":/hdi256.png");
+    app.setWindowIcon(icon);
 
 		QCoreApplication::setApplicationName("tSNE");
 		QCoreApplication::setApplicationVersion("0.1");
@@ -174,27 +174,27 @@ int main(int argc, char *argv[])
 			input_file.close();
 		}
 
-        for(int d = 0; d < num_dimensions; ++d){
-            double min(std::numeric_limits<double>::max());
-            double max(-std::numeric_limits<double>::max());
+    for(int d = 0; d < num_dimensions; ++d){
+        double min(std::numeric_limits<double>::max());
+        double max(-std::numeric_limits<double>::max());
+        for(int p = 0; p < num_data_points; ++p){
+            min  = std::min<double>(min,data[p*num_dimensions+d]);
+            max  = std::max<double>(max,data[p*num_dimensions+d]);
+        }
+        if(min != max){
             for(int p = 0; p < num_data_points; ++p){
-                min  = std::min<double>(min,data[p*num_dimensions+d]);
-                max  = std::max<double>(max,data[p*num_dimensions+d]);
-            }
-            if(min != max){
-                for(int p = 0; p < num_data_points; ++p){
-                    data[p*num_dimensions+d] = (data[p*num_dimensions+d]-min)/(max-min);
-                }
+                data[p*num_dimensions+d] = (data[p*num_dimensions+d]-min)/(max-min);
             }
         }
+    }
 
 	////////////////////////////////////////////////
 	////////////////////////////////////////////////
 	////////////////////////////////////////////////
-	
+
 		hdi::utils::CoutLog log;
 		hdi::dr::TSNE<scalar_type> tSNE;
-        hdi::data::Embedding<scalar_type> embedding;
+    hdi::data::Embedding<scalar_type> embedding;
 		tSNE.setLogger(&log);
 
 		tSNE.setDimensionality(num_dimensions);
@@ -202,8 +202,8 @@ int main(int argc, char *argv[])
 		for(int i = 0; i < num_data_points; ++i){
 			tSNE.addDataPoint(data.data()+i*num_dimensions);
 		}
-        tSNE.initialize(&embedding);
-		
+    tSNE.initialize(&embedding);
+
 		hdi::utils::secureLog(&log,"Computing gradient descent...");
 		for(int iter = 0; iter < iterations; ++iter){
 			tSNE.doAnIteration();
@@ -214,14 +214,12 @@ int main(int argc, char *argv[])
 		////////////////////////////////////////////////
 		////////////////////////////////////////////////
 		////////////////////////////////////////////////
-
 		
 		//Output
 		{
 			std::ofstream output_file (args.at(1).toStdString(), std::ios::out|std::ios::binary);
-            output_file.write(reinterpret_cast<const char*>(embedding.getContainer().data()),sizeof(scalar_type)*embedding.getContainer().size());
+      output_file.write(reinterpret_cast<const char*>(embedding.getContainer().data()),sizeof(scalar_type)*embedding.getContainer().size());
 		}
-		
 	}
 	catch(std::logic_error& ex){ std::cout << "Logic error: " << ex.what();}
 	catch(std::runtime_error& ex){ std::cout << "Runtime error: " << ex.what();}

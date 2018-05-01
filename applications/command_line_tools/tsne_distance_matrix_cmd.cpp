@@ -51,16 +51,16 @@
 int main(int argc, char *argv[])
 {
 	try{
-        QApplication app(argc, argv);
-        QIcon icon;
-        icon.addFile(":/hdi16.png");
-        icon.addFile(":/hdi32.png");
-        icon.addFile(":/hdi64.png");
-        icon.addFile(":/hdi128.png");
-        icon.addFile(":/hdi256.png");
-        app.setWindowIcon(icon);
+    QApplication app(argc, argv);
+    QIcon icon;
+    icon.addFile(":/hdi16.png");
+    icon.addFile(":/hdi32.png");
+    icon.addFile(":/hdi64.png");
+    icon.addFile(":/hdi128.png");
+    icon.addFile(":/hdi256.png");
+    app.setWindowIcon(icon);
 
-        QCoreApplication::setApplicationName("tSNE from distance matrix");
+    QCoreApplication::setApplicationName("tSNE from distance matrix");
 		QCoreApplication::setApplicationVersion("0.1");
 
 		QCommandLineParser parser;
@@ -113,7 +113,7 @@ int main(int argc, char *argv[])
 	////////////////////////////////////////////////
 	////////////////////////////////////////////////
 
-        if(args.size()!=3){
+    if(args.size()!=3){
 			std::cout << "Not enough arguments!" << std::endl;
 			return -1;
 		}
@@ -172,29 +172,29 @@ int main(int argc, char *argv[])
 			input_file.close();
 		}
 
-        for(auto& v: data){
-            v = v*v;
-        }
+    for(auto& v: data){
+        v = v*v;
+    }
 
 	////////////////////////////////////////////////
 	////////////////////////////////////////////////
 	////////////////////////////////////////////////
-	
+
 		hdi::utils::CoutLog log;
-        hdi::dr::HDJointProbabilityGenerator<scalar_type> prob_gen;
-        hdi::dr::HDJointProbabilityGenerator<scalar_type>::sparse_scalar_matrix_type distributions;
-        hdi::dr::HDJointProbabilityGenerator<scalar_type>::Parameters param;
-        hdi::dr::SparseTSNEUserDefProbabilities<scalar_type> tSNE;
-        hdi::data::Embedding<scalar_type> embedding;
+    hdi::dr::HDJointProbabilityGenerator<scalar_type> prob_gen;
+    hdi::dr::HDJointProbabilityGenerator<scalar_type>::sparse_scalar_matrix_type distributions;
+    hdi::dr::HDJointProbabilityGenerator<scalar_type>::Parameters param;
+    hdi::dr::SparseTSNEUserDefProbabilities<scalar_type> tSNE;
+    hdi::data::Embedding<scalar_type> embedding;
 
 
-        param._perplexity = perplexity;
+    param._perplexity = perplexity;
 
-        prob_gen.computeProbabilityDistributionsFromDistanceMatrix(data,num_data_points,distributions,param);
-        tSNE.initialize(distributions,&embedding);
-        tSNE.setTheta(0);
+    prob_gen.computeProbabilityDistributionsFromDistanceMatrix(data,num_data_points,distributions,param);
+    tSNE.initialize(distributions,&embedding);
+    tSNE.setTheta(0);
 
-        hdi::utils::imageFromSparseMatrix(distributions).save("distr.png");
+    hdi::utils::imageFromSparseMatrix(distributions).save("distr.png");
 
 		hdi::utils::secureLog(&log,"Computing gradient descent...");
 		for(int iter = 0; iter < iterations; ++iter){
@@ -206,14 +206,13 @@ int main(int argc, char *argv[])
 		////////////////////////////////////////////////
 		////////////////////////////////////////////////
 		////////////////////////////////////////////////
-
 		
 		//Output
 		{
 			std::ofstream output_file (args.at(1).toStdString(), std::ios::out|std::ios::binary);
-            output_file.write(reinterpret_cast<const char*>(embedding.getContainer().data()),sizeof(scalar_type)*embedding.getContainer().size());
+      output_file.write(reinterpret_cast<const char*>(embedding.getContainer().data()),sizeof(scalar_type)*embedding.getContainer().size());
 		}
-		
+
 	}
 	catch(std::logic_error& ex){ std::cout << "Logic error: " << ex.what();}
 	catch(std::runtime_error& ex){ std::cout << "Runtime error: " << ex.what();}

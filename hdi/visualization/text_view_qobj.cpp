@@ -37,19 +37,21 @@
 #include <fstream>
 #include <assert.h>
 #include <QFileDialog>
+#include "ui_text_view_qobj.h"
 
 namespace hdi{
 	namespace viz{
-		
+
 		TextView::TextView(QWidget* parent)
 		{
-			_ui.setupUi(this);
-			_ui._selected_text_wdg->setSelectionMode(QAbstractItemView::ContiguousSelection);
-			_ui._unselected_text_wdg->setSelectionMode(QAbstractItemView::ContiguousSelection);
-            QObject::connect(_ui._export_btn, &QPushButton::clicked, this, &TextView::onExportTexts);
-            QObject::connect(_ui._select_btn, &QPushButton::clicked, this, &TextView::onSelectTexts);
-            QObject::connect(_ui._unselect_btn, &QPushButton::clicked, this, &TextView::onUnselectTexts);
-            QObject::connect(_ui._import_selection_btn, &QPushButton::clicked, this, &TextView::onImportTextSelection);
+			_ui = new Ui::TextView();
+			_ui->setupUi(this);
+			_ui->_selected_text_wdg->setSelectionMode(QAbstractItemView::ContiguousSelection);
+			_ui->_unselected_text_wdg->setSelectionMode(QAbstractItemView::ContiguousSelection);
+            QObject::connect(_ui->_export_btn, &QPushButton::clicked, this, &TextView::onExportTexts);
+            QObject::connect(_ui->_select_btn, &QPushButton::clicked, this, &TextView::onSelectTexts);
+            QObject::connect(_ui->_unselect_btn, &QPushButton::clicked, this, &TextView::onUnselectTexts);
+            QObject::connect(_ui->_import_selection_btn, &QPushButton::clicked, this, &TextView::onImportTextSelection);
 		}
 
         void TextView::onImportTextSelection(){
@@ -90,9 +92,9 @@ namespace hdi{
         void TextView::onSelectTexts(){
 			assert(_panel_data != nullptr);
 			std::set<std::string> text_names;
-			for (int i = 0; i < _ui._unselected_text_wdg->count(); ++i) {
-				if(_ui._unselected_text_wdg->item(i)->isSelected())
-					text_names.insert(_ui._unselected_text_wdg->item(i)->text().toStdString());
+			for (int i = 0; i < _ui->_unselected_text_wdg->count(); ++i) {
+				if(_ui->_unselected_text_wdg->item(i)->isSelected())
+					text_names.insert(_ui->_unselected_text_wdg->item(i)->text().toStdString());
 			}
 
 			const auto& data = _panel_data->getDataPoints();
@@ -116,11 +118,11 @@ namespace hdi{
         void TextView::onUnselectTexts(){
 			assert(_panel_data != nullptr);
 			std::set<std::string> text_names;
-			for (int i = 0; i < _ui._selected_text_wdg->count(); ++i) {
-				if(_ui._selected_text_wdg->item(i)->isSelected())
-					text_names.insert(_ui._selected_text_wdg->item(i)->text().toStdString());
+			for (int i = 0; i < _ui->_selected_text_wdg->count(); ++i) {
+				if(_ui->_selected_text_wdg->item(i)->isSelected())
+					text_names.insert(_ui->_selected_text_wdg->item(i)->text().toStdString());
 			}
-			
+
 			const auto& data = _panel_data->getDataPoints();
 			auto& flags = _panel_data->getFlagsDataPoints();
 			assert(data.size() == flags.size());
@@ -144,15 +146,15 @@ namespace hdi{
 			auto str = QFileDialog::getSaveFileName(0,"Save as...");
 
 			std::ofstream file(str.toStdString());
-			for (int i = 0; i < _ui._selected_text_wdg->count(); ++i) {
-				file << _ui._selected_text_wdg->item(i)->text().toStdString() << std::endl;
+			for (int i = 0; i < _ui->_selected_text_wdg->count(); ++i) {
+				file << _ui->_selected_text_wdg->item(i)->text().toStdString() << std::endl;
 			}
 		}
 
         void TextView::updateView(){
 			assert(_panel_data != nullptr);
-			_ui._selected_text_wdg->clear();
-			_ui._unselected_text_wdg->clear();
+			_ui->_selected_text_wdg->clear();
+			_ui->_unselected_text_wdg->clear();
 
 			const auto& data = _panel_data->getDataPoints();
 			const auto& flags = _panel_data->getFlagsDataPoints();
@@ -168,17 +170,16 @@ namespace hdi{
 				++num_valid;
 
 				if((flags[i]&panel_data_type::Selected) == panel_data_type::Selected){
-					_ui._selected_text_wdg->addItem(QString::fromStdString(data_ptr->text()));
+					_ui->_selected_text_wdg->addItem(QString::fromStdString(data_ptr->text()));
 					++num_selected;
 				}else{
-					_ui._unselected_text_wdg->addItem(QString::fromStdString(data_ptr->text()));
+					_ui->_unselected_text_wdg->addItem(QString::fromStdString(data_ptr->text()));
 				}
 			}
 
-			_ui._num_elem_lbl->setText(QString("# Elements: %1").arg(num_valid));
-			_ui._num_sel_elem_lbl->setText(QString("# Selected elements: %1").arg(num_selected));
+			_ui->_num_elem_lbl->setText(QString("# Elements: %1").arg(num_valid));
+			_ui->_num_sel_elem_lbl->setText(QString("# Selected elements: %1").arg(num_selected));
 		}
 
 	}
 }
-

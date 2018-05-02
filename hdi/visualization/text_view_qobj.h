@@ -33,7 +33,6 @@
 #ifndef TEXT_VIEW_H
 #define TEXT_VIEW_H
 
-#include "ui_text_view_qobj.h"
 
 #include <qdialog.h>
 #include <qcolor.h>
@@ -41,6 +40,9 @@
 #include "hdi/data/abstract_data.h"
 #include "hdi/visualization/abstract_view.h"
 
+namespace Ui{
+	class TextView;
+}
 namespace hdi{
 	namespace viz{
 
@@ -78,7 +80,7 @@ namespace hdi{
             void sgnSelectionChanged();
 
 		private:
-			Ui::TextView _ui;
+			Ui::TextView* _ui;
 		};
 	}
 }

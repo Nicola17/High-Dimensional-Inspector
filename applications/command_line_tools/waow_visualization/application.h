@@ -17,33 +17,33 @@ class WAOWVisInterface;
 
 class WAOWApplication : public QMainWindow, public hdi::analytics::WAOWVis::AbstractInterfaceInitializer
 {
-    Q_OBJECT
-    typedef uint32_t id_type;
-    typedef hdi::analytics::WAOWVis::embedder_type embedder_type;
-    typedef hdi::analytics::WAOWVis::scalar_type scalar_type;
+  Q_OBJECT
+  typedef uint32_t id_type;
+  typedef hdi::analytics::WAOWVis::embedder_type embedder_type;
+  typedef hdi::analytics::WAOWVis::scalar_type scalar_type;
 
 public:
-    explicit WAOWApplication(QWidget *parent = 0);
-    ~WAOWApplication();
+  explicit WAOWApplication(QWidget *parent = 0);
+  ~WAOWApplication();
 
 public slots:
-    void onNewEmbedding();
-    void onUpdateWordClouds(id_type);
-    void iterate();
+  void onNewEmbedding();
+  void onUpdateWordClouds(id_type);
+  void iterate();
 
 private:
-    virtual void initialize(std::shared_ptr<embedder_type> embedder);
-    void initializeWeights(std::shared_ptr<embedder_type> embedder);
+  virtual void initialize(std::shared_ptr<embedder_type> embedder);
+  void initializeWeights(std::shared_ptr<embedder_type> embedder);
 
 
 public:
-    Ui::WAOWApplication*     _ui;
-    hdi::analytics::WAOWVis* _waow_vis;
-    hdi::utils::CoutLog*     _log;
+  Ui::WAOWApplication*   _ui;
+  hdi::analytics::WAOWVis* _waow_vis;
+  hdi::utils::CoutLog*   _log;
 
-    std::vector<std::shared_ptr<embedder_type>> _views;
+  std::vector<std::shared_ptr<embedder_type>> _views;
 
-    std::vector<hdi::viz::WordCloud*> _word_clouds_B;
+  std::vector<hdi::viz::WordCloud*> _word_clouds_B;
 
 };
 

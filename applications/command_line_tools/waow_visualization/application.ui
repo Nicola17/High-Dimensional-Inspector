@@ -68,7 +68,7 @@ QGroupBox::title {
     border: 1px solid gray;
     border-radius: 9px;
     margin-top: 0.5em;
-	backgroud-color:rgb(255, 255, 255);
+  backgroud-color:rgb(255, 255, 255);
 }
 
 QGroupBox::title {
@@ -121,7 +121,7 @@ QGroupBox::title {
     border: 1px solid gray;
     border-radius: 9px;
     margin-top: 0.5em;
-	backgroud-color:rgb(255, 255, 255);
+  backgroud-color:rgb(255, 255, 255);
 }
 
 QGroupBox::title {
@@ -358,8 +358,8 @@ QGroupBox::title {
           <widget class="QPushButton" name="_new_analysis_btn">
            <property name="styleSheet">
             <string notr="true">QPushButton {
-	color: rgb(255, 255, 255);
-	background-color: rgb(16, 78, 139);
+  color: rgb(255, 255, 255);
+  background-color: rgb(16, 78, 139);
     border-radius: 10px;
     font: bold 12px;
     min-width: 10em;

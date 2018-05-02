@@ -45,7 +45,7 @@
 
 int main(int argc, char *argv[])
 {
-	try{
+  try{
     QApplication app(argc, argv);
     QIcon icon;
     icon.addFile(":/hdi16.png");
@@ -56,27 +56,27 @@ int main(int argc, char *argv[])
     app.setWindowIcon(icon);
 
     QCoreApplication::setApplicationName("Simple Embedding Viewer");
-		QCoreApplication::setApplicationVersion("0.1");
+    QCoreApplication::setApplicationVersion("0.1");
 
-		QCommandLineParser parser;
+    QCommandLineParser parser;
     parser.setApplicationDescription("Point-based visualization of a 2D embedding");
-		parser.addHelpOption();
-		parser.addVersionOption();
-		parser.addPositionalArgument("embedding", QCoreApplication::translate("main", "Embedding."));
+    parser.addHelpOption();
+    parser.addVersionOption();
+    parser.addPositionalArgument("embedding", QCoreApplication::translate("main", "Embedding."));
 
-		// Process the actual command line arguments given by the user
-		parser.process(app);
+    // Process the actual command line arguments given by the user
+    parser.process(app);
 
-		const QStringList args = parser.positionalArguments();
+    const QStringList args = parser.positionalArguments();
 
-	////////////////////////////////////////////////
-	////////////////////////////////////////////////
-	////////////////////////////////////////////////
+  ////////////////////////////////////////////////
+  ////////////////////////////////////////////////
+  ////////////////////////////////////////////////
 
-		if(args.size()!=1){
-			std::cout << "Not enough arguments!" << std::endl;
-			return -1;
-		}
+    if(args.size()!=1){
+      std::cout << "Not enough arguments!" << std::endl;
+      return -1;
+    }
 
     std::ifstream input_file (args[0].toStdString(), std::ios::in|std::ios::binary|std::ios::ate);
 
@@ -121,8 +121,8 @@ int main(int argc, char *argv[])
 
     return app.exec();
 
-	}
-	catch(std::logic_error& ex){ std::cout << "Logic error: " << ex.what();}
-	catch(std::runtime_error& ex){ std::cout << "Runtime error: " << ex.what();}
-	catch(...){ std::cout << "An unknown error occurred";}
+  }
+  catch(std::logic_error& ex){ std::cout << "Logic error: " << ex.what();}
+  catch(std::runtime_error& ex){ std::cout << "Runtime error: " << ex.what();}
+  catch(...){ std::cout << "An unknown error occurred";}
 }

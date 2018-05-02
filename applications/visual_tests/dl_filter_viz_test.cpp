@@ -6,16 +6,16 @@
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
+ *  notice, this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
+ *  notice, this list of conditions and the following disclaimer in the
+ *  documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
- *    must display the following acknowledgement:
- *    This product includes software developed by the Delft University of Technology.
+ *  must display the following acknowledgement:
+ *  This product includes software developed by the Delft University of Technology.
  * 4. Neither the name of the Delft University of Technology nor the names of
- *    its contributors may be used to endorse or promote products derived from
- *    this software without specific prior written permission.
+ *  its contributors may be used to endorse or promote products derived from
+ *  this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY NICOLA PEZZOTTI ''AS IS'' AND ANY EXPRESS
  * OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
@@ -44,52 +44,52 @@
 #include "hdi/utils/dataset_utils.h"
 
 int main(int argc, char *argv[]){
-    try{
-        QApplication app(argc, argv);
-        QIcon icon;
-        icon.addFile(":/brick32.png");
-        icon.addFile(":/brick128.png");
-        app.setWindowIcon(icon);
+  try{
+    QApplication app(argc, argv);
+    QIcon icon;
+    icon.addFile(":/brick32.png");
+    icon.addFile(":/brick128.png");
+    app.setWindowIcon(icon);
 
-        typedef float scalar_type;
-        typedef uint32_t flag_type;
+    typedef float scalar_type;
+    typedef uint32_t flag_type;
 
-        hdi::utils::CoutLog log;
-
-
-        std::vector<hdi::viz::DLFilterViz::timed_scalar_type> values;
-        std::vector<hdi::viz::DLFilterViz::unsigned_int_type> order;
-        std::vector<std::string> names;
-
-        int num_filters = 60;
-        for(int i = 0; i < num_filters; ++i){
-            names.push_back(QString("F%1").arg(i).toStdString());
-            order.push_back(i);
-
-            hdi::viz::DLFilterViz::scalar_type v = rand()%1000;
-            hdi::viz::DLFilterViz::unsigned_int_type it = 200 + rand()%400;
-            values.push_back(hdi::viz::DLFilterViz::timed_scalar_type(it,v));
-        }
-
-        hdi::viz::DLFilterViz filter_viz;
-        filter_viz.setData(values);
-        filter_viz.setFilterNames(names);
-        filter_viz.setFilterOrder(order);
-        filter_viz.setMaxValue(1000);
-        filter_viz.setLogger(&log);
-        filter_viz.show();
-        filter_viz.resize(500,500);
-
-        QCoreApplication::processEvents();
-        filter_viz.updateView();
+    hdi::utils::CoutLog log;
 
 
+    std::vector<hdi::viz::DLFilterViz::timed_scalar_type> values;
+    std::vector<hdi::viz::DLFilterViz::unsigned_int_type> order;
+    std::vector<std::string> names;
 
-        QCoreApplication::processEvents();
+    int num_filters = 60;
+    for(int i = 0; i < num_filters; ++i){
+      names.push_back(QString("F%1").arg(i).toStdString());
+      order.push_back(i);
 
-        return app.exec();
+      hdi::viz::DLFilterViz::scalar_type v = rand()%1000;
+      hdi::viz::DLFilterViz::unsigned_int_type it = 200 + rand()%400;
+      values.push_back(hdi::viz::DLFilterViz::timed_scalar_type(it,v));
     }
-    catch(std::logic_error& ex){ std::cout << "Logic error: " << ex.what();}
-    catch(std::runtime_error& ex){ std::cout << "Runtime error: " << ex.what();}
-    catch(...){ std::cout << "An unknown error occurred";}
+
+    hdi::viz::DLFilterViz filter_viz;
+    filter_viz.setData(values);
+    filter_viz.setFilterNames(names);
+    filter_viz.setFilterOrder(order);
+    filter_viz.setMaxValue(1000);
+    filter_viz.setLogger(&log);
+    filter_viz.show();
+    filter_viz.resize(500,500);
+
+    QCoreApplication::processEvents();
+    filter_viz.updateView();
+
+
+
+    QCoreApplication::processEvents();
+
+    return app.exec();
+  }
+  catch(std::logic_error& ex){ std::cout << "Logic error: " << ex.what();}
+  catch(std::runtime_error& ex){ std::cout << "Runtime error: " << ex.what();}
+  catch(...){ std::cout << "An unknown error occurred";}
 }

@@ -5,10 +5,10 @@ MACRO(ADD_COMMANDLINE_PROJECT Name Sources)
     target_link_libraries (${Name} hdidata)
     target_link_libraries (${Name} hdiutils)
     IF(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
-	    target_link_libraries (${Name} "$ENV{FLANN_DIR}/lib/flann_cpp_s.lib")
+      target_link_libraries (${Name} "$ENV{FLANN_DIR}/lib/flann_cpp_s.lib")
     ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
     IF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-	    target_link_libraries(${Name} "libflann_cpp.so")
+      target_link_libraries(${Name} "libflann_cpp.so")
     ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 
     MESSAGE( STATUS "Command line project: " ${Name} )
@@ -26,9 +26,9 @@ include_directories ("${CMAKE_CURRENT_BINARY_DIR}/../../hdi/visualization")
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 find_package(Qt5 REQUIRED
-	Widgets
-	OpenGL
-	WebKit
+  Widgets
+  OpenGL
+  WebKit
 )
 IF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
         find_package(OpenGL REQUIRED)
@@ -38,9 +38,9 @@ if(APPLE)
 else(APPLE)
     find_package(OpenMP REQUIRED)
     if (OPENMP_FOUND)
-	message (STATUS "OpenMP found")
-	set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
-	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+  message (STATUS "OpenMP found")
+  set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
+  set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
     endif()
 endif(APPLE)
 set(CMAKE_EXE_LINKER_FLAGS "-static-libgcc -static-libstdc++")

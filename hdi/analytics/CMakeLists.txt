@@ -1,17 +1,16 @@
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 include_directories ("${CMAKE_SOURCE_DIR}")
-include_directories ("${CMAKE_CURRENT_BINARY_DIR}/hdi/visualization")
-
+include_directories ("${CMAKE_CURRENT_BINARY_DIR}/../visualization")
 
 if(APPLE)
 else(APPLE)
-    find_package(OpenMP REQUIRED)
-    if (OPENMP_FOUND)
-        message (STATUS "OpenMP found")
-        set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
-        set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
-    endif()
+  find_package(OpenMP REQUIRED)
+  if (OPENMP_FOUND)
+    message (STATUS "OpenMP found")
+    set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
+    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+  endif()
 endif(APPLE)
 
 find_package(Qt5Widgets REQUIRED)

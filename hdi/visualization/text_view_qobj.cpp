@@ -6,16 +6,16 @@
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
+ *  notice, this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
+ *  notice, this list of conditions and the following disclaimer in the
+ *  documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
- *    must display the following acknowledgement:
- *    This product includes software developed by the Delft University of Technology.
+ *  must display the following acknowledgement:
+ *  This product includes software developed by the Delft University of Technology.
  * 4. Neither the name of the Delft University of Technology nor the names of
- *    its contributors may be used to endorse or promote products derived from
- *    this software without specific prior written permission.
+ *  its contributors may be used to endorse or promote products derived from
+ *  this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY NICOLA PEZZOTTI ''AS IS'' AND ANY EXPRESS
  * OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
@@ -37,148 +37,149 @@
 #include <fstream>
 #include <assert.h>
 #include <QFileDialog>
+#include "ui_text_view_qobj.h"
 
 namespace hdi{
-	namespace viz{
-		
-		TextView::TextView(QWidget* parent)
-		{
-			_ui.setupUi(this);
-			_ui._selected_text_wdg->setSelectionMode(QAbstractItemView::ContiguousSelection);
-			_ui._unselected_text_wdg->setSelectionMode(QAbstractItemView::ContiguousSelection);
-            QObject::connect(_ui._export_btn, &QPushButton::clicked, this, &TextView::onExportTexts);
-            QObject::connect(_ui._select_btn, &QPushButton::clicked, this, &TextView::onSelectTexts);
-            QObject::connect(_ui._unselect_btn, &QPushButton::clicked, this, &TextView::onUnselectTexts);
-            QObject::connect(_ui._import_selection_btn, &QPushButton::clicked, this, &TextView::onImportTextSelection);
-		}
+  namespace viz{
 
-        void TextView::onImportTextSelection(){
-			assert(_panel_data != nullptr);
-			auto str = QFileDialog::getOpenFileName(0,"Load texts file as...");
-			std::ifstream file(str.toStdString());
-			std::string line;
-			std::set<std::string> text_names;
-			while(std::getline(file,line)){
-				text_names.insert(line);
-			}
+  TextView::TextView(QWidget* parent)
+  {
+    _ui = new Ui::TextView();
+    _ui->setupUi(this);
+    _ui->_selected_text_wdg->setSelectionMode(QAbstractItemView::ContiguousSelection);
+    _ui->_unselected_text_wdg->setSelectionMode(QAbstractItemView::ContiguousSelection);
+    QObject::connect(_ui->_export_btn, &QPushButton::clicked, this, &TextView::onExportTexts);
+    QObject::connect(_ui->_select_btn, &QPushButton::clicked, this, &TextView::onSelectTexts);
+    QObject::connect(_ui->_unselect_btn, &QPushButton::clicked, this, &TextView::onUnselectTexts);
+    QObject::connect(_ui->_import_selection_btn, &QPushButton::clicked, this, &TextView::onImportTextSelection);
+  }
 
-			const auto& data = _panel_data->getDataPoints();
-			auto& flags = _panel_data->getFlagsDataPoints();
-			assert(data.size() == flags.size());
+  void TextView::onImportTextSelection(){
+    assert(_panel_data != nullptr);
+    auto str = QFileDialog::getOpenFileName(0,"Load texts file as...");
+    std::ifstream file(str.toStdString());
+    std::string line;
+    std::set<std::string> text_names;
+    while(std::getline(file,line)){
+    text_names.insert(line);
+    }
 
-			for(int i = 0; i < data.size(); ++i){
-				auto data_ptr = dynamic_cast<data::TextData*>(data[i].get());
-				if(data_ptr == nullptr){
-					continue;
-				}
-				if(text_names.find(data_ptr->text()) != text_names.end()){
-					flags[i] |= panel_data_type::Selected;
-				}else{
-					flags[i] &= ~panel_data_type::Selected;
-				}
-			}
+    const auto& data = _panel_data->getDataPoints();
+    auto& flags = _panel_data->getFlagsDataPoints();
+    assert(data.size() == flags.size());
 
-            updateView();
-            emit sgnSelectionChanged();
-		}
+    for(int i = 0; i < data.size(); ++i){
+    auto data_ptr = dynamic_cast<data::TextData*>(data[i].get());
+    if(data_ptr == nullptr){
+      continue;
+    }
+    if(text_names.find(data_ptr->text()) != text_names.end()){
+      flags[i] |= panel_data_type::Selected;
+    }else{
+      flags[i] &= ~panel_data_type::Selected;
+    }
+    }
 
-        void TextView::onSelectionChanged(){
-			assert(_panel_data != nullptr);
-            updateView();
-		}
+    updateView();
+    emit sgnSelectionChanged();
+  }
 
-        void TextView::onSelectTexts(){
-			assert(_panel_data != nullptr);
-			std::set<std::string> text_names;
-			for (int i = 0; i < _ui._unselected_text_wdg->count(); ++i) {
-				if(_ui._unselected_text_wdg->item(i)->isSelected())
-					text_names.insert(_ui._unselected_text_wdg->item(i)->text().toStdString());
-			}
+  void TextView::onSelectionChanged(){
+    assert(_panel_data != nullptr);
+    updateView();
+  }
 
-			const auto& data = _panel_data->getDataPoints();
-			auto& flags = _panel_data->getFlagsDataPoints();
-			assert(data.size() == flags.size());
+  void TextView::onSelectTexts(){
+    assert(_panel_data != nullptr);
+    std::set<std::string> text_names;
+    for (int i = 0; i < _ui->_unselected_text_wdg->count(); ++i) {
+    if(_ui->_unselected_text_wdg->item(i)->isSelected())
+      text_names.insert(_ui->_unselected_text_wdg->item(i)->text().toStdString());
+    }
 
-			for(int i = 0; i < data.size(); ++i){
-				auto data_ptr = dynamic_cast<data::TextData*>(data[i].get());
-				if(data_ptr == nullptr){
-					continue;
-				}
-				if(text_names.find(data_ptr->text()) != text_names.end()){
-					flags[i] |= panel_data_type::Selected;
-				}
-			}
+    const auto& data = _panel_data->getDataPoints();
+    auto& flags = _panel_data->getFlagsDataPoints();
+    assert(data.size() == flags.size());
 
-            updateView();
-            emit sgnSelectionChanged();
-		}
+    for(int i = 0; i < data.size(); ++i){
+    auto data_ptr = dynamic_cast<data::TextData*>(data[i].get());
+    if(data_ptr == nullptr){
+      continue;
+    }
+    if(text_names.find(data_ptr->text()) != text_names.end()){
+      flags[i] |= panel_data_type::Selected;
+    }
+    }
 
-        void TextView::onUnselectTexts(){
-			assert(_panel_data != nullptr);
-			std::set<std::string> text_names;
-			for (int i = 0; i < _ui._selected_text_wdg->count(); ++i) {
-				if(_ui._selected_text_wdg->item(i)->isSelected())
-					text_names.insert(_ui._selected_text_wdg->item(i)->text().toStdString());
-			}
-			
-			const auto& data = _panel_data->getDataPoints();
-			auto& flags = _panel_data->getFlagsDataPoints();
-			assert(data.size() == flags.size());
+    updateView();
+    emit sgnSelectionChanged();
+  }
 
-			for(int i = 0; i < data.size(); ++i){
-				auto data_ptr = dynamic_cast<data::TextData*>(data[i].get());
-				if(data_ptr == nullptr){
-					continue;
-				}
-				if(text_names.find(data_ptr->text()) != text_names.end()){
-					flags[i] &= ~panel_data_type::Selected;
-				}
-			}
+  void TextView::onUnselectTexts(){
+    assert(_panel_data != nullptr);
+    std::set<std::string> text_names;
+    for (int i = 0; i < _ui->_selected_text_wdg->count(); ++i) {
+    if(_ui->_selected_text_wdg->item(i)->isSelected())
+      text_names.insert(_ui->_selected_text_wdg->item(i)->text().toStdString());
+    }
 
-            updateView();
-            emit sgnSelectionChanged();
-		}
+    const auto& data = _panel_data->getDataPoints();
+    auto& flags = _panel_data->getFlagsDataPoints();
+    assert(data.size() == flags.size());
 
-        void TextView::onExportTexts()const{
-			assert(_panel_data != nullptr);
-			auto str = QFileDialog::getSaveFileName(0,"Save as...");
+    for(int i = 0; i < data.size(); ++i){
+    auto data_ptr = dynamic_cast<data::TextData*>(data[i].get());
+    if(data_ptr == nullptr){
+      continue;
+    }
+    if(text_names.find(data_ptr->text()) != text_names.end()){
+      flags[i] &= ~panel_data_type::Selected;
+    }
+    }
 
-			std::ofstream file(str.toStdString());
-			for (int i = 0; i < _ui._selected_text_wdg->count(); ++i) {
-				file << _ui._selected_text_wdg->item(i)->text().toStdString() << std::endl;
-			}
-		}
+    updateView();
+    emit sgnSelectionChanged();
+  }
 
-        void TextView::updateView(){
-			assert(_panel_data != nullptr);
-			_ui._selected_text_wdg->clear();
-			_ui._unselected_text_wdg->clear();
+  void TextView::onExportTexts()const{
+    assert(_panel_data != nullptr);
+    auto str = QFileDialog::getSaveFileName(0,"Save as...");
 
-			const auto& data = _panel_data->getDataPoints();
-			const auto& flags = _panel_data->getFlagsDataPoints();
-			assert(data.size() == flags.size());
+    std::ofstream file(str.toStdString());
+    for (int i = 0; i < _ui->_selected_text_wdg->count(); ++i) {
+    file << _ui->_selected_text_wdg->item(i)->text().toStdString() << std::endl;
+    }
+  }
 
-			int num_selected(0);
-			int num_valid(0);
-			for(int i = 0; i < data.size(); ++i){
-				auto data_ptr = dynamic_cast<data::TextData*>(data[i].get());
-				if(data_ptr == nullptr){
-					continue;
-				}
-				++num_valid;
+  void TextView::updateView(){
+    assert(_panel_data != nullptr);
+    _ui->_selected_text_wdg->clear();
+    _ui->_unselected_text_wdg->clear();
 
-				if((flags[i]&panel_data_type::Selected) == panel_data_type::Selected){
-					_ui._selected_text_wdg->addItem(QString::fromStdString(data_ptr->text()));
-					++num_selected;
-				}else{
-					_ui._unselected_text_wdg->addItem(QString::fromStdString(data_ptr->text()));
-				}
-			}
+    const auto& data = _panel_data->getDataPoints();
+    const auto& flags = _panel_data->getFlagsDataPoints();
+    assert(data.size() == flags.size());
 
-			_ui._num_elem_lbl->setText(QString("# Elements: %1").arg(num_valid));
-			_ui._num_sel_elem_lbl->setText(QString("# Selected elements: %1").arg(num_selected));
-		}
+    int num_selected(0);
+    int num_valid(0);
+    for(int i = 0; i < data.size(); ++i){
+    auto data_ptr = dynamic_cast<data::TextData*>(data[i].get());
+    if(data_ptr == nullptr){
+      continue;
+    }
+    ++num_valid;
 
-	}
+    if((flags[i]&panel_data_type::Selected) == panel_data_type::Selected){
+      _ui->_selected_text_wdg->addItem(QString::fromStdString(data_ptr->text()));
+      ++num_selected;
+    }else{
+      _ui->_unselected_text_wdg->addItem(QString::fromStdString(data_ptr->text()));
+    }
+    }
+
+    _ui->_num_elem_lbl->setText(QString("# Elements: %1").arg(num_valid));
+    _ui->_num_sel_elem_lbl->setText(QString("# Selected elements: %1").arg(num_selected));
+  }
+
+  }
 }
-

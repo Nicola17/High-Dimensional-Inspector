@@ -1,8 +1,8 @@
 #!/bin/bash
 #Install the dependencies and build the library in ./build
-sudo apt-get install qtbase5-dev libqt5webkit5-dev libflann-dev
-rm -drf build
-mkdir build
+export C_INCLUDE_PATH=/usr/local/include
+export CPLUS_INCLUDE_PATH=/usr/local/include
+
 cd build
 cmake ../
 make -j 8

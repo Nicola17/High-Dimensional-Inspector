@@ -89,7 +89,7 @@ public:
 
 int main(int argc, char *argv[])
 {
-	try{
+  try{
     hdi::utils::CoutLog log;
     QApplication app(argc, argv);
     QIcon icon;
@@ -160,24 +160,24 @@ int main(int argc, char *argv[])
             QCoreApplication::translate("main", "Apply a min-max normalization."));
     parser.addOption(normalization_option);
 
-	////////////////////////////////////////////////
-	///////////////   Arguments    /////////////////
-	////////////////////////////////////////////////
+  ////////////////////////////////////////////////
+  ///////////////   Arguments    /////////////////
+  ////////////////////////////////////////////////
 
-		// Process the actual command line arguments given by the user
-		parser.process(app);
+    // Process the actual command line arguments given by the user
+    parser.process(app);
 
-		const QStringList args = parser.positionalArguments();
-		// source is args.at(0), destination is args.at(1)
+    const QStringList args = parser.positionalArguments();
+    // source is args.at(0), destination is args.at(1)
 
-	////////////////////////////////////////////////
-	////////////////////////////////////////////////
-	////////////////////////////////////////////////
+  ////////////////////////////////////////////////
+  ////////////////////////////////////////////////
+  ////////////////////////////////////////////////
 
     if(args.size()!=3){
-			std::cout << "Not enough arguments!" << std::endl;
-			return -1;
-		}
+      std::cout << "Not enough arguments!" << std::endl;
+      return -1;
+    }
 
     int num_data_points         = atoi(args.at(1).toStdString().c_str());
     int num_dimensions          = atoi(args.at(2).toStdString().c_str());
@@ -186,12 +186,12 @@ int main(int argc, char *argv[])
     multiscale_embedder.setLogger(&log);
     hdi::analytics::MultiscaleEmbedderSystem::panel_data_type& panel_data = multiscale_embedder.getPanelData();
 
-	////////////////////////////////////////////////
-	////////////////////////////////////////////////
-	////////////////////////////////////////////////
+  ////////////////////////////////////////////////
+  ////////////////////////////////////////////////
+  ////////////////////////////////////////////////
 
-		typedef float scalar_type;
-		//Input
+    typedef float scalar_type;
+    //Input
 
     {//initializing panel data
       for(int j = 0; j < num_dimensions; ++j){
@@ -200,7 +200,7 @@ int main(int argc, char *argv[])
       panel_data.initialize();
       panel_data.reserve(num_data_points);
     }
-		{
+    {
       std::ifstream input_file (args.at(0).toStdString(), std::ios::in|std::ios::binary);
       for(int j = 0; j < num_data_points; ++j){
           std::vector<scalar_type> data(num_dimensions);
@@ -208,15 +208,15 @@ int main(int argc, char *argv[])
           panel_data.addDataPoint(std::make_shared<hdi::data::EmptyData>(hdi::data::EmptyData()),data);
       }
       input_file.close();
-		}
+    }
     if(parser.isSet(normalization_option)){
       std::cout << "Applying a min-max normalization" << std::endl;
       hdi::data::minMaxNormalization(panel_data);
     }
 
-	////////////////////////////////////////////////
-	////////////////////////////////////////////////
-	////////////////////////////////////////////////
+  ////////////////////////////////////////////////
+  ////////////////////////////////////////////////
+  ////////////////////////////////////////////////
 
     hdi::analytics::MultiscaleEmbedderSystem::hsne_type::Parameters params;
     params._seed = -1;
@@ -275,7 +275,7 @@ int main(int argc, char *argv[])
         QApplication::processEvents();
     }
     return app.exec();
-	}
+  }
   catch(std::logic_error& ex){ std::cout << "Logic error: " << ex.what() << std::endl;}
   catch(std::runtime_error& ex){ std::cout << "Runtime error: " << ex.what() << std::endl;}
   catch(std::bad_alloc& ba){ std::cerr << "bad_alloc caught: " << ba.what() << std::endl; }

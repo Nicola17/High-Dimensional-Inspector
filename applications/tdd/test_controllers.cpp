@@ -6,16 +6,16 @@
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
+ *  notice, this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
+ *  notice, this list of conditions and the following disclaimer in the
+ *  documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
- *    must display the following acknowledgement:
- *    This product includes software developed by the Delft University of Technology.
+ *  must display the following acknowledgement:
+ *  This product includes software developed by the Delft University of Technology.
  * 4. Neither the name of the Delft University of Technology nor the names of
- *    its contributors may be used to endorse or promote products derived from
- *    this software without specific prior written permission.
+ *  its contributors may be used to endorse or promote products derived from
+ *  this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY NICOLA PEZZOTTI ''AS IS'' AND ANY EXPRESS
  * OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
@@ -40,30 +40,30 @@
 
 /*
 TEST_CASE( "ControllerSelectionEmbedding throws the right exceptions", "[controllers]" ) {
-    typedef float scalar_type;
+  typedef float scalar_type;
 
-    int argc;
-    char** argv;
-    QApplication app(argc,argv);
+  int argc;
+  char** argv;
+  QApplication app(argc,argv);
 
-    hdi::utils::CoutLog log;
+  hdi::utils::CoutLog log;
 
-    hdi::data::PanelData<scalar_type> panel_data;
-    hdi::data::Embedding<scalar_type> embedding;
-    hdi::viz::ScatterplotCanvas canvas;
+  hdi::data::PanelData<scalar_type> panel_data;
+  hdi::data::Embedding<scalar_type> embedding;
+  hdi::viz::ScatterplotCanvas canvas;
 
-    hdi::viz::ControllerSelectionEmbedding controller;
-    REQUIRE(controller.logger() == nullptr);
-    REQUIRE_NOTHROW(controller.setLogger(&log));
-    REQUIRE(controller.logger() != nullptr);
-    REQUIRE(controller.isInitialized() == false);
-    REQUIRE_THROWS(controller.initialize());
-    REQUIRE_NOTHROW(controller.setActors(&panel_data,&embedding,&canvas));
-    REQUIRE_NOTHROW(controller.initialize());
-    REQUIRE_THROWS(controller.initialize());
-    REQUIRE_THROWS(controller.setActors(&panel_data,&embedding,&canvas));
-    REQUIRE(controller.isInitialized() == true);
-    REQUIRE_NOTHROW(controller.reset());
-    REQUIRE(controller.isInitialized() == false);
+  hdi::viz::ControllerSelectionEmbedding controller;
+  REQUIRE(controller.logger() == nullptr);
+  REQUIRE_NOTHROW(controller.setLogger(&log));
+  REQUIRE(controller.logger() != nullptr);
+  REQUIRE(controller.isInitialized() == false);
+  REQUIRE_THROWS(controller.initialize());
+  REQUIRE_NOTHROW(controller.setActors(&panel_data,&embedding,&canvas));
+  REQUIRE_NOTHROW(controller.initialize());
+  REQUIRE_THROWS(controller.initialize());
+  REQUIRE_THROWS(controller.setActors(&panel_data,&embedding,&canvas));
+  REQUIRE(controller.isInitialized() == true);
+  REQUIRE_NOTHROW(controller.reset());
+  REQUIRE(controller.isInitialized() == false);
 }
 */

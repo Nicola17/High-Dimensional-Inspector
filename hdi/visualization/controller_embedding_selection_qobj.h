@@ -6,16 +6,16 @@
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
+ *  notice, this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
+ *  notice, this list of conditions and the following disclaimer in the
+ *  documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
- *    must display the following acknowledgement:
- *    This product includes software developed by the Delft University of Technology.
+ *  must display the following acknowledgement:
+ *  This product includes software developed by the Delft University of Technology.
  * 4. Neither the name of the Delft University of Technology nor the names of
- *    its contributors may be used to endorse or promote products derived from
- *    this software without specific prior written permission.
+ *  its contributors may be used to endorse or promote products derived from
+ *  this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY NICOLA PEZZOTTI ''AS IS'' AND ANY EXPRESS
  * OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
@@ -42,57 +42,57 @@
 #include "hdi/visualization/abstract_view.h"
 
 namespace hdi{
-    namespace viz{
+  namespace viz{
 
-        /*!
-            Controller that takes care of doing selection in the data::PanelData based on the interaction with the viz::ScatterplotCanvas
-            \author Nicola Pezzotti
-        */
-        class ControllerSelectionEmbedding: public QObject{
-            Q_OBJECT
-        public:
-            typedef float scalar_type;
-            typedef QVector2D point_type;
+    /*!
+      Controller that takes care of doing selection in the data::PanelData based on the interaction with the viz::ScatterplotCanvas
+      \author Nicola Pezzotti
+    */
+    class ControllerSelectionEmbedding: public QObject{
+      Q_OBJECT
+    public:
+      typedef float scalar_type;
+      typedef QVector2D point_type;
 
-        public:
-            ControllerSelectionEmbedding();
-            virtual ~ControllerSelectionEmbedding(){}
-            bool isInitialized(){return _initialized;}
-            void initialize();
-            void reset();
+    public:
+      ControllerSelectionEmbedding();
+      virtual ~ControllerSelectionEmbedding(){}
+      bool isInitialized(){return _initialized;}
+      void initialize();
+      void reset();
 
-            //! Return the current log
-            utils::AbstractLog* logger()const{return _logger;}
-            //! Set a pointer to an existing log
-            void setLogger(utils::AbstractLog* logger){_logger = logger;}
-            //! Set the actors controller by this controller
-            void setActors(data::AbstractPanelData* panel_data, data::Embedding<scalar_type>* embedding, ScatterplotCanvas* canvas);
-            //! Add a view linked to the panel data
-            void addView(AbstractView* view);
-            //! Remove a view linked to the panel data
-            void removeView(AbstractView* view);
+      //! Return the current log
+      utils::AbstractLog* logger()const{return _logger;}
+      //! Set a pointer to an existing log
+      void setLogger(utils::AbstractLog* logger){_logger = logger;}
+      //! Set the actors controller by this controller
+      void setActors(data::AbstractPanelData* panel_data, data::Embedding<scalar_type>* embedding, ScatterplotCanvas* canvas);
+      //! Add a view linked to the panel data
+      void addView(AbstractView* view);
+      //! Remove a view linked to the panel data
+      void removeView(AbstractView* view);
 
 
-        private slots:
-            void onDoSelection(point_type bl, point_type tr);
-            void onLeftDoubleClickOnCanvas(point_type bl);
-            void onUnselectAll();
+    private slots:
+      void onDoSelection(point_type bl, point_type tr);
+      void onLeftDoubleClickOnCanvas(point_type bl);
+      void onUnselectAll();
 
-        signals:
-            void sgnSelection();
-            void sgnUnselection();
+    signals:
+      void sgnSelection();
+      void sgnUnselection();
 
-        private:
-            data::AbstractPanelData* _panel_data;
-            data::Embedding<scalar_type>* _embedding;
-            ScatterplotCanvas* _canvas;
-            std::vector<AbstractView*> _linked_views;
+    private:
+      data::AbstractPanelData* _panel_data;
+      data::Embedding<scalar_type>* _embedding;
+      ScatterplotCanvas* _canvas;
+      std::vector<AbstractView*> _linked_views;
 
-            bool _initialized;
-            utils::AbstractLog* _logger;
-        };
+      bool _initialized;
+      utils::AbstractLog* _logger;
+    };
 
-    }
+  }
 }
 
 #endif

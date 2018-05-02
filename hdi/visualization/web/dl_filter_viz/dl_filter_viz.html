@@ -2,73 +2,73 @@
 <meta charset="utf-8">
 <html>
   <head>
-    <style>
-    /*
-      rect.bordered {
+  <style>
+  /*
+    rect.bordered {
 
-      }
+    }
 */
-      text.mono {
-        font-size: 9pt;
-        font-family: Consolas, courier;
-        fill: #aaa;
-      }
+    text.mono {
+    font-size: 9pt;
+    font-family: Consolas, courier;
+    fill: #aaa;
+    }
 
-      text.axis-workweek {
-        fill: #000;
-      }
+    text.axis-workweek {
+    fill: #000;
+    }
 
-      text.axis-worktime {
-        fill: #000;
-      }
-    </style>
-    <script src="https://d3js.org/d3.v3.min.js"></script>
-    <script src="d3.v3.min.js"></script>
+    text.axis-worktime {
+    fill: #000;
+    }
+  </style>
+  <script src="https://d3js.org/d3.v3.min.js"></script>
+  <script src="d3.v3.min.js"></script>
 
 
   </head>
   <body>
-	<div id="ErrorBox"></div>
-    <div id="chart"></div>
+  <div id="ErrorBox"></div>
+  <div id="chart"></div>
 
-    <script type="text/javascript">
+  <script type="text/javascript">
 
 
 //Qt Connection
 var isQtAvailable = true
 try {
-        Qt.sgnSetData.connect(setData);
-        Qt.sgnDrawVisualization.connect(drawVisualization);
-        Qt.sgnSetMaxValue.connect(setMaxValue);
+    Qt.sgnSetData.connect(setData);
+    Qt.sgnDrawVisualization.connect(drawVisualization);
+    Qt.sgnSetMaxValue.connect(setMaxValue);
 
-        Qt.sgnSetMaxViz.connect(setMaxViz);
-        Qt.sgnSetFreqViz.connect(setFreqViz);
+    Qt.sgnSetMaxViz.connect(setMaxViz);
+    Qt.sgnSetFreqViz.connect(setFreqViz);
 } catch (error) {
-	document.getElementById("ErrorBox").innerHTML = "Cannot connect to Qt!";
-	isQtAvailable = false;
+  document.getElementById("ErrorBox").innerHTML = "Cannot connect to Qt!";
+  isQtAvailable = false;
 }
 // pipe errors to log
 window.onerror = function (msg, url, num) {
-	   logError("Error: " + msg + "\nURL: " + url + "\nLine: " + num);
+     logError("Error: " + msg + "\nURL: " + url + "\nLine: " + num);
 };
 
 // auto log for Qt and console
 function logError(logtext) {
    if (isQtAvailable) {
-	  Qt.onJsError(logtext.toString());
+    Qt.onJsError(logtext.toString());
    }
    else {
-	  console.log(logtext);
+    console.log(logtext);
    }
 }
 
 
 function log(logtext) {
-    if(isQtAvailable){
-        Qt.onJsLog(logtext.toString());
-    }else{
-        console.log(logtext);
-    }
+  if(isQtAvailable){
+    Qt.onJsLog(logtext.toString());
+  }else{
+    console.log(logtext);
+  }
 }
 
 var width = 600;
@@ -110,121 +110,121 @@ var data = d3.csv.parse(str_data);
 
 //Qt.onJsLog("Widget up and running...");
 log("Widget up and running...");
-	
+  
 //Draw heatmap
 var heatmapChart = function(data) {
-        log("Drawing heatmap...");
-	var svg = d3.select("#chart").select("svg")
-        var data_to_color_scale_max_act = d3.scale.linear()
-          .domain([0,max_value])
-          .range([0,8]);
-        var data_to_color_scale_freq = d3.scale.linear()
-          //  .domain([0.7,0])
-            .domain([0.6,-0.1])
-            .range([0,8]);
+    log("Drawing heatmap...");
+  var svg = d3.select("#chart").select("svg")
+    var data_to_color_scale_max_act = d3.scale.linear()
+      .domain([0,max_value])
+      .range([0,8]);
+    var data_to_color_scale_freq = d3.scale.linear()
+      //  .domain([0.7,0])
+      .domain([0.6,-0.1])
+      .range([0,8]);
 
-        var color_scale_max_act = d3.scale.linear()
-          .domain([0,1,2,3,4,5,6,7,8])
-          .range(colors_green);
-      var color_scale_freq = d3.scale.linear()
-        .domain([0,1,2,3,4,5,6,7,8])
-        .range(colors_blue);
+    var color_scale_max_act = d3.scale.linear()
+      .domain([0,1,2,3,4,5,6,7,8])
+      .range(colors_green);
+    var color_scale_freq = d3.scale.linear()
+    .domain([0,1,2,3,4,5,6,7,8])
+    .range(colors_blue);
 
-	var cards = svg.selectAll(".x_label")
-          .data(data, function(d) {return d.name;});
+  var cards = svg.selectAll(".x_label")
+      .data(data, function(d) {return d.name;});
 
-	cards.append("title");
+  cards.append("title");
 
-	cards.enter().append("rect")
-	.attr("x", function(d) { return (d.order%max_x_elems) * gridSize + (gridSize * (1-d.confidence) * 0.5); })
-	.attr("y", function(d) { return Math.floor(d.order/max_x_elems) * gridSize + (gridSize * (1-d.confidence) * 0.5); })
-	//.attr("x", function(d) { return (d.order%max_x_elems) * gridSize + (gridSize * (1-1) * 0.5); })
-	//.attr("y", function(d) { return Math.floor(d.order/max_x_elems) * gridSize + (gridSize * (1-1) * 0.5); })
-	  .attr("width", function(d) { return gridSize * d.confidence; })
-	  .attr("height", function(d) { return gridSize * d.confidence; })
-	  //.attr("width", function(d) { return gridSize; })
-	  //.attr("height", function(d) { return gridSize; })
-          .style("fill", function(d) {
-              if(type == "max_activation"){
-                    return color_scale_max_act(data_to_color_scale_max_act(d.value));
-              }else{
-                    return color_scale_freq(data_to_color_scale_freq(d.frequency));
-              }
-            }
-          )
-	  //.style("stroke", function(d) { if(d.flags == 1) return "orange"; else return "white"; })
-	  .style("stroke","orange")
-	  .style("stroke-width", function(d) { if(d.flags == 1) return "5px"; else return "0px"; })
-	  //.style("stroke-width","3px")
-          .text(function(d) { return d.name; })
-          .on("click", function(d,i) {
-            Qt.onClickOnFilter(i);
-          });
+  cards.enter().append("rect")
+  .attr("x", function(d) { return (d.order%max_x_elems) * gridSize + (gridSize * (1-d.confidence) * 0.5); })
+  .attr("y", function(d) { return Math.floor(d.order/max_x_elems) * gridSize + (gridSize * (1-d.confidence) * 0.5); })
+  //.attr("x", function(d) { return (d.order%max_x_elems) * gridSize + (gridSize * (1-1) * 0.5); })
+  //.attr("y", function(d) { return Math.floor(d.order/max_x_elems) * gridSize + (gridSize * (1-1) * 0.5); })
+    .attr("width", function(d) { return gridSize * d.confidence; })
+    .attr("height", function(d) { return gridSize * d.confidence; })
+    //.attr("width", function(d) { return gridSize; })
+    //.attr("height", function(d) { return gridSize; })
+      .style("fill", function(d) {
+        if(type == "max_activation"){
+          return color_scale_max_act(data_to_color_scale_max_act(d.value));
+        }else{
+          return color_scale_freq(data_to_color_scale_freq(d.frequency));
+        }
+      }
+      )
+    //.style("stroke", function(d) { if(d.flags == 1) return "orange"; else return "white"; })
+    .style("stroke","orange")
+    .style("stroke-width", function(d) { if(d.flags == 1) return "5px"; else return "0px"; })
+    //.style("stroke-width","3px")
+      .text(function(d) { return d.name; })
+      .on("click", function(d,i) {
+      Qt.onClickOnFilter(i);
+      });
 
-	cards.exit().remove();
-	
+  cards.exit().remove();
+  
 };
 
 //Draw full visualization
 function drawVisualization(){
-	var w = window,
-		d = document,
-		e = d.documentElement,
-		g = d.getElementsByTagName('body')[0],
-		x = w.innerWidth || e.clientWidth || g.clientWidth,
-		y = w.innerHeight|| e.clientHeight|| g.clientHeight;
-        width = x-10;
-        height = y-10;
-        max_x_elems = Math.floor(Math.sqrt(data.length*25/2));
-	if(data.length < 20){
-	    max_x_elems = data.length;
-	}
-        if(data.length == 20){
-            max_x_elems = 20; //PAPER
-        }
-        if(data.length == 50){
-            max_x_elems = 25; //PAPER
-        }
-	if(data.length == 500){
-            //max_x_elems = 50; //PAPER
-	}
+  var w = window,
+    d = document,
+    e = d.documentElement,
+    g = d.getElementsByTagName('body')[0],
+    x = w.innerWidth || e.clientWidth || g.clientWidth,
+    y = w.innerHeight|| e.clientHeight|| g.clientHeight;
+    width = x-10;
+    height = y-10;
+    max_x_elems = Math.floor(Math.sqrt(data.length*25/2));
+  if(data.length < 20){
+    max_x_elems = data.length;
+  }
+    if(data.length == 20){
+      max_x_elems = 20; //PAPER
+    }
+    if(data.length == 50){
+      max_x_elems = 25; //PAPER
+    }
+  if(data.length == 500){
+      //max_x_elems = 50; //PAPER
+  }
 
-	//max_x_elems = 50;
-	gridSize = Math.floor((width)/max_x_elems);
-    log("Drawing visualization...");
-	d3.select("#chart").select("svg").remove();
-	d3.select("#chart").append("svg")
-		.attr("width", width)
-		.attr("height", height);
-	heatmapChart(data);
+  //max_x_elems = 50;
+  gridSize = Math.floor((width)/max_x_elems);
+  log("Drawing visualization...");
+  d3.select("#chart").select("svg").remove();
+  d3.select("#chart").append("svg")
+    .attr("width", width)
+    .attr("height", height);
+  heatmapChart(data);
 }
 
 
 ////////////////////////////////////////////////////////////////////////////////////
 //C++ connections
 function setData(data_csv){
-    log("Data changed...");
-    data = d3.csv.parse(data_csv);
-    //log(data_csv);
+  log("Data changed...");
+  data = d3.csv.parse(data_csv);
+  //log(data_csv);
 }
 
 function setMaxValue(v){
-    log("Max changed...");
-    max_value = Number(v);
-    log(max_value);
+  log("Max changed...");
+  max_value = Number(v);
+  log(max_value);
 }
 
 function setMaxViz(){
-    type = "max_activation";
+  type = "max_activation";
 }
 function setFreqViz(){
-    type = "frequencies";
+  type = "frequencies";
 }
 ////////////////////////////////////////////////////////////////////////////////////
 //setMaxValue("500");
 setData(str_data);
 drawVisualization();
-     
-    </script>
+   
+  </script>
   </body>
 </html>

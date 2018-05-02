@@ -1,6 +1,6 @@
 <RCC>
-    <qresource prefix="/myWidget">
-        <file alias="d3.v3.min.js">web/d3.v3.min.js</file>
-        <file alias="linechart.html">web/linechart/linechart.html</file>
-    </qresource>
+  <qresource prefix="/myWidget">
+    <file alias="d3.v3.min.js">web/d3.v3.min.js</file>
+    <file alias="linechart.html">web/linechart/linechart.html</file>
+  </qresource>
 </RCC>

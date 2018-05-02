@@ -6,16 +6,16 @@
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
+ *  notice, this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
+ *  notice, this list of conditions and the following disclaimer in the
+ *  documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
- *    must display the following acknowledgement:
- *    This product includes software developed by the Delft University of Technology.
+ *  must display the following acknowledgement:
+ *  This product includes software developed by the Delft University of Technology.
  * 4. Neither the name of the Delft University of Technology nor the names of
- *    its contributors may be used to endorse or promote products derived from
- *    this software without specific prior written permission.
+ *  its contributors may be used to endorse or promote products derived from
+ *  this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY NICOLA PEZZOTTI ''AS IS'' AND ANY EXPRESS
  * OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
@@ -40,37 +40,37 @@
 class QWidget;
 
 namespace hdi{
-	namespace viz{
+  namespace viz{
 
-		//! Abstract class that represents a view for a PanelData
-		/*!
-			Abstract class that represents a view for a PanelData
-			\author Nicola Pezzotti
-		*/
-		
-		class AbstractView{
-		public:
-			typedef data::AbstractPanelData panel_data_type;
+    //! Abstract class that represents a view for a PanelData
+    /*!
+      Abstract class that represents a view for a PanelData
+      \author Nicola Pezzotti
+    */
+    
+    class AbstractView{
+    public:
+      typedef data::AbstractPanelData panel_data_type;
 
-		public:
-			AbstractView():_panel_data(nullptr){}
-			virtual ~AbstractView(){}
+    public:
+      AbstractView():_panel_data(nullptr){}
+      virtual ~AbstractView(){}
 
-			void setPanelData(panel_data_type* panel_data){ _panel_data = panel_data; }
-			panel_data_type* panelData(){ return _panel_data; }
-			const panel_data_type* panelData()const{ return _panel_data; }
+      void setPanelData(panel_data_type* panel_data){ _panel_data = panel_data; }
+      panel_data_type* panelData(){ return _panel_data; }
+      const panel_data_type* panelData()const{ return _panel_data; }
 
-			virtual QWidget* widgetPtr() = 0;
-			virtual const QWidget* widgetPtr()const = 0;
+      virtual QWidget* widgetPtr() = 0;
+      virtual const QWidget* widgetPtr()const = 0;
 
-			//!Update view based on the current state of the panel data
-            virtual void updateView() = 0;
+      //!Update view based on the current state of the panel data
+      virtual void updateView() = 0;
 
-		protected:
-			panel_data_type* _panel_data;
+    protected:
+      panel_data_type* _panel_data;
 
-		};
-	}
+    };
+  }
 }
 
 #endif

@@ -6,16 +6,16 @@
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
+ *  notice, this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
+ *  notice, this list of conditions and the following disclaimer in the
+ *  documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
- *    must display the following acknowledgement:
- *    This product includes software developed by the Delft University of Technology.
+ *  must display the following acknowledgement:
+ *  This product includes software developed by the Delft University of Technology.
  * 4. Neither the name of the Delft University of Technology nor the names of
- *    its contributors may be used to endorse or promote products derived from
- *    this software without specific prior written permission.
+ *  its contributors may be used to endorse or promote products derived from
+ *  this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY NICOLA PEZZOTTI ''AS IS'' AND ANY EXPRESS
  * OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
@@ -49,92 +49,92 @@
 #include "hdi/utils/visual_utils.h"
 
 int main(int argc, char *argv[]){
-    try{
-        QApplication app(argc, argv);
-        QIcon icon;
-        icon.addFile(":/brick32.png");
-        icon.addFile(":/brick128.png");
-        app.setWindowIcon(icon);
+  try{
+    QApplication app(argc, argv);
+    QIcon icon;
+    icon.addFile(":/brick32.png");
+    icon.addFile(":/brick128.png");
+    app.setWindowIcon(icon);
 
-        typedef float scalar_type;
-        typedef uint32_t flag_type;
+    typedef float scalar_type;
+    typedef uint32_t flag_type;
 
-        hdi::utils::CoutLog log;
+    hdi::utils::CoutLog log;
 
-        int n_dim = 10;
-        scalar_type max = 1;
-        scalar_type min = 0;
-        hdi::viz::ScalablePCPView pcp_view;
-        hdi::viz::ScalablePCPView pcp_view_avg_sorted;
-        hdi::viz::ScalablePCPView pcp_view_std_dev_sorted;
-        {
-            pcp_view.setLogger(&log);
-            pcp_view.show();
+    int n_dim = 10;
+    scalar_type max = 1;
+    scalar_type min = 0;
+    hdi::viz::ScalablePCPView pcp_view;
+    hdi::viz::ScalablePCPView pcp_view_avg_sorted;
+    hdi::viz::ScalablePCPView pcp_view_std_dev_sorted;
+    {
+      pcp_view.setLogger(&log);
+      pcp_view.show();
 
-            QCoreApplication::processEvents();
+      QCoreApplication::processEvents();
 
-            pcp_view.setMaxY(max);
-            pcp_view.setMinY(min);
-            pcp_view.setNumDims(n_dim);
-            pcp_view.setSorting(hdi::viz::ScalablePCPView::sorting_type::NO_SORTING);
-            pcp_view.resize(QSize(600,200));
-            pcp_view.onUpdate();
-            pcp_view.resize(QSize(600,200));
+      pcp_view.setMaxY(max);
+      pcp_view.setMinY(min);
+      pcp_view.setNumDims(n_dim);
+      pcp_view.setSorting(hdi::viz::ScalablePCPView::sorting_type::NO_SORTING);
+      pcp_view.resize(QSize(600,200));
+      pcp_view.onUpdate();
+      pcp_view.resize(QSize(600,200));
 
-            QCoreApplication::processEvents();
-            pcp_view.resize(QSize(600,200));
-        }
-        {
-            pcp_view_avg_sorted.setLogger(&log);
-            pcp_view_avg_sorted.show();
-
-            QCoreApplication::processEvents();
-
-            pcp_view_avg_sorted.setMaxY(max);
-            pcp_view_avg_sorted.setMinY(min);
-            pcp_view_avg_sorted.setNumDims(n_dim);
-            pcp_view_avg_sorted.setSorting(hdi::viz::ScalablePCPView::sorting_type::AVG_SORTING);
-            pcp_view_avg_sorted.resize(QSize(600,200));
-            pcp_view_avg_sorted.onUpdate();
-            pcp_view_avg_sorted.resize(QSize(600,200));
-
-            QCoreApplication::processEvents();
-            pcp_view_avg_sorted.resize(QSize(600,200));
-        }
-        {
-            pcp_view_std_dev_sorted.setLogger(&log);
-            pcp_view_std_dev_sorted.show();
-
-            QCoreApplication::processEvents();
-
-            pcp_view_std_dev_sorted.setMaxY(max);
-            pcp_view_std_dev_sorted.setMinY(min);
-            pcp_view_std_dev_sorted.setNumDims(n_dim);
-            pcp_view_std_dev_sorted.setSorting(hdi::viz::ScalablePCPView::sorting_type::STD_DEV_SORTING);
-            pcp_view_std_dev_sorted.resize(QSize(600,200));
-            pcp_view_std_dev_sorted.onUpdate();
-            pcp_view_std_dev_sorted.resize(QSize(600,200));
-
-            QCoreApplication::processEvents();
-            pcp_view_std_dev_sorted.resize(QSize(600,200));
-        }
-
-
-        int n_points = 250;
-        for(int p = 0; p < n_points; ++p){
-            std::vector<scalar_type> point;
-            for(int i = 0; i < n_dim; ++i){
-                point.push_back((rand()%1000)/1000.);
-            }
-            pcp_view.addDataPointAndDraw(point);
-            pcp_view_std_dev_sorted.addDataPointAndDraw(point);
-            pcp_view_avg_sorted.addDataPointAndDraw(point);
-        }
-
-
-        return app.exec();
+      QCoreApplication::processEvents();
+      pcp_view.resize(QSize(600,200));
     }
-    catch(std::logic_error& ex){ std::cout << "Logic error: " << ex.what();}
-    catch(std::runtime_error& ex){ std::cout << "Runtime error: " << ex.what();}
-    catch(...){ std::cout << "An unknown error occurred";}
+    {
+      pcp_view_avg_sorted.setLogger(&log);
+      pcp_view_avg_sorted.show();
+
+      QCoreApplication::processEvents();
+
+      pcp_view_avg_sorted.setMaxY(max);
+      pcp_view_avg_sorted.setMinY(min);
+      pcp_view_avg_sorted.setNumDims(n_dim);
+      pcp_view_avg_sorted.setSorting(hdi::viz::ScalablePCPView::sorting_type::AVG_SORTING);
+      pcp_view_avg_sorted.resize(QSize(600,200));
+      pcp_view_avg_sorted.onUpdate();
+      pcp_view_avg_sorted.resize(QSize(600,200));
+
+      QCoreApplication::processEvents();
+      pcp_view_avg_sorted.resize(QSize(600,200));
+    }
+    {
+      pcp_view_std_dev_sorted.setLogger(&log);
+      pcp_view_std_dev_sorted.show();
+
+      QCoreApplication::processEvents();
+
+      pcp_view_std_dev_sorted.setMaxY(max);
+      pcp_view_std_dev_sorted.setMinY(min);
+      pcp_view_std_dev_sorted.setNumDims(n_dim);
+      pcp_view_std_dev_sorted.setSorting(hdi::viz::ScalablePCPView::sorting_type::STD_DEV_SORTING);
+      pcp_view_std_dev_sorted.resize(QSize(600,200));
+      pcp_view_std_dev_sorted.onUpdate();
+      pcp_view_std_dev_sorted.resize(QSize(600,200));
+
+      QCoreApplication::processEvents();
+      pcp_view_std_dev_sorted.resize(QSize(600,200));
+    }
+
+
+    int n_points = 250;
+    for(int p = 0; p < n_points; ++p){
+      std::vector<scalar_type> point;
+      for(int i = 0; i < n_dim; ++i){
+        point.push_back((rand()%1000)/1000.);
+      }
+      pcp_view.addDataPointAndDraw(point);
+      pcp_view_std_dev_sorted.addDataPointAndDraw(point);
+      pcp_view_avg_sorted.addDataPointAndDraw(point);
+    }
+
+
+    return app.exec();
+  }
+  catch(std::logic_error& ex){ std::cout << "Logic error: " << ex.what();}
+  catch(std::runtime_error& ex){ std::cout << "Runtime error: " << ex.what();}
+  catch(...){ std::cout << "An unknown error occurred";}
 }

@@ -6,16 +6,16 @@
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
+ *  notice, this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
+ *  notice, this list of conditions and the following disclaimer in the
+ *  documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
- *    must display the following acknowledgement:
- *    This product includes software developed by the Delft University of Technology.
+ *  must display the following acknowledgement:
+ *  This product includes software developed by the Delft University of Technology.
  * 4. Neither the name of the Delft University of Technology nor the names of
- *    its contributors may be used to endorse or promote products derived from
- *    this software without specific prior written permission.
+ *  its contributors may be used to endorse or promote products derived from
+ *  this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY NICOLA PEZZOTTI ''AS IS'' AND ANY EXPRESS
  * OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
@@ -33,7 +33,6 @@
 #ifndef TEXT_VIEW_H
 #define TEXT_VIEW_H
 
-#include "ui_text_view_qobj.h"
 
 #include <qdialog.h>
 #include <qcolor.h>
@@ -41,46 +40,49 @@
 #include "hdi/data/abstract_data.h"
 #include "hdi/visualization/abstract_view.h"
 
+namespace Ui{
+  class TextView;
+}
 namespace hdi{
-	namespace viz{
+  namespace viz{
 
-		//! View for data::TextData
-		/*!
-			View for data::TextData
-			\author Nicola Pezzotti
-		*/
-		class TextView : public QWidget, public AbstractView{
-			Q_OBJECT
-		public:
-			TextView(QWidget* parent = nullptr);
-			virtual ~TextView(){}
+    //! View for data::TextData
+    /*!
+      View for data::TextData
+      \author Nicola Pezzotti
+    */
+    class TextView : public QWidget, public AbstractView{
+      Q_OBJECT
+    public:
+      TextView(QWidget* parent = nullptr);
+      virtual ~TextView(){}
 
-			virtual QWidget* widgetPtr(){ return this; }
-			virtual const QWidget* widgetPtr()const{ return this; }
+      virtual QWidget* widgetPtr(){ return this; }
+      virtual const QWidget* widgetPtr()const{ return this; }
 
-            virtual void updateView();
+      virtual void updateView();
 
-		public slots:
-		    //! Communicate to the widget that the data changed
-            void onSelectionChanged();
+    public slots:
+      //! Communicate to the widget that the data changed
+      void onSelectionChanged();
 
-		private slots:
-		    //! Do a selection in the view
-            void onSelectTexts();
-			//! Unselect data in the view
-            void onUnselectTexts();
-			//! Export selected texts
-            void onExportTexts()const;
-			//! Import a selection
-            void onImportTextSelection();
+    private slots:
+      //! Do a selection in the view
+      void onSelectTexts();
+      //! Unselect data in the view
+      void onUnselectTexts();
+      //! Export selected texts
+      void onExportTexts()const;
+      //! Import a selection
+      void onImportTextSelection();
 
-		signals:
-            void sgnSelectionChanged();
+    signals:
+      void sgnSelectionChanged();
 
-		private:
-			Ui::TextView _ui;
-		};
-	}
+    private:
+      Ui::TextView* _ui;
+    };
+  }
 }
 
 #endif

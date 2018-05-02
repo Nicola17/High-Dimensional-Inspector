@@ -6,16 +6,16 @@
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
+ *  notice, this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
+ *  notice, this list of conditions and the following disclaimer in the
+ *  documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
- *    must display the following acknowledgement:
- *    This product includes software developed by the Delft University of Technology.
+ *  must display the following acknowledgement:
+ *  This product includes software developed by the Delft University of Technology.
  * 4. Neither the name of the Delft University of Technology nor the names of
- *    its contributors may be used to endorse or promote products derived from
- *    this software without specific prior written permission.
+ *  its contributors may be used to endorse or promote products derived from
+ *  this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY NICOLA PEZZOTTI ''AS IS'' AND ANY EXPRESS
  * OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
@@ -34,31 +34,31 @@
 #include "hdi/utils/timers.h"
 
 namespace hdi{
-	namespace utils{
+  namespace utils{
 
-		Timer::Timer():
-			_started(false),
-			_elapsed_time_available(false)
-		{}
-		
-		void Timer::start(){
-			checkAndThrowLogic(!_started,"Timer is already started...");
-			_start = std::chrono::system_clock::now();
-			_started = true;
-		}
-		void Timer::stop(){
-			checkAndThrowLogic(_started,"Timer is not running...");
-			_stop = std::chrono::system_clock::now();
-			_elapsed_time_available = true;
-			_started = false;
-		}
-		bool Timer::isStarted()const{
-			return _started;
-		}
-		bool Timer::isElapsedTimeAvailable()const{
-			return _elapsed_time_available;
-		}
+    Timer::Timer():
+      _started(false),
+      _elapsed_time_available(false)
+    {}
+    
+    void Timer::start(){
+      checkAndThrowLogic(!_started,"Timer is already started...");
+      _start = std::chrono::system_clock::now();
+      _started = true;
+    }
+    void Timer::stop(){
+      checkAndThrowLogic(_started,"Timer is not running...");
+      _stop = std::chrono::system_clock::now();
+      _elapsed_time_available = true;
+      _started = false;
+    }
+    bool Timer::isStarted()const{
+      return _started;
+    }
+    bool Timer::isElapsedTimeAvailable()const{
+      return _elapsed_time_available;
+    }
 
-	}
+  }
 }
 

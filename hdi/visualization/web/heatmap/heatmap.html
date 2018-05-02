@@ -2,59 +2,59 @@
 <meta charset="utf-8">
 <html>
   <head>
-    <style>
-      rect.bordered {
-        stroke: #E6E6E6;
-        stroke-width:2px;   
-      }
+  <style>
+    rect.bordered {
+    stroke: #E6E6E6;
+    stroke-width:2px;   
+    }
 
-      text.mono {
-        font-size: 9pt;
-        font-family: Consolas, courier;
-        fill: #aaa;
-      }
+    text.mono {
+    font-size: 9pt;
+    font-family: Consolas, courier;
+    fill: #aaa;
+    }
 
-      text.axis-workweek {
-        fill: #000;
-      }
+    text.axis-workweek {
+    fill: #000;
+    }
 
-      text.axis-worktime {
-        fill: #000;
-      }
-    </style>
-    <script src="d3.v3.min.js"></script>
+    text.axis-worktime {
+    fill: #000;
+    }
+  </style>
+  <script src="d3.v3.min.js"></script>
 
   </head>
   <body>
-	<div id="ErrorBox"></div>
-    <div id="chart"></div>
+  <div id="ErrorBox"></div>
+  <div id="chart"></div>
 
-    <script type="text/javascript">
+  <script type="text/javascript">
 
 //Qt Connection
 var isQtAvailable = true
 try {
-	Qt.sgnSetData.connect(setData);
-	Qt.sgnSetMaxXElements.connect(setMaxXElements);
-	Qt.sgnSetMaxYElements.connect(setMaxYElements);
-	Qt.sgnSetXLabels.connect(setXLabels);
-	Qt.sgnSetYLabels.connect(setYLabels);
+  Qt.sgnSetData.connect(setData);
+  Qt.sgnSetMaxXElements.connect(setMaxXElements);
+  Qt.sgnSetMaxYElements.connect(setMaxYElements);
+  Qt.sgnSetXLabels.connect(setXLabels);
+  Qt.sgnSetYLabels.connect(setYLabels);
 } catch (error) {
-	document.getElementById("ErrorBox").innerHTML = "Cannot connect to Qt!";
-	isQtAvailable = false;
+  document.getElementById("ErrorBox").innerHTML = "Cannot connect to Qt!";
+  isQtAvailable = false;
 }
 // pipe errors to log
 window.onerror = function (msg, url, num) {
-	   logError("Error: " + msg + "\nURL: " + url + "\nLine: " + num);
+     logError("Error: " + msg + "\nURL: " + url + "\nLine: " + num);
 };
 
 // auto log for Qt and console
 function logError(logtext) {
    if (isQtAvailable) {
-	  Qt.onJsError(logtext.toString());
+    Qt.onJsError(logtext.toString());
    }
    else {
-	  console.log(logtext);
+    console.log(logtext);
    }
 }
 
@@ -80,111 +80,111 @@ var data = d3.csv.parse(str_data);
 ////////////////////////////////////////////////////////////////////////////////////
 
 Qt.onJsLog("Widget up and running...");
-	
+  
 //Draw Y labels
 var drawYLabels = function(){
-	Qt.onJsLog("Drawing Y labels...");
-	var svg = d3.select("#chart").select("svg")
-	var yLabels = svg.selectAll(".xLabel")
-	  .data(y_labels)
-	  .enter().append("text")
-		.text(function (d) { return d.label; })
-		.attr("x", function(d, i) { return y_label_space-6; })
-		.attr("y", function (d, i) { return (i+0.6) * gridSize + x_label_space ; })
-		.style("text-anchor", "end")
-		.attr("class", function (d, i) { return ((i >= 0 && i <= 4) ? "dayLabel mono axis axis-workweek" : "dayLabel mono axis"); });
+  Qt.onJsLog("Drawing Y labels...");
+  var svg = d3.select("#chart").select("svg")
+  var yLabels = svg.selectAll(".xLabel")
+    .data(y_labels)
+    .enter().append("text")
+    .text(function (d) { return d.label; })
+    .attr("x", function(d, i) { return y_label_space-6; })
+    .attr("y", function (d, i) { return (i+0.6) * gridSize + x_label_space ; })
+    .style("text-anchor", "end")
+    .attr("class", function (d, i) { return ((i >= 0 && i <= 4) ? "dayLabel mono axis axis-workweek" : "dayLabel mono axis"); });
 }
 
 //Draw X labels
 var drawXLabels = function(){
-	Qt.onJsLog("Drawing X labels...");
-	var svg = d3.select("#chart").select("svg")
-	var xLabels = svg.selectAll(".xLabel")
-		  .data(x_labels)
-		  .enter().append("text")
-			.text(function(d) { return d.label; })
-			.attr("x", function(d, i) { return (i+0.4) * gridSize + y_label_space; })
-			.attr("y", function(d, i) { return x_label_space-6; })
-			.attr("class", function(d, i) { return ((i >= 7 && i <= 16) ? "timeLabel mono axis axis-worktime" : "timeLabel mono axis"); });
+  Qt.onJsLog("Drawing X labels...");
+  var svg = d3.select("#chart").select("svg")
+  var xLabels = svg.selectAll(".xLabel")
+      .data(x_labels)
+      .enter().append("text")
+      .text(function(d) { return d.label; })
+      .attr("x", function(d, i) { return (i+0.4) * gridSize + y_label_space; })
+      .attr("y", function(d, i) { return x_label_space-6; })
+      .attr("class", function(d, i) { return ((i >= 7 && i <= 16) ? "timeLabel mono axis axis-worktime" : "timeLabel mono axis"); });
 }
 
 //Draw heatmap
 var heatmapChart = function(data) {
-	Qt.onJsLog("Drawing heatmap...");
-	var svg = d3.select("#chart").select("svg")
-	var colorScale = d3.scale.quantile()
-//	  .domain([0, buckets - 1, d3.max(data, function (d) { return d.value; })])
-	  .domain([0, buckets - 1, 300])
-	  .range(colors);
-	Qt.onJsLog("Max: " + d3.max(data, function (d) { return d.value; }));
-	var cards = svg.selectAll(".x_label")
-	  .data(data, function(d) {return d.y_label+':'+d.x_label;});
+  Qt.onJsLog("Drawing heatmap...");
+  var svg = d3.select("#chart").select("svg")
+  var colorScale = d3.scale.quantile()
+//    .domain([0, buckets - 1, d3.max(data, function (d) { return d.value; })])
+    .domain([0, buckets - 1, 300])
+    .range(colors);
+  Qt.onJsLog("Max: " + d3.max(data, function (d) { return d.value; }));
+  var cards = svg.selectAll(".x_label")
+    .data(data, function(d) {return d.y_label+':'+d.x_label;});
 
-	cards.append("title");
+  cards.append("title");
 
-	cards.enter().append("rect")
-	  .attr("x", function(d) { return (d.x_label - 1) * gridSize + (gridSize * (1-d.confidence) * 0.5) + y_label_space; })
-	  .attr("y", function(d) { return (d.y_label - 1) * gridSize + (gridSize * (1-d.confidence) * 0.5) + x_label_space; })
-	  .attr("rx", 4)
-	  .attr("ry", 4)
-	  .attr("class", "x_label bordered")
-	  .attr("width", function(d) { return gridSize * d.confidence; })
-	  .attr("height", function(d) { return gridSize * d.confidence; })
-	  .style("fill", function(d) { return colorScale(d.value); })
+  cards.enter().append("rect")
+    .attr("x", function(d) { return (d.x_label - 1) * gridSize + (gridSize * (1-d.confidence) * 0.5) + y_label_space; })
+    .attr("y", function(d) { return (d.y_label - 1) * gridSize + (gridSize * (1-d.confidence) * 0.5) + x_label_space; })
+    .attr("rx", 4)
+    .attr("ry", 4)
+    .attr("class", "x_label bordered")
+    .attr("width", function(d) { return gridSize * d.confidence; })
+    .attr("height", function(d) { return gridSize * d.confidence; })
+    .style("fill", function(d) { return colorScale(d.value); })
 
-	cards.exit().remove();
-	
+  cards.exit().remove();
+  
 };
 
 //Draw full visualization
 var drawVisualization = function (){
-	var w = window,
-		d = document,
-		e = d.documentElement,
-		g = d.getElementsByTagName('body')[0],
-		x = w.innerWidth || e.clientWidth || g.clientWidth,
-		y = w.innerHeight|| e.clientHeight|| g.clientHeight;
-	width = x-50;
-	height = y-50;
-	x_label_space = 30;
-	y_label_space = 40;
-	gridSize = Math.min(Math.floor((width-y_label_space) / max_x_elems), Math.floor((height-x_label_space) / max_y_elems));
-	legendElementWidth = gridSize*2;
-    Qt.onJsLog("Drawing visualization...");
-	d3.select("#chart").select("svg").remove();
-	d3.select("#chart").append("svg")
-		.attr("width", width)
-		.attr("height", height);
-	drawYLabels();
-	drawXLabels();
-	heatmapChart(data);
+  var w = window,
+    d = document,
+    e = d.documentElement,
+    g = d.getElementsByTagName('body')[0],
+    x = w.innerWidth || e.clientWidth || g.clientWidth,
+    y = w.innerHeight|| e.clientHeight|| g.clientHeight;
+  width = x-50;
+  height = y-50;
+  x_label_space = 30;
+  y_label_space = 40;
+  gridSize = Math.min(Math.floor((width-y_label_space) / max_x_elems), Math.floor((height-x_label_space) / max_y_elems));
+  legendElementWidth = gridSize*2;
+  Qt.onJsLog("Drawing visualization...");
+  d3.select("#chart").select("svg").remove();
+  d3.select("#chart").append("svg")
+    .attr("width", width)
+    .attr("height", height);
+  drawYLabels();
+  drawXLabels();
+  heatmapChart(data);
 }
 
 
 ////////////////////////////////////////////////////////////////////////////////////
 //C++ connections
 function setData(data_csv){
-    Qt.onJsLog("Data changed...");
-	data = d3.csv.parse(data_csv);
-	drawVisualization();
+  Qt.onJsLog("Data changed...");
+  data = d3.csv.parse(data_csv);
+  drawVisualization();
 }
 function setMaxXElements(val){
-	max_x_elems = Number(val);
+  max_x_elems = Number(val);
 }
 function setMaxYElements(val){
-	max_y_elems = Number(val);
+  max_y_elems = Number(val);
 }
 function setXLabels(val){
-	x_labels = d3.csv.parse(val);
+  x_labels = d3.csv.parse(val);
 }
 function setYLabels(val){
-	y_labels = d3.csv.parse(val);
+  y_labels = d3.csv.parse(val);
 }
 ////////////////////////////////////////////////////////////////////////////////////
 
 //drawVisualization();
 //setData(str_data);
-     
-    </script>
+   
+  </script>
   </body>
 </html>

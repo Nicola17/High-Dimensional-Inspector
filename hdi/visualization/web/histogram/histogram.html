@@ -17,97 +17,97 @@
 <div id="chart"></div>
 
 <script>
-    ///////////////////////////////////////////////////////////////////////////////////////////////////
-    ///////////////////////////////////////////////////////////////////////////////////////////////////
-    //Qt Connection
-    var isQtAvailable = true
-    try {
-            Qt.sgnSetData.connect(setData);
-	    Qt.sgnDrawVisualization.connect(drawVisualization);
-            Qt.sgnSetColor.connect(setColor);
-    } catch (error) {
-            document.getElementById("ErrorBox").innerHTML = "Cannot connect to Qt!";
-	    isQtAvailable = false;
-    }
-    // pipe errors to log
-    window.onerror = function (msg, url, num) {
-               logError("Error: " + msg + "\nURL: " + url + "\nLine: " + num);
-    };
+  ///////////////////////////////////////////////////////////////////////////////////////////////////
+  ///////////////////////////////////////////////////////////////////////////////////////////////////
+  //Qt Connection
+  var isQtAvailable = true
+  try {
+      Qt.sgnSetData.connect(setData);
+    Qt.sgnDrawVisualization.connect(drawVisualization);
+      Qt.sgnSetColor.connect(setColor);
+  } catch (error) {
+      document.getElementById("ErrorBox").innerHTML = "Cannot connect to Qt!";
+    isQtAvailable = false;
+  }
+  // pipe errors to log
+  window.onerror = function (msg, url, num) {
+         logError("Error: " + msg + "\nURL: " + url + "\nLine: " + num);
+  };
 
-    // auto log for Qt and console
-    function logError(logtext) {
-       if (isQtAvailable) {
-              Qt.onJsError(logtext.toString());
-       }
-       else {
-              console.log(logtext);
-       }
-    }
-    ///////////////////////////////////////////////////////////////////////////////////////////////////
-    ///////////////////////////////////////////////////////////////////////////////////////////////////
-    ///////////////////////////////////////////////////////////////////////////////////////////////////
-    var str_data = "x0,x1,v\n\
-    0,1,0.1\n\
-    1,2,1\n\
-    2,3,1\n\
-    3,4,7\n\
-    4,5,1\n\
-    5,7,8\n\
-    7,10,3";
+  // auto log for Qt and console
+  function logError(logtext) {
+     if (isQtAvailable) {
+        Qt.onJsError(logtext.toString());
+     }
+     else {
+        console.log(logtext);
+     }
+  }
+  ///////////////////////////////////////////////////////////////////////////////////////////////////
+  ///////////////////////////////////////////////////////////////////////////////////////////////////
+  ///////////////////////////////////////////////////////////////////////////////////////////////////
+  var str_data = "x0,x1,v\n\
+  0,1,0.1\n\
+  1,2,1\n\
+  2,3,1\n\
+  3,4,7\n\
+  4,5,1\n\
+  5,7,8\n\
+  7,10,3";
 
-    var color = "steelblue";
+  var color = "steelblue";
 
-    var data = d3.csv.parse(str_data);
-    function setData(data_csv){
-        Qt.onJsLog("data changed...");
-        data = d3.csv.parse(data_csv);
-    }
+  var data = d3.csv.parse(str_data);
+  function setData(data_csv){
+    Qt.onJsLog("data changed...");
+    data = d3.csv.parse(data_csv);
+  }
 
-    function setColor(c){
-        Qt.onJsLog("color changed...");
-        color = c;
-    }
+  function setColor(c){
+    Qt.onJsLog("color changed...");
+    color = c;
+  }
 
-    function drawVisualization(){
-            var margin = {top: 5, right: 15, bottom: 15, left: 5},
-	            width = 960 - margin.left - margin.right,
-		    height = 500 - margin.top - margin.bottom;
+  function drawVisualization(){
+      var margin = {top: 5, right: 15, bottom: 15, left: 5},
+        width = 960 - margin.left - margin.right,
+      height = 500 - margin.top - margin.bottom;
 
-            var w = window;
-	            width = w.innerWidth || e.clientWidth || g.clientWidth;
-		    width = width - margin.left - margin.right;
-		    height = w.innerHeight|| e.clientHeight|| g.clientHeight;
-		    height = height - margin.top - margin.bottom;
+      var w = window;
+        width = w.innerWidth || e.clientWidth || g.clientWidth;
+      width = width - margin.left - margin.right;
+      height = w.innerHeight|| e.clientHeight|| g.clientHeight;
+      height = height - margin.top - margin.bottom;
 
-            d3.select("#chart").select("svg").remove();
-	    var svg = d3.select("#chart").append("svg")
-	            .attr("width", width + margin.left + margin.right)
-		    .attr("height", height + margin.top + margin.bottom)
-	      .append("g")
-	            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+      d3.select("#chart").select("svg").remove();
+    var svg = d3.select("#chart").append("svg")
+        .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+      .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-            var x = d3.scale.linear()
-	            .domain([0, d3.max(data, function(d) { return +d.x1; })])
-		    .range([0, width]);
+      var x = d3.scale.linear()
+        .domain([0, d3.max(data, function(d) { return +d.x1; })])
+      .range([0, width]);
 
-            var y = d3.scale.linear()
-	            .domain([0, d3.max(data, function(d) { return +d.v; })])
-		    .range([height, 0]);
+      var y = d3.scale.linear()
+        .domain([0, d3.max(data, function(d) { return +d.v; })])
+      .range([height, 0]);
 
-            var rectangles = svg.selectAll("rect")
-	            .data(data)
-	      .enter()
-	            .append("rect")
-		    .attr("width", function(d) { return x(d.x1)-x(d.x0)-2; })
-		    .attr("height", function(d) { return (height - y(d.v)); })
-		    .attr("x", function(d) { return x(d.x0); })
-		    .attr("y", function(d) { return ( y(d.v)); })
-		    .style("fill",color)
-		    .on("click", function(d,i) {
-		        Qt.onClickOnBucket(i);
-		    });
-    }
-    drawVisualization();
+      var rectangles = svg.selectAll("rect")
+        .data(data)
+      .enter()
+        .append("rect")
+      .attr("width", function(d) { return x(d.x1)-x(d.x0)-2; })
+      .attr("height", function(d) { return (height - y(d.v)); })
+      .attr("x", function(d) { return x(d.x0); })
+      .attr("y", function(d) { return ( y(d.v)); })
+      .style("fill",color)
+      .on("click", function(d,i) {
+        Qt.onClickOnBucket(i);
+      });
+  }
+  drawVisualization();
 
 
 </script>

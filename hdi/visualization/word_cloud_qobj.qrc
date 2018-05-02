@@ -1,0 +1,9 @@
+<RCC>
+  <qresource prefix="/word_cloud">
+    <file alias="d3.js">web/word_cloud/d3.js</file>
+    <file alias="d3.layout.cloud.js">web/word_cloud/d3.layout.cloud.js</file>
+    <file alias="d3.wordcloud.js">web/word_cloud/d3.wordcloud.js</file>
+    <file alias="example_words.js">web/word_cloud/example_words.js</file>
+    <file alias="word_cloud.html">web/word_cloud/word_cloud.html</file>
+  </qresource>
+</RCC>

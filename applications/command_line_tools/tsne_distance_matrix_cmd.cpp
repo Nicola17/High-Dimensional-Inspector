@@ -50,7 +50,7 @@
 
 int main(int argc, char *argv[])
 {
-	try{
+  try{
     QApplication app(argc, argv);
     QIcon icon;
     icon.addFile(":/hdi16.png");
@@ -61,126 +61,126 @@ int main(int argc, char *argv[])
     app.setWindowIcon(icon);
 
     QCoreApplication::setApplicationName("tSNE from distance matrix");
-		QCoreApplication::setApplicationVersion("0.1");
+    QCoreApplication::setApplicationVersion("0.1");
 
-		QCommandLineParser parser;
-		parser.setApplicationDescription("Command line version of the tSNE algorithm");
-		parser.addHelpOption();
-		parser.addVersionOption();
-		parser.addPositionalArgument("data", QCoreApplication::translate("main", "High dimensional data."));
-		parser.addPositionalArgument("output", QCoreApplication::translate("main", "Output file."));
-		parser.addPositionalArgument("num_data_points", QCoreApplication::translate("main", "Num of data-points."));
+    QCommandLineParser parser;
+    parser.setApplicationDescription("Command line version of the tSNE algorithm");
+    parser.addHelpOption();
+    parser.addVersionOption();
+    parser.addPositionalArgument("data", QCoreApplication::translate("main", "High dimensional data."));
+    parser.addPositionalArgument("output", QCoreApplication::translate("main", "Output file."));
+    parser.addPositionalArgument("num_data_points", QCoreApplication::translate("main", "Num of data-points."));
 
-	////////////////////////////////////////////////
-	///////////////   Arguments    /////////////////
-	////////////////////////////////////////////////
-		// Verbose
-		QCommandLineOption verbose_option(QStringList() << "o" << "verbose",
-										 QCoreApplication::translate("main", "Verbose"));
-		parser.addOption(verbose_option);
+  ////////////////////////////////////////////////
+  ///////////////   Arguments    /////////////////
+  ////////////////////////////////////////////////
+    // Verbose
+    QCommandLineOption verbose_option(QStringList() << "o" << "verbose",
+                     QCoreApplication::translate("main", "Verbose"));
+    parser.addOption(verbose_option);
 
-		// Iterations
-		QCommandLineOption iterations_option(QStringList() << "i" << "iterations",
-				QCoreApplication::translate("main", "Run the gradient for <iterations>."),
-				QCoreApplication::translate("main", "iterations"));
-		parser.addOption(iterations_option);
+    // Iterations
+    QCommandLineOption iterations_option(QStringList() << "i" << "iterations",
+        QCoreApplication::translate("main", "Run the gradient for <iterations>."),
+        QCoreApplication::translate("main", "iterations"));
+    parser.addOption(iterations_option);
 
-		//Dimensions
-		QCommandLineOption target_dimensions_option(QStringList() << "d" << "target_dimensions",
-				QCoreApplication::translate("main", "Reduce the dimensionality to <target_dimensions>."),
-				QCoreApplication::translate("main", "target_dimensions"));
-		parser.addOption(target_dimensions_option);
+    //Dimensions
+    QCommandLineOption target_dimensions_option(QStringList() << "d" << "target_dimensions",
+        QCoreApplication::translate("main", "Reduce the dimensionality to <target_dimensions>."),
+        QCoreApplication::translate("main", "target_dimensions"));
+    parser.addOption(target_dimensions_option);
 
-		//Exaggeration iter
-		QCommandLineOption exaggeration_iter_option(QStringList() << "x" << "exaggeration_iter",
-				QCoreApplication::translate("main", "Remove the exaggeration factor after <exaggeration_iter> iterations."),
-				QCoreApplication::translate("main", "exaggeration_iter"));
-		parser.addOption(exaggeration_iter_option);
+    //Exaggeration iter
+    QCommandLineOption exaggeration_iter_option(QStringList() << "x" << "exaggeration_iter",
+        QCoreApplication::translate("main", "Remove the exaggeration factor after <exaggeration_iter> iterations."),
+        QCoreApplication::translate("main", "exaggeration_iter"));
+    parser.addOption(exaggeration_iter_option);
 
-		//Perplexity
-		QCommandLineOption perplexity_option(QStringList() << "p" << "perplexity",
-				QCoreApplication::translate("main", "Use perplexity value of <perplexity>."),
-				QCoreApplication::translate("main", "perplexity"));
-		parser.addOption(perplexity_option);
+    //Perplexity
+    QCommandLineOption perplexity_option(QStringList() << "p" << "perplexity",
+        QCoreApplication::translate("main", "Use perplexity value of <perplexity>."),
+        QCoreApplication::translate("main", "perplexity"));
+    parser.addOption(perplexity_option);
 
-		// Process the actual command line arguments given by the user
-		parser.process(app);
+    // Process the actual command line arguments given by the user
+    parser.process(app);
 
-		const QStringList args = parser.positionalArguments();
-		// source is args.at(0), destination is args.at(1)
+    const QStringList args = parser.positionalArguments();
+    // source is args.at(0), destination is args.at(1)
 
-	////////////////////////////////////////////////
-	////////////////////////////////////////////////
-	////////////////////////////////////////////////
+  ////////////////////////////////////////////////
+  ////////////////////////////////////////////////
+  ////////////////////////////////////////////////
 
     if(args.size()!=3){
-			std::cout << "Not enough arguments!" << std::endl;
-			return -1;
-		}
+      std::cout << "Not enough arguments!" << std::endl;
+      return -1;
+    }
 
-		int num_data_points         = atoi(args.at(2).toStdString().c_str());
+    int num_data_points         = atoi(args.at(2).toStdString().c_str());
 
-		bool verbose                = false;
-		int iterations              = 1000;
-		int exaggeration_iter       = 250;
-		int perplexity              = 30;
-		int num_dimensions_output   = 2;
+    bool verbose                = false;
+    int iterations              = 1000;
+    int exaggeration_iter       = 250;
+    int perplexity              = 30;
+    int num_dimensions_output   = 2;
 
 
-		verbose     = parser.isSet(verbose_option);
-		if(parser.isSet(iterations_option)){
-			iterations  = atoi(parser.value(iterations_option).toStdString().c_str());
-		}
-		if(parser.isSet(exaggeration_iter_option)){
-			exaggeration_iter = atoi(parser.value(exaggeration_iter_option).toStdString().c_str());
-		}
-		if(parser.isSet(perplexity_option)){
-			perplexity = atoi(parser.value(perplexity_option).toStdString().c_str());
-		}
-		if(verbose){
-			std::cout << "===============================================" << std::endl;
-			std::cout << "Arguments" << std::endl;
-			std::cout << "\tHigh-Dim:\t\t" << args.at(0).toStdString() << std::endl;
-			std::cout << "\tOutput:\t\t\t" << args.at(1).toStdString() << std::endl;
-			std::cout << "\t# data-points:\t\t" << num_data_points << std::endl;
-			std::cout << "Parameters" << std::endl;
-			std::cout << "\tOutput dimensions:\t" << num_dimensions_output << std::endl;
-			std::cout << "\tIterations:\t\t" << iterations << std::endl;
-			std::cout << "\tExaggeration iter:\t" << exaggeration_iter << std::endl;
-			std::cout << "\tPerplexity:\t\t" << perplexity << std::endl;
-			std::cout << "===============================================" << std::endl;
-		}
+    verbose     = parser.isSet(verbose_option);
+    if(parser.isSet(iterations_option)){
+      iterations  = atoi(parser.value(iterations_option).toStdString().c_str());
+    }
+    if(parser.isSet(exaggeration_iter_option)){
+      exaggeration_iter = atoi(parser.value(exaggeration_iter_option).toStdString().c_str());
+    }
+    if(parser.isSet(perplexity_option)){
+      perplexity = atoi(parser.value(perplexity_option).toStdString().c_str());
+    }
+    if(verbose){
+      std::cout << "===============================================" << std::endl;
+      std::cout << "Arguments" << std::endl;
+      std::cout << "\tHigh-Dim:\t\t" << args.at(0).toStdString() << std::endl;
+      std::cout << "\tOutput:\t\t\t" << args.at(1).toStdString() << std::endl;
+      std::cout << "\t# data-points:\t\t" << num_data_points << std::endl;
+      std::cout << "Parameters" << std::endl;
+      std::cout << "\tOutput dimensions:\t" << num_dimensions_output << std::endl;
+      std::cout << "\tIterations:\t\t" << iterations << std::endl;
+      std::cout << "\tExaggeration iter:\t" << exaggeration_iter << std::endl;
+      std::cout << "\tPerplexity:\t\t" << perplexity << std::endl;
+      std::cout << "===============================================" << std::endl;
+    }
 
-	////////////////////////////////////////////////
-	////////////////////////////////////////////////
-	////////////////////////////////////////////////
+  ////////////////////////////////////////////////
+  ////////////////////////////////////////////////
+  ////////////////////////////////////////////////
 
-		typedef float scalar_type;
-		//Input
-		std::vector<scalar_type> data;
+    typedef float scalar_type;
+    //Input
+    std::vector<scalar_type> data;
         data.resize(num_data_points * num_data_points);
 
-		{
-			std::ifstream input_file (args.at(0).toStdString(), std::ios::in|std::ios::binary|std::ios::ate);
+    {
+      std::ifstream input_file (args.at(0).toStdString(), std::ios::in|std::ios::binary|std::ios::ate);
             int bytes_to_read = int(input_file.tellg());
             if(bytes_to_read != int(sizeof(scalar_type) * num_data_points * num_data_points)){
-				std::cout << "Input file size doesn't agree with input parameters!" << std::endl;
-				return 1;
-			}
-			input_file.seekg (0, std::ios::beg);
+        std::cout << "Input file size doesn't agree with input parameters!" << std::endl;
+        return 1;
+      }
+      input_file.seekg (0, std::ios::beg);
             input_file.read (reinterpret_cast<char*>(data.data()), sizeof(scalar_type) * num_data_points * num_data_points);
-			input_file.close();
-		}
+      input_file.close();
+    }
 
     for(auto& v: data){
         v = v*v;
     }
 
-	////////////////////////////////////////////////
-	////////////////////////////////////////////////
-	////////////////////////////////////////////////
+  ////////////////////////////////////////////////
+  ////////////////////////////////////////////////
+  ////////////////////////////////////////////////
 
-		hdi::utils::CoutLog log;
+    hdi::utils::CoutLog log;
     hdi::dr::HDJointProbabilityGenerator<scalar_type> prob_gen;
     hdi::dr::HDJointProbabilityGenerator<scalar_type>::sparse_scalar_matrix_type distributions;
     hdi::dr::HDJointProbabilityGenerator<scalar_type>::Parameters param;
@@ -196,25 +196,25 @@ int main(int argc, char *argv[])
 
     hdi::utils::imageFromSparseMatrix(distributions).save("distr.png");
 
-		hdi::utils::secureLog(&log,"Computing gradient descent...");
-		for(int iter = 0; iter < iterations; ++iter){
-			tSNE.doAnIteration();
-			hdi::utils::secureLogValue(&log,"Iter",iter,verbose);
-		}
-		hdi::utils::secureLog(&log,"... done!");
+    hdi::utils::secureLog(&log,"Computing gradient descent...");
+    for(int iter = 0; iter < iterations; ++iter){
+      tSNE.doAnIteration();
+      hdi::utils::secureLogValue(&log,"Iter",iter,verbose);
+    }
+    hdi::utils::secureLog(&log,"... done!");
 
-		////////////////////////////////////////////////
-		////////////////////////////////////////////////
-		////////////////////////////////////////////////
-		
-		//Output
-		{
-			std::ofstream output_file (args.at(1).toStdString(), std::ios::out|std::ios::binary);
+    ////////////////////////////////////////////////
+    ////////////////////////////////////////////////
+    ////////////////////////////////////////////////
+
+    //Output
+    {
+      std::ofstream output_file (args.at(1).toStdString(), std::ios::out|std::ios::binary);
       output_file.write(reinterpret_cast<const char*>(embedding.getContainer().data()),sizeof(scalar_type)*embedding.getContainer().size());
-		}
+    }
 
-	}
-	catch(std::logic_error& ex){ std::cout << "Logic error: " << ex.what();}
-	catch(std::runtime_error& ex){ std::cout << "Runtime error: " << ex.what();}
-	catch(...){ std::cout << "An unknown error occurred";}
+  }
+  catch(std::logic_error& ex){ std::cout << "Logic error: " << ex.what();}
+  catch(std::runtime_error& ex){ std::cout << "Runtime error: " << ex.what();}
+  catch(...){ std::cout << "An unknown error occurred";}
 }

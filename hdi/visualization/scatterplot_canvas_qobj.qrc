@@ -1,5 +1,5 @@
 <RCC>
-    <qresource prefix="/logo">
-        <file alias="cgv_logo">images/cgv_logo.png</file>
-    </qresource>
+  <qresource prefix="/logo">
+    <file alias="cgv_logo">images/cgv_logo.png</file>
+  </qresource>
 </RCC>

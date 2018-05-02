@@ -6,16 +6,16 @@
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
+ *  notice, this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
+ *  notice, this list of conditions and the following disclaimer in the
+ *  documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
- *    must display the following acknowledgement:
- *    This product includes software developed by the Delft University of Technology.
+ *  must display the following acknowledgement:
+ *  This product includes software developed by the Delft University of Technology.
  * 4. Neither the name of the Delft University of Technology nor the names of
- *    its contributors may be used to endorse or promote products derived from
- *    this software without specific prior written permission.
+ *  its contributors may be used to endorse or promote products derived from
+ *  this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY NICOLA PEZZOTTI ''AS IS'' AND ANY EXPRESS
  * OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
@@ -38,40 +38,40 @@
 #include "hdi/data/abstract_data.h"
 
 namespace hdi{
-	namespace data{
-	
-		//! Abstract class that represents a generic panel data
-		/*!
-			Abstract class that represents a generic panel data.
-			\author Nicola Pezzotti
-		*/
-		
-		class AbstractPanelData{
-		public:
-			typedef uint32_t					handle_type;
-			typedef uint32_t					flag_type;
-			typedef std::vector<flag_type>		flag_vector_type;
-			typedef std::vector<std::shared_ptr<AbstractData> > data_ptr_vector_type;
+  namespace data{
 
-            enum Flags { None = 0, Selected = 1, Fixed = 2, Disabled = 4};
+    //! Abstract class that represents a generic panel data
+    /*!
+      Abstract class that represents a generic panel data.
+      \author Nicola Pezzotti
+    */
 
-		public:
-			AbstractPanelData(){}
-			virtual ~AbstractPanelData(){}
+    class AbstractPanelData{
+    public:
+      typedef uint32_t          handle_type;
+      typedef uint32_t          flag_type;
+      typedef std::vector<flag_type>    flag_vector_type;
+      typedef std::vector<std::shared_ptr<AbstractData> > data_ptr_vector_type;
 
-			virtual int numDataPoints()const = 0;
-            virtual int numDimensions()const = 0;
-            virtual const data_ptr_vector_type&	getDataPoints()const = 0;
-            virtual const data_ptr_vector_type& getDimensions()const = 0;
+      enum Flags { None = 0, Selected = 1, Fixed = 2, Disabled = 4};
 
-            virtual const flag_vector_type&	getFlagsDataPoints()const = 0;
-            virtual const flag_vector_type& getFlagsDimensions()const = 0;
-            virtual flag_vector_type& getFlagsDataPoints() = 0;
-            virtual flag_vector_type& getFlagsDimensions() = 0;
+    public:
+      AbstractPanelData(){}
+      virtual ~AbstractPanelData(){}
 
-            virtual double dataAt(unsigned int data_point, unsigned int dimension)const=0;
-		};
+      virtual int numDataPoints()const = 0;
+      virtual int numDimensions()const = 0;
+      virtual const data_ptr_vector_type&  getDataPoints()const = 0;
+      virtual const data_ptr_vector_type& getDimensions()const = 0;
 
-	}
+      virtual const flag_vector_type&  getFlagsDataPoints()const = 0;
+      virtual const flag_vector_type& getFlagsDimensions()const = 0;
+      virtual flag_vector_type& getFlagsDataPoints() = 0;
+      virtual flag_vector_type& getFlagsDimensions() = 0;
+
+      virtual double dataAt(unsigned int data_point, unsigned int dimension)const=0;
+    };
+
+  }
 }
 #endif

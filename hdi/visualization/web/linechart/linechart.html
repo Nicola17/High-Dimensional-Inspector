@@ -31,129 +31,129 @@ body {
 <script src="https://d3js.org/d3.v3.min.js"></script>
 <script src="d3.v3.min.js"></script>
 <script>
-    ///////////////////////////////////////////////////////////////////////////////////////////////////
-    ///////////////////////////////////////////////////////////////////////////////////////////////////
-    //Qt Connection
-    var isQtAvailable = true
-    try {
-            Qt.sgnSetData.connect(setData);
-	    Qt.sgnSetMaxX.connect(setMaxX);
-	    Qt.sgnSetMaxY.connect(setMaxY);
-	    Qt.sgnSetMinX.connect(setMinX);
-	    Qt.sgnSetMinY.connect(setMinY);
-	    Qt.sgnDrawVisualization.connect(drawVisualization);
-    } catch (error) {
-            document.getElementById("ErrorBox").innerHTML = "Cannot connect to Qt!";
-	    isQtAvailable = false;
-    }
-    // pipe errors to log
-    window.onerror = function (msg, url, num) {
-               logError("Error: " + msg + "\nURL: " + url + "\nLine: " + num);
-    };
+  ///////////////////////////////////////////////////////////////////////////////////////////////////
+  ///////////////////////////////////////////////////////////////////////////////////////////////////
+  //Qt Connection
+  var isQtAvailable = true
+  try {
+      Qt.sgnSetData.connect(setData);
+    Qt.sgnSetMaxX.connect(setMaxX);
+    Qt.sgnSetMaxY.connect(setMaxY);
+    Qt.sgnSetMinX.connect(setMinX);
+    Qt.sgnSetMinY.connect(setMinY);
+    Qt.sgnDrawVisualization.connect(drawVisualization);
+  } catch (error) {
+      document.getElementById("ErrorBox").innerHTML = "Cannot connect to Qt!";
+    isQtAvailable = false;
+  }
+  // pipe errors to log
+  window.onerror = function (msg, url, num) {
+         logError("Error: " + msg + "\nURL: " + url + "\nLine: " + num);
+  };
 
-    // auto log for Qt and console
-    function logError(logtext) {
-       if (isQtAvailable) {
-              Qt.onJsError(logtext.toString());
-       }
-       else {
-              console.log(logtext);
-       }
-    }
-    ///////////////////////////////////////////////////////////////////////////////////////////////////
-    ///////////////////////////////////////////////////////////////////////////////////////////////////
-    ///////////////////////////////////////////////////////////////////////////////////////////////////
-    //C++ connections
-    function setData(data_csv){
-        Qt.onJsLog("data changed...");
-	data = d3.csv.parse(data_csv);
-    }
-    function setMaxX(val){
-        Qt.onJsLog("new max x...");
-	x_max = Number(val);
-    }
-    function setMaxY(val){
-        Qt.onJsLog("new max y...");
-	y_max = Number(val);
-    }
-    function setMinX(val){
-        Qt.onJsLog("new min x...");
-	x_min = Number(val);
-    }
-    function setMinY(val){
-        Qt.onJsLog("new min y...");
-	y_min = Number(val);
-    }
-    ///////////////////////////////////////////////////////////////////////////////////////////////////
-    ///////////////////////////////////////////////////////////////////////////////////////////////////
-    ///////////////////////////////////////////////////////////////////////////////////////////////////
+  // auto log for Qt and console
+  function logError(logtext) {
+     if (isQtAvailable) {
+        Qt.onJsError(logtext.toString());
+     }
+     else {
+        console.log(logtext);
+     }
+  }
+  ///////////////////////////////////////////////////////////////////////////////////////////////////
+  ///////////////////////////////////////////////////////////////////////////////////////////////////
+  ///////////////////////////////////////////////////////////////////////////////////////////////////
+  //C++ connections
+  function setData(data_csv){
+    Qt.onJsLog("data changed...");
+  data = d3.csv.parse(data_csv);
+  }
+  function setMaxX(val){
+    Qt.onJsLog("new max x...");
+  x_max = Number(val);
+  }
+  function setMaxY(val){
+    Qt.onJsLog("new max y...");
+  y_max = Number(val);
+  }
+  function setMinX(val){
+    Qt.onJsLog("new min x...");
+  x_min = Number(val);
+  }
+  function setMinY(val){
+    Qt.onJsLog("new min y...");
+  y_min = Number(val);
+  }
+  ///////////////////////////////////////////////////////////////////////////////////////////////////
+  ///////////////////////////////////////////////////////////////////////////////////////////////////
+  ///////////////////////////////////////////////////////////////////////////////////////////////////
 
-    var margin = {top: 20, right: 20, bottom: 30, left: 50},
-        width = 960 - margin.left - margin.right,
-	height = 500 - margin.top - margin.bottom;
+  var margin = {top: 20, right: 20, bottom: 30, left: 50},
+    width = 960 - margin.left - margin.right,
+  height = 500 - margin.top - margin.bottom;
 
-    var x_min = 0;
-    var x_max = 2000;
-    var y_min = 0;
-    var y_max = 1000;
+  var x_min = 0;
+  var x_max = 2000;
+  var y_min = 0;
+  var y_max = 1000;
 
-    var str_data = "x,y\n\
-    100,100\n\
-    200,100\n\
-    500,500\n\
-    1000,300";
-    var data = d3.csv.parse(str_data);
+  var str_data = "x,y\n\
+  100,100\n\
+  200,100\n\
+  500,500\n\
+  1000,300";
+  var data = d3.csv.parse(str_data);
 
-    function drawVisualization(){
-        Qt.onJsLog("draw Viz...");
-	var x = d3.time.scale()
-	    .range([0, width]);
-	var y = d3.scale.linear()
-	    .range([height, 0]);
-	var xAxis = d3.svg.axis()
-	    .scale(x)
-	    .orient("bottom");
-	var yAxis = d3.svg.axis()
-	    .scale(y)
-	    .orient("left");
+  function drawVisualization(){
+    Qt.onJsLog("draw Viz...");
+  var x = d3.time.scale()
+    .range([0, width]);
+  var y = d3.scale.linear()
+    .range([height, 0]);
+  var xAxis = d3.svg.axis()
+    .scale(x)
+    .orient("bottom");
+  var yAxis = d3.svg.axis()
+    .scale(y)
+    .orient("left");
 
-        var line = d3.svg.line()
-	    .x(function(d) { return x(d.x); })
-	    .y(function(d) { return y(d.y); });
+    var line = d3.svg.line()
+    .x(function(d) { return x(d.x); })
+    .y(function(d) { return y(d.y); });
 
 
-        var w = window;
-	width = w.innerWidth || e.clientWidth || g.clientWidth;
-	width = width - margin.left - margin.right;
-	height = w.innerHeight|| e.clientHeight|| g.clientHeight;
-	height = height - margin.top - margin.bottom;
+    var w = window;
+  width = w.innerWidth || e.clientWidth || g.clientWidth;
+  width = width - margin.left - margin.right;
+  height = w.innerHeight|| e.clientHeight|| g.clientHeight;
+  height = height - margin.top - margin.bottom;
 
-        d3.select("#chart").select("svg").remove();
-	var svg = d3.select("#chart").append("svg")
-	    .attr("width", width + margin.left + margin.right)
-	    .attr("height", height + margin.top + margin.bottom)
-	  .append("g")
-	    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    d3.select("#chart").select("svg").remove();
+  var svg = d3.select("#chart").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-        x.domain([x_min,x_max]);
-	y.domain([y_min,y_max]);
+    x.domain([x_min,x_max]);
+  y.domain([y_min,y_max]);
 
-        svg.append("g")
-	  .attr("class", "y axis")
-	  .attr("transform", "translate(0," + height + ")")
-	  .call(xAxis);
+    svg.append("g")
+    .attr("class", "y axis")
+    .attr("transform", "translate(0," + height + ")")
+    .call(xAxis);
 
-        svg.append("g")
-	  .attr("class", "y axis")
-	  .call(yAxis);
+    svg.append("g")
+    .attr("class", "y axis")
+    .call(yAxis);
 
-        svg.append("path")
-	  .datum(data)
-	  .attr("class", "line")
-	  .attr("d", line);
-    }
+    svg.append("path")
+    .datum(data)
+    .attr("class", "line")
+    .attr("d", line);
+  }
 
-    drawVisualization();
+  drawVisualization();
 
 </script>
 

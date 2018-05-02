@@ -16,59 +16,59 @@ class QWebFrame;
 class QResizeEvent;
 
 namespace hdi {
-    namespace viz {
+  namespace viz {
 
-        class WordCloud: public QWidget
-        {
-            Q_OBJECT
-        public:
-            typedef std::unordered_map<std::string,uint32_t> words_count_type;
-        public:
-            explicit WordCloud(QWidget *parent = 0);
-            ~WordCloud();
+    class WordCloud: public QWidget
+    {
+      Q_OBJECT
+    public:
+      typedef std::unordered_map<std::string,uint32_t> words_count_type;
+    public:
+      explicit WordCloud(QWidget *parent = 0);
+      ~WordCloud();
 
-            virtual QWidget* widgetPtr(){ return this; }
-            virtual const QWidget* widgetPtr()const{ return this; }
-            virtual void updateView(){onSendData();}
+      virtual QWidget* widgetPtr(){ return this; }
+      virtual const QWidget* widgetPtr()const{ return this; }
+      virtual void updateView(){onSendData();}
 
-            void setWords(const words_count_type& words){_words = words;}
+      void setWords(const words_count_type& words){_words = words;}
 
-        //Slots used by C++
-        private slots:
-            void onSendData();
+    //Slots used by C++
+    private slots:
+      void onSendData();
 
-        //Slots used by JS
-        public slots:
-            void onJsLog(QString text);
-            void onJsError(QString text);
+    //Slots used by JS
+    public slots:
+      void onJsLog(QString text);
+      void onJsError(QString text);
 
-        private:
-            void initUI();
-            QString readTextFromFile(QString filename);
-            void asyncSetData(std::vector<std::pair<double,double>> points);
+    private:
+      void initUI();
+      QString readTextFromFile(QString filename);
+      void asyncSetData(std::vector<std::pair<double,double>> points);
 
-        //JS connection handling
-        private slots:
-            void onWebViewFinishedLoading(bool ok);
-            void onConnectJs();
+    //JS connection handling
+    private slots:
+      void onWebViewFinishedLoading(bool ok);
+      void onConnectJs();
 
-        signals:
-            void sgnSendData(QString);
+    signals:
+      void sgnSendData(QString);
 
-        protected:
-            virtual void resizeEvent(QResizeEvent * e);
+    protected:
+      virtual void resizeEvent(QResizeEvent * e);
 
-        private:
-            QWebView* _webView;
-            QWebFrame* _mainFrame;
-            bool _connection_ready;
-            std::mutex _mutex;
-            std::condition_variable _cv;
-            std::thread _connection_thread;
-            words_count_type _words;
-        };
+    private:
+      QWebView* _webView;
+      QWebFrame* _mainFrame;
+      bool _connection_ready;
+      std::mutex _mutex;
+      std::condition_variable _cv;
+      std::thread _connection_thread;
+      words_count_type _words;
+    };
 
-    }
+  }
 }
 
 

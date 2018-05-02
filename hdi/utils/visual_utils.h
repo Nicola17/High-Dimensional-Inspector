@@ -6,16 +6,16 @@
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
+ *  notice, this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
+ *  notice, this list of conditions and the following disclaimer in the
+ *  documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
- *    must display the following acknowledgement:
- *    This product includes software developed by the Delft University of Technology.
+ *  must display the following acknowledgement:
+ *  This product includes software developed by the Delft University of Technology.
  * 4. Neither the name of the Delft University of Technology nor the names of
- *    its contributors may be used to endorse or promote products derived from
- *    this software without specific prior written permission.
+ *  its contributors may be used to endorse or promote products derived from
+ *  this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY NICOLA PEZZOTTI ''AS IS'' AND ANY EXPRESS
  * OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
@@ -38,18 +38,18 @@
 
 
 namespace hdi{
-	namespace utils{
+  namespace utils{
 
-        template <typename scalar_type>
-        QImage imageFromMatrix(const std::vector<std::vector<scalar_type>>& matrix, scalar_type max);
+    template <typename scalar_type>
+    QImage imageFromMatrix(const std::vector<std::vector<scalar_type>>& matrix, scalar_type max);
 
-		template <typename map_type>
-		QImage imageFromSparseMatrix(const std::vector<map_type>& sparse_matrix);
+    template <typename map_type>
+    QImage imageFromSparseMatrix(const std::vector<map_type>& sparse_matrix);
 
-        template <typename map_type>
-        QImage imageFromZeroCenteredSparseMatrix(const std::vector<map_type>& sparse_matrix);
+    template <typename map_type>
+    QImage imageFromZeroCenteredSparseMatrix(const std::vector<map_type>& sparse_matrix);
 
-	}
+  }
 }
 
 #endif // TIMERS_H

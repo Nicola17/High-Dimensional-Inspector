@@ -15,58 +15,58 @@ class QWebFrame;
 class QResizeEvent;
 
 namespace hdi {
-    namespace viz {
+  namespace viz {
 
-        class HeatMapView: public QWidget, public AbstractView
-        {
-            Q_OBJECT
-        public:
-            explicit HeatMapView(QWidget *parent = 0);
-            ~HeatMapView();
+    class HeatMapView: public QWidget, public AbstractView
+    {
+      Q_OBJECT
+    public:
+      explicit HeatMapView(QWidget *parent = 0);
+      ~HeatMapView();
 
-            virtual QWidget* widgetPtr(){ return this; }
-            virtual const QWidget* widgetPtr()const{ return this; }
-            virtual void updateView(){onSetData();}
+      virtual QWidget* widgetPtr(){ return this; }
+      virtual const QWidget* widgetPtr()const{ return this; }
+      virtual void updateView(){onSetData();}
 
-        //Slots used by C++
-        private slots:
-            void onSetData();
+    //Slots used by C++
+    private slots:
+      void onSetData();
 
-        //Slots used by JS
-        public slots:
-            void onJsLog(QString text);
-            void onJsError(QString text);
+    //Slots used by JS
+    public slots:
+      void onJsLog(QString text);
+      void onJsError(QString text);
 
-        private:
-            void initUI();
-            QString readTextFromFile(QString filename);
-            void asyncSetData(std::vector<std::pair<double,double>> points);
+    private:
+      void initUI();
+      QString readTextFromFile(QString filename);
+      void asyncSetData(std::vector<std::pair<double,double>> points);
 
-        //JS connection handling
-        private slots:
-            void onWebViewFinishedLoading(bool ok);
-            void onConnectJs();
+    //JS connection handling
+    private slots:
+      void onWebViewFinishedLoading(bool ok);
+      void onConnectJs();
 
-        signals:
-            void sgnSetData(QString);
-            void sgnSetMaxXElements(QString);
-            void sgnSetMaxYElements(QString);
-            void sgnSetXLabels(QString);
-            void sgnSetYLabels(QString);
+    signals:
+      void sgnSetData(QString);
+      void sgnSetMaxXElements(QString);
+      void sgnSetMaxYElements(QString);
+      void sgnSetXLabels(QString);
+      void sgnSetYLabels(QString);
 
-        protected:
-            virtual void resizeEvent(QResizeEvent * e);
+    protected:
+      virtual void resizeEvent(QResizeEvent * e);
 
-        private:
-            QWebView* _webView;
-            QWebFrame* _mainFrame;
-            bool _connection_ready;
-            std::mutex _mutex;
-            std::condition_variable _cv;
-            std::thread _connection_thread;
-        };
+    private:
+      QWebView* _webView;
+      QWebFrame* _mainFrame;
+      bool _connection_ready;
+      std::mutex _mutex;
+      std::condition_variable _cv;
+      std::thread _connection_thread;
+    };
 
-    }
+  }
 }
 
 

@@ -4,10 +4,10 @@
  <widget class="QWidget" name="AnatomicalPlanesView">
   <property name="geometry">
    <rect>
-    <x>0</x>
-    <y>0</y>
-    <width>596</width>
-    <height>352</height>
+  <x>0</x>
+  <y>0</y>
+  <width>596</width>
+  <height>352</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -15,217 +15,217 @@
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
    <item row="0" column="0">
-    <widget class="QGroupBox" name="groupBox">
-     <property name="title">
-      <string/>
-     </property>
-     <layout class="QGridLayout" name="gridLayout_3">
-      <item row="0" column="0">
-       <layout class="QGridLayout" name="gridLayout">
-        <item row="0" column="0">
-         <spacer name="horizontalSpacer">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>40</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item row="0" column="1">
-         <widget class="QLabel" name="label">
-          <property name="font">
-           <font>
-            <family>Calibri Light</family>
-            <pointsize>14</pointsize>
-            <weight>75</weight>
-            <bold>true</bold>
-           </font>
-          </property>
-          <property name="text">
-           <string>Anatomical Planes View</string>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="2">
-         <spacer name="horizontalSpacer_2">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>40</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item row="1" column="0" colspan="3">
-         <layout class="QHBoxLayout" name="horizontalLayout">
-          <item>
-           <spacer name="horizontalSpacer_3">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item>
-           <widget class="QLabel" name="_axial_image_lbl">
-            <property name="text">
-             <string/>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="_coronal_image_lbl">
-            <property name="text">
-             <string/>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="_sagittal_image_lbl">
-            <property name="text">
-             <string/>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <spacer name="horizontalSpacer_4">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-         </layout>
-        </item>
-        <item row="2" column="0" colspan="3">
-         <layout class="QGridLayout" name="gridLayout_4">
-          <item row="2" column="1">
-           <widget class="QSpinBox" name="_y_SpBx"/>
-          </item>
-          <item row="3" column="0">
-           <widget class="QLabel" name="_z_lbl">
-            <property name="text">
-             <string>Z:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="QSpinBox" name="_x_SpBx"/>
-          </item>
-          <item row="2" column="0">
-           <widget class="QLabel" name="_y_lbl">
-            <property name="text">
-             <string>Y:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="4">
-           <spacer name="horizontalSpacer_5">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="_x_lbl">
-            <property name="text">
-             <string>X:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0" colspan="5">
-           <widget class="QLabel" name="_general_info_lbl">
-            <property name="text">
-             <string>TextLabel</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="2">
-           <widget class="QSlider" name="_y_Sld">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="1">
-           <widget class="QSpinBox" name="_z_SpBx"/>
-          </item>
-          <item row="1" column="2">
-           <widget class="QSlider" name="_x_Sld">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="2">
-           <widget class="QSlider" name="_z_Sld">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="0">
-           <widget class="QLabel" name="label_5">
-            <property name="text">
-             <string>Mult:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="1">
-           <widget class="QDoubleSpinBox" name="_res_mult_dspbx">
-            <property name="minimum">
-             <double>0.010000000000000</double>
-            </property>
-            <property name="maximum">
-             <double>100.000000000000000</double>
-            </property>
-            <property name="value">
-             <double>1.000000000000000</double>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-       </layout>
+  <widget class="QGroupBox" name="groupBox">
+   <property name="title">
+    <string/>
+   </property>
+   <layout class="QGridLayout" name="gridLayout_3">
+    <item row="0" column="0">
+     <layout class="QGridLayout" name="gridLayout">
+    <item row="0" column="0">
+     <spacer name="horizontalSpacer">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+      <width>40</width>
+      <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="0" column="1">
+     <widget class="QLabel" name="label">
+      <property name="font">
+       <font>
+      <family>Calibri Light</family>
+      <pointsize>14</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+       </font>
+      </property>
+      <property name="text">
+       <string>Anatomical Planes View</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="2">
+     <spacer name="horizontalSpacer_2">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+      <width>40</width>
+      <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="1" column="0" colspan="3">
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <spacer name="horizontalSpacer_3">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>40</width>
+        <height>20</height>
+       </size>
+      </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QLabel" name="_axial_image_lbl">
+      <property name="text">
+       <string/>
+      </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="_coronal_image_lbl">
+      <property name="text">
+       <string/>
+      </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="_sagittal_image_lbl">
+      <property name="text">
+       <string/>
+      </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer_4">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>40</width>
+        <height>20</height>
+       </size>
+      </property>
+       </spacer>
       </item>
      </layout>
-    </widget>
+    </item>
+    <item row="2" column="0" colspan="3">
+     <layout class="QGridLayout" name="gridLayout_4">
+      <item row="2" column="1">
+       <widget class="QSpinBox" name="_y_SpBx"/>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="_z_lbl">
+      <property name="text">
+       <string>Z:</string>
+      </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QSpinBox" name="_x_SpBx"/>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="_y_lbl">
+      <property name="text">
+       <string>Y:</string>
+      </property>
+       </widget>
+      </item>
+      <item row="1" column="4">
+       <spacer name="horizontalSpacer_5">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>40</width>
+        <height>20</height>
+       </size>
+      </property>
+       </spacer>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="_x_lbl">
+      <property name="text">
+       <string>X:</string>
+      </property>
+       </widget>
+      </item>
+      <item row="0" column="0" colspan="5">
+       <widget class="QLabel" name="_general_info_lbl">
+      <property name="text">
+       <string>TextLabel</string>
+      </property>
+       </widget>
+      </item>
+      <item row="2" column="2">
+       <widget class="QSlider" name="_y_Sld">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QSpinBox" name="_z_SpBx"/>
+      </item>
+      <item row="1" column="2">
+       <widget class="QSlider" name="_x_Sld">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+       </widget>
+      </item>
+      <item row="3" column="2">
+       <widget class="QSlider" name="_z_Sld">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+       </widget>
+      </item>
+      <item row="4" column="0">
+       <widget class="QLabel" name="label_5">
+      <property name="text">
+       <string>Mult:</string>
+      </property>
+       </widget>
+      </item>
+      <item row="4" column="1">
+       <widget class="QDoubleSpinBox" name="_res_mult_dspbx">
+      <property name="minimum">
+       <double>0.010000000000000</double>
+      </property>
+      <property name="maximum">
+       <double>100.000000000000000</double>
+      </property>
+      <property name="value">
+       <double>1.000000000000000</double>
+      </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+     </layout>
+    </item>
+   </layout>
+  </widget>
    </item>
    <item row="1" column="0">
-    <spacer name="verticalSpacer">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>20</width>
-       <height>40</height>
-      </size>
-     </property>
-    </spacer>
+  <spacer name="verticalSpacer">
+   <property name="orientation">
+    <enum>Qt::Vertical</enum>
+   </property>
+   <property name="sizeHint" stdset="0">
+    <size>
+     <width>20</width>
+     <height>40</height>
+    </size>
+   </property>
+  </spacer>
    </item>
   </layout>
  </widget>
@@ -237,14 +237,14 @@
    <receiver>_x_SpBx</receiver>
    <slot>setValue(int)</slot>
    <hints>
-    <hint type="sourcelabel">
-     <x>223</x>
-     <y>110</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>66</x>
-     <y>110</y>
-    </hint>
+  <hint type="sourcelabel">
+   <x>223</x>
+   <y>110</y>
+  </hint>
+  <hint type="destinationlabel">
+   <x>66</x>
+   <y>110</y>
+  </hint>
    </hints>
   </connection>
   <connection>
@@ -253,14 +253,14 @@
    <receiver>_x_Sld</receiver>
    <slot>setValue(int)</slot>
    <hints>
-    <hint type="sourcelabel">
-     <x>66</x>
-     <y>110</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>223</x>
-     <y>110</y>
-    </hint>
+  <hint type="sourcelabel">
+   <x>66</x>
+   <y>110</y>
+  </hint>
+  <hint type="destinationlabel">
+   <x>223</x>
+   <y>110</y>
+  </hint>
    </hints>
   </connection>
   <connection>
@@ -269,14 +269,14 @@
    <receiver>_y_SpBx</receiver>
    <slot>setValue(int)</slot>
    <hints>
-    <hint type="sourcelabel">
-     <x>223</x>
-     <y>140</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>66</x>
-     <y>140</y>
-    </hint>
+  <hint type="sourcelabel">
+   <x>223</x>
+   <y>140</y>
+  </hint>
+  <hint type="destinationlabel">
+   <x>66</x>
+   <y>140</y>
+  </hint>
    </hints>
   </connection>
   <connection>
@@ -285,14 +285,14 @@
    <receiver>_y_Sld</receiver>
    <slot>setValue(int)</slot>
    <hints>
-    <hint type="sourcelabel">
-     <x>66</x>
-     <y>140</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>223</x>
-     <y>140</y>
-    </hint>
+  <hint type="sourcelabel">
+   <x>66</x>
+   <y>140</y>
+  </hint>
+  <hint type="destinationlabel">
+   <x>223</x>
+   <y>140</y>
+  </hint>
    </hints>
   </connection>
   <connection>
@@ -301,14 +301,14 @@
    <receiver>_z_SpBx</receiver>
    <slot>setValue(int)</slot>
    <hints>
-    <hint type="sourcelabel">
-     <x>223</x>
-     <y>170</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>66</x>
-     <y>170</y>
-    </hint>
+  <hint type="sourcelabel">
+   <x>223</x>
+   <y>170</y>
+  </hint>
+  <hint type="destinationlabel">
+   <x>66</x>
+   <y>170</y>
+  </hint>
    </hints>
   </connection>
   <connection>
@@ -317,14 +317,14 @@
    <receiver>_z_Sld</receiver>
    <slot>setValue(int)</slot>
    <hints>
-    <hint type="sourcelabel">
-     <x>66</x>
-     <y>170</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>223</x>
-     <y>170</y>
-    </hint>
+  <hint type="sourcelabel">
+   <x>66</x>
+   <y>170</y>
+  </hint>
+  <hint type="destinationlabel">
+   <x>223</x>
+   <y>170</y>
+  </hint>
    </hints>
   </connection>
  </connections>

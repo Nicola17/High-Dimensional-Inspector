@@ -1,7 +1,7 @@
 <RCC>
-    <qresource prefix="/sankey">
-        <file alias="sankey.html">web/sankey.html</file>
-        <file alias="sankey.js">web/sankey.js</file>
-        <file alias="d3.v3.min.js">web/d3.v3.min.js</file>
-    </qresource>
+  <qresource prefix="/sankey">
+    <file alias="sankey.html">web/sankey.html</file>
+    <file alias="sankey.js">web/sankey.js</file>
+    <file alias="d3.v3.min.js">web/d3.v3.min.js</file>
+  </qresource>
 </RCC>

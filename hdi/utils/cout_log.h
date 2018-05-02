@@ -6,16 +6,16 @@
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
+ *  notice, this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
+ *  notice, this list of conditions and the following disclaimer in the
+ *  documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
- *    must display the following acknowledgement:
- *    This product includes software developed by the Delft University of Technology.
+ *  must display the following acknowledgement:
+ *  This product includes software developed by the Delft University of Technology.
  * 4. Neither the name of the Delft University of Technology nor the names of
- *    its contributors may be used to endorse or promote products derived from
- *    this software without specific prior written permission.
+ *  its contributors may be used to endorse or promote products derived from
+ *  this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY NICOLA PEZZOTTI ''AS IS'' AND ANY EXPRESS
  * OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
@@ -38,24 +38,24 @@
 #include "hdi/utils/abstract_log.h"
 
 namespace hdi{
-	namespace utils{
+  namespace utils{
 
-		//! shows log on the standar output stream
-		class CoutLog : public AbstractLog{
-		public:
-			CoutLog() :num_written_chars_(0){}
-			virtual ~CoutLog(){}
-			//! set the number of written characters to zero
-			virtual void clear();
-			//! display some text on the logger
-            virtual void display(const std::string& d, bool time_stamp = false);
-			//! return the number of written character
-			unsigned int num_written_chars()const;
+    //! shows log on the standar output stream
+    class CoutLog : public AbstractLog{
+    public:
+      CoutLog() :num_written_chars_(0){}
+      virtual ~CoutLog(){}
+      //! set the number of written characters to zero
+      virtual void clear();
+      //! display some text on the logger
+      virtual void display(const std::string& d, bool time_stamp = false);
+      //! return the number of written character
+      unsigned int num_written_chars()const;
 
-		private:
-			unsigned int num_written_chars_;
-		};
-	}
+    private:
+      unsigned int num_written_chars_;
+    };
+  }
 }
 
 #endif // COUT_LOG_H

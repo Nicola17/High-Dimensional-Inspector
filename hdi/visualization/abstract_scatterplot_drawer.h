@@ -6,16 +6,16 @@
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
+ *  notice, this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
+ *  notice, this list of conditions and the following disclaimer in the
+ *  documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
- *    must display the following acknowledgement:
- *    This product includes software developed by the Delft University of Technology.
+ *  must display the following acknowledgement:
+ *  This product includes software developed by the Delft University of Technology.
  * 4. Neither the name of the Delft University of Technology nor the names of
- *    its contributors may be used to endorse or promote products derived from
- *    this software without specific prior written permission.
+ *  its contributors may be used to endorse or promote products derived from
+ *  this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY NICOLA PEZZOTTI ''AS IS'' AND ANY EXPRESS
  * OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
@@ -41,26 +41,26 @@
 
 
 namespace hdi{
-	namespace viz{
+  namespace viz{
 
-		//! Abstract class that represents a scatterplot drawer
-		/*!
-			Abstract class that represents a scatterplot drawer
-			\author Nicola Pezzotti
-		*/
-		class AbstractScatterplotDrawer{
-		public: 
-			typedef float		scalar_type;
-			typedef uint32_t	flag_type;
-			typedef QVector2D	point_type;
-			typedef QColor		color_type;
-		public:
-			AbstractScatterplotDrawer(){}
-			virtual ~AbstractScatterplotDrawer(){}
-            virtual void initialize(QGLContext* context) = 0;
-			virtual void draw(const point_type& bl, const point_type& tr) = 0;
-		};
-	}
+    //! Abstract class that represents a scatterplot drawer
+    /*!
+      Abstract class that represents a scatterplot drawer
+      \author Nicola Pezzotti
+    */
+    class AbstractScatterplotDrawer{
+    public: 
+      typedef float    scalar_type;
+      typedef uint32_t  flag_type;
+      typedef QVector2D  point_type;
+      typedef QColor    color_type;
+    public:
+      AbstractScatterplotDrawer(){}
+      virtual ~AbstractScatterplotDrawer(){}
+      virtual void initialize(QGLContext* context) = 0;
+      virtual void draw(const point_type& bl, const point_type& tr) = 0;
+    };
+  }
 }
 
 #endif

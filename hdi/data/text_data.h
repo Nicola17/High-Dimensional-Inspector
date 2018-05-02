@@ -6,16 +6,16 @@
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
+ *  notice, this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
+ *  notice, this list of conditions and the following disclaimer in the
+ *  documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
- *    must display the following acknowledgement:
- *    This product includes software developed by the Delft University of Technology.
+ *  must display the following acknowledgement:
+ *  This product includes software developed by the Delft University of Technology.
  * 4. Neither the name of the Delft University of Technology nor the names of
- *    its contributors may be used to endorse or promote products derived from
- *    this software without specific prior written permission.
+ *  its contributors may be used to endorse or promote products derived from
+ *  this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY NICOLA PEZZOTTI ''AS IS'' AND ANY EXPRESS
  * OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
@@ -37,26 +37,26 @@
 #include <string>
 
 namespace hdi{
-	namespace data{
+  namespace data{
 
-		//! Text data type
-		/*!
-			Text data type
-			\author Nicola Pezzotti
-		*/
-		class TextData: public AbstractData{
-		public:
-            TextData(std::string text = std::string()):_text(text){}
-			virtual ~TextData(){}
+    //! Text data type
+    /*!
+      Text data type
+      \author Nicola Pezzotti
+    */
+    class TextData: public AbstractData{
+    public:
+      TextData(std::string text = std::string()):_text(text){}
+      virtual ~TextData(){}
 
-			void setText(std::string& text){_text = text;}
-			const std::string& text()const{return _text;}
+      void setText(std::string& text){_text = text;}
+      const std::string& text()const{return _text;}
 
-		private:
-			std::string _text;
-		};
+    private:
+      std::string _text;
+    };
 
-	}
+  }
 }
 
 

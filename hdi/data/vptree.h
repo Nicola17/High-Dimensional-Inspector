@@ -6,26 +6,26 @@
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
+ *  notice, this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
+ *  notice, this list of conditions and the following disclaimer in the
+ *  documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
- *    must display the following acknowledgement:
- *    This product includes software developed by the Delft University of Technology.
- * 4. Neither the name of the Delft University of Technology nor the names of 
- *    its contributors may be used to endorse or promote products derived from 
- *    this software without specific prior written permission.
+ *  must display the following acknowledgement:
+ *  This product includes software developed by the Delft University of Technology.
+ * 4. Neither the name of the Delft University of Technology nor the names of
+ *  its contributors may be used to endorse or promote products derived from
+ *  this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY LAURENS VAN DER MAATEN ''AS IS'' AND ANY EXPRESS
- * OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES 
- * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO 
- * EVENT SHALL LAURENS VAN DER MAATEN BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, 
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
- * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR 
- * BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN 
- * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING 
- * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY 
+ * OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+ * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
+ * EVENT SHALL LAURENS VAN DER MAATEN BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+ * BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
+ * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
  * OF SUCH DAMAGE.
  *
  */
@@ -45,57 +45,57 @@
 
 class DataPoint
 {
-    int _ind;
+  int _ind;
 
 public:
-    float* _x;
-    int _D;
-    DataPoint() {
-        _D = 1;
-        _ind = -1;
-        _x = NULL;
+  float* _x;
+  int _D;
+  DataPoint() {
+    _D = 1;
+    _ind = -1;
+    _x = NULL;
+  }
+  DataPoint(int D, int ind, const float* x) {
+    _D = D;
+    _ind = ind;
+    _x = (float*) malloc(_D * sizeof(float));
+    for(int d = 0; d < _D; d++) _x[d] = x[d];
+  }
+  DataPoint(const DataPoint& other) {           // this makes a deep copy -- should not free anything
+    if(this != &other) {
+      _D = other.dimensionality();
+      _ind = other.index();
+      _x = (float*) malloc(_D * sizeof(float));
+      for(int d = 0; d < _D; d++) _x[d] = other.x(d);
     }
-    DataPoint(int D, int ind, const float* x) {
-        _D = D;
-        _ind = ind;
-        _x = (float*) malloc(_D * sizeof(float));
-        for(int d = 0; d < _D; d++) _x[d] = x[d];
+  }
+  ~DataPoint() { if(_x != NULL) free(_x); }
+  DataPoint& operator= (const DataPoint& other) {     // asignment should free old object
+    if(this != &other) {
+      if(_x != NULL) free(_x);
+      _D = other.dimensionality();
+      _ind = other.index();
+      _x = (float*) malloc(_D * sizeof(float));
+      for(int d = 0; d < _D; d++) _x[d] = other.x(d);
     }
-    DataPoint(const DataPoint& other) {                     // this makes a deep copy -- should not free anything
-        if(this != &other) {
-            _D = other.dimensionality();
-            _ind = other.index();
-            _x = (float*) malloc(_D * sizeof(float));
-            for(int d = 0; d < _D; d++) _x[d] = other.x(d);
-        }
-    }
-    ~DataPoint() { if(_x != NULL) free(_x); }
-    DataPoint& operator= (const DataPoint& other) {         // asignment should free old object
-        if(this != &other) {
-            if(_x != NULL) free(_x);
-            _D = other.dimensionality();
-            _ind = other.index();
-            _x = (float*) malloc(_D * sizeof(float));
-            for(int d = 0; d < _D; d++) _x[d] = other.x(d);
-        }
-        return *this;
-    }
-    int index() const { return _ind; }
-    int dimensionality() const { return _D; }
-    float x(int d) const { return _x[d]; }
+    return *this;
+  }
+  int index() const { return _ind; }
+  int dimensionality() const { return _D; }
+  float x(int d) const { return _x[d]; }
 };
 
 template <class T>
 T euclidean_distance(const DataPoint &t1, const DataPoint &t2) {
-    T dd = .0;
-    T* x1 = t1._x;
-    T* x2 = t2._x;
-    T diff;
-    for(int d = 0; d < t1._D; d++) {
-        diff = (x1[d] - x2[d]);
-        dd += diff * diff;
-    }
-    return sqrt(dd);
+  T dd = .0;
+  T* x1 = t1._x;
+  T* x2 = t2._x;
+  T diff;
+  for(int d = 0; d < t1._D; d++) {
+    diff = (x1[d] - x2[d]);
+    dd += diff * diff;
+  }
+  return sqrt(dd);
 }
 
 
@@ -103,170 +103,170 @@ template<typename T, float (*distance)( const T&, const T& )>
 class VpTree
 {
 public:
-    
-    // Default constructor
-    VpTree() : _root(0) {}
-    
-    // Destructor
-    ~VpTree() {
-        delete _root;
+
+  // Default constructor
+  VpTree() : _root(0) {}
+
+  // Destructor
+  ~VpTree() {
+    delete _root;
+  }
+
+  // Function to create a new VpTree from data
+  void create(const std::vector<T>& items) {
+    delete _root;
+    _items = items;
+    _root = buildFromPoints(0, items.size());
+  }
+
+  // Function that uses the tree to find the k nearest neighbors of target
+  void search(const T& target, int k, std::vector<T>* results, std::vector<float>* distances, float tau = std::numeric_limits<float>::max())const
+  {
+
+    // Use a priority queue to store intermediate results on
+    std::priority_queue<HeapItem> heap;
+
+    // Variable that tracks the distance to the farthest point in our results
+    //_tau = DBL_MAX;
+
+    // Perform the search
+    search(_root, target, k, heap, tau);
+
+    // Gather final results
+    results->clear(); distances->clear();
+    while(!heap.empty()) {
+      results->push_back(_items[heap.top().index]);
+      distances->push_back(heap.top().dist);
+      heap.pop();
     }
 
-    // Function to create a new VpTree from data
-    void create(const std::vector<T>& items) {
-        delete _root;
-        _items = items;
-        _root = buildFromPoints(0, items.size());
-    }
-    
-    // Function that uses the tree to find the k nearest neighbors of target
-    void search(const T& target, int k, std::vector<T>* results, std::vector<float>* distances, float tau = std::numeric_limits<float>::max())const
-    {
-        
-        // Use a priority queue to store intermediate results on
-        std::priority_queue<HeapItem> heap;
-        
-        // Variable that tracks the distance to the farthest point in our results
-        //_tau = DBL_MAX;
-        
-        // Perform the search
-        search(_root, target, k, heap, tau);
-        
-        // Gather final results
-        results->clear(); distances->clear();
-        while(!heap.empty()) {
-            results->push_back(_items[heap.top().index]);
-            distances->push_back(heap.top().dist);
-            heap.pop();
-        }
-        
-        // Results are in reverse order
-        std::reverse(results->begin(), results->end());
-        std::reverse(distances->begin(), distances->end());
-    }
-    
+    // Results are in reverse order
+    std::reverse(results->begin(), results->end());
+    std::reverse(distances->begin(), distances->end());
+  }
+
 private:
-    std::vector<T> _items;
-    //float _tau;
-    
-    // Single node of a VP tree (has a point and radius; left children are closer to point than the radius)
-    struct Node
-    {
-        int index;              // index of point in node
-        float threshold;       // radius(?)
-        Node* left;             // points closer by than threshold
-        Node* right;            // points farther away than threshold
-        
-        Node() :
-        index(0), threshold(0.), left(0), right(0) {}
-        
-        ~Node() {               // destructor
-            delete left;
-            delete right;
-        }
-    }* _root;
-    
-    
-    // An item on the intermediate result queue
-    struct HeapItem {
-        HeapItem( int index, float dist) :
-        index(index), dist(dist) {}
-        int index;
-        float dist;
-        bool operator<(const HeapItem& o) const {
-            return dist < o.dist;
-        }
-    };
-    
-    // Distance comparator for use in std::nth_element
-    struct DistanceComparator
-    {
-        const T& item;
-        DistanceComparator(const T& item) : item(item) {}
-        bool operator()(const T& a, const T& b) {
-            return distance(item, a) < distance(item, b);
-        }
-    };
-    
-    // Function that (recursively) fills the tree
-    Node* buildFromPoints( int lower, int upper )
-    {
-        if (upper == lower) {     // indicates that we're done here!
-            return NULL;
-        }
-        
-        // Lower index is center of current node
-        Node* node = new Node();
-        node->index = lower;
-        
-        if (upper - lower > 1) {      // if we did not arrive at leaf yet
-            
-            // Choose an arbitrary point and move it to the start
-            int i = (int) ((float)rand() / RAND_MAX * (upper - lower - 1)) + lower;
-            std::swap(_items[lower], _items[i]);
-            
-            // Partition around the median distance
-            int median = (upper + lower) / 2;
-            std::nth_element(_items.begin() + lower + 1,
-                             _items.begin() + median,
-                             _items.begin() + upper,
-                             DistanceComparator(_items[lower]));
-            
-            // Threshold of the new node will be the distance to the median
-            //node->threshold = distance(_items[lower], _items[median]); //QUICKHACK
-            node->threshold = euclidean_distance<float>(_items[lower], _items[median]);
-            
-            // Recursively build tree
-            node->index = lower;
-            node->left = buildFromPoints(lower + 1, median);
-            node->right = buildFromPoints(median, upper);
-        }
-        
-        // Return result
-        return node;
-    }
-    
-    // Helper function that searches the tree    
-    void search(Node* node, const T& target, int k, std::priority_queue<HeapItem>& heap, float& tau)const
-    {
-        if(node == NULL) return;     // indicates that we're done here
-        
-        // Compute distance between target and current node
-        float dist = distance(_items[node->index], target);
+  std::vector<T> _items;
+  //float _tau;
 
-        // If current node within radius tau
-        if(dist < tau) {
-            if(heap.size() == k) heap.pop();                 // remove furthest node from result list (if we already have k results)
-            heap.push(HeapItem(node->index, dist));           // add current node to result list
-            if(heap.size() == k) tau = heap.top().dist;     // update value of tau (farthest point in result list)
-        }
-        
-        // Return if we arrived at a leaf
-        if(node->left == NULL && node->right == NULL) {
-            return;
-        }
-        
-        // If the target lies within the radius of ball
-        if(dist < node->threshold) {
-            if(dist - tau <= node->threshold) {         // if there can still be neighbors inside the ball, recursively search left child first
-                search(node->left, target, k, heap, tau);
-            }
-            
-            if(dist + tau >= node->threshold) {         // if there can still be neighbors outside the ball, recursively search right child
-                search(node->right, target, k, heap, tau);
-            }
-        
-        // If the target lies outsize the radius of the ball
-        } else {
-            if(dist + tau >= node->threshold) {         // if there can still be neighbors outside the ball, recursively search right child first
-                search(node->right, target, k, heap, tau);
-            }
-            
-            if (dist - tau <= node->threshold) {         // if there can still be neighbors inside the ball, recursively search left child
-                search(node->left, target, k, heap, tau);
-            }
-        }
+  // Single node of a VP tree (has a point and radius; left children are closer to point than the radius)
+  struct Node
+  {
+    int index;        // index of point in node
+    float threshold;     // radius(?)
+    Node* left;       // points closer by than threshold
+    Node* right;      // points farther away than threshold
+
+    Node() :
+    index(0), threshold(0.), left(0), right(0) {}
+
+    ~Node() {         // destructor
+      delete left;
+      delete right;
     }
+  }* _root;
+
+
+  // An item on the intermediate result queue
+  struct HeapItem {
+    HeapItem( int index, float dist) :
+    index(index), dist(dist) {}
+    int index;
+    float dist;
+    bool operator<(const HeapItem& o) const {
+      return dist < o.dist;
+    }
+  };
+
+  // Distance comparator for use in std::nth_element
+  struct DistanceComparator
+  {
+    const T& item;
+    DistanceComparator(const T& item) : item(item) {}
+    bool operator()(const T& a, const T& b) {
+      return distance(item, a) < distance(item, b);
+    }
+  };
+
+  // Function that (recursively) fills the tree
+  Node* buildFromPoints( int lower, int upper )
+  {
+    if (upper == lower) {   // indicates that we're done here!
+      return NULL;
+    }
+
+    // Lower index is center of current node
+    Node* node = new Node();
+    node->index = lower;
+
+    if (upper - lower > 1) {    // if we did not arrive at leaf yet
+
+      // Choose an arbitrary point and move it to the start
+      int i = (int) ((float)rand() / RAND_MAX * (upper - lower - 1)) + lower;
+      std::swap(_items[lower], _items[i]);
+
+      // Partition around the median distance
+      int median = (upper + lower) / 2;
+      std::nth_element(_items.begin() + lower + 1,
+               _items.begin() + median,
+               _items.begin() + upper,
+               DistanceComparator(_items[lower]));
+
+      // Threshold of the new node will be the distance to the median
+      //node->threshold = distance(_items[lower], _items[median]); //QUICKHACK
+      node->threshold = euclidean_distance<float>(_items[lower], _items[median]);
+
+      // Recursively build tree
+      node->index = lower;
+      node->left = buildFromPoints(lower + 1, median);
+      node->right = buildFromPoints(median, upper);
+    }
+
+    // Return result
+    return node;
+  }
+
+  // Helper function that searches the tree
+  void search(Node* node, const T& target, int k, std::priority_queue<HeapItem>& heap, float& tau)const
+  {
+    if(node == NULL) return;   // indicates that we're done here
+
+    // Compute distance between target and current node
+    float dist = distance(_items[node->index], target);
+
+    // If current node within radius tau
+    if(dist < tau) {
+      if(heap.size() == k) heap.pop();         // remove furthest node from result list (if we already have k results)
+      heap.push(HeapItem(node->index, dist));       // add current node to result list
+      if(heap.size() == k) tau = heap.top().dist;   // update value of tau (farthest point in result list)
+    }
+
+    // Return if we arrived at a leaf
+    if(node->left == NULL && node->right == NULL) {
+      return;
+    }
+
+    // If the target lies within the radius of ball
+    if(dist < node->threshold) {
+      if(dist - tau <= node->threshold) {     // if there can still be neighbors inside the ball, recursively search left child first
+        search(node->left, target, k, heap, tau);
+      }
+
+      if(dist + tau >= node->threshold) {     // if there can still be neighbors outside the ball, recursively search right child
+        search(node->right, target, k, heap, tau);
+      }
+
+    // If the target lies outsize the radius of the ball
+    } else {
+      if(dist + tau >= node->threshold) {     // if there can still be neighbors outside the ball, recursively search right child first
+        search(node->right, target, k, heap, tau);
+      }
+
+      if (dist - tau <= node->threshold) {     // if there can still be neighbors inside the ball, recursively search left child
+        search(node->left, target, k, heap, tau);
+      }
+    }
+  }
 };
-            
+
 #endif

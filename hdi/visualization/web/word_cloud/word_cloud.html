@@ -1,16 +1,16 @@
 <html>
   <head>
-    <meta charset="UTF-8">
-    <title>Word Cloud</title>
-    <script src="d3.js" charset="utf-8"></script>
-    <script src="d3.layout.cloud.js"></script>
-    <script src="d3.wordcloud.js"></script>
+  <meta charset="UTF-8">
+  <title>Word Cloud</title>
+  <script src="d3.js" charset="utf-8"></script>
+  <script src="d3.layout.cloud.js"></script>
+  <script src="d3.wordcloud.js"></script>
   </head>
 
   <body style="text-align: center; background-color: #ffffff;">
-    <div id="ErrorBox"></div>
-    <div id='wordcloud'></div>
-    <script>
+  <div id="ErrorBox"></div>
+  <div id='wordcloud'></div>
+  <script>
 
 ////////////////////////////////////////////////////////////////
 
@@ -21,23 +21,23 @@ var json = '[{"text": "have", "size": 102}, {"text": "Oliver", "size": 47},{"tex
 //Qt Connection
 var isQtAvailable = true
 try {
-        Qt.sgnSendData.connect(setData);
+    Qt.sgnSendData.connect(setData);
 } catch (error) {
-        document.getElementById("ErrorBox").innerHTML = "Cannot connect to Qt!";
-        isQtAvailable = false;
+    document.getElementById("ErrorBox").innerHTML = "Cannot connect to Qt!";
+    isQtAvailable = false;
 }
 // pipe errors to log
 window.onerror = function (msg, url, num) {
-           logError("Error: " + msg + "\nURL: " + url + "\nLine: " + num);
+       logError("Error: " + msg + "\nURL: " + url + "\nLine: " + num);
 };
 
 // auto log for Qt and console
 function logError(logtext) {
    if (isQtAvailable) {
-          Qt.onJsError(logtext.toString());
+      Qt.onJsError(logtext.toString());
    }
    else {
-          console.log(logtext);
+      console.log(logtext);
    }
 }
 
@@ -56,23 +56,23 @@ function draw() {
 //height = 400;
 
   d3.wordcloud()
-    .size([width, height])
-    .fill(d3.scale.ordinal().range(["#7570b3", "#66a61e", "#d95f02", "#a6761d"]))
-    .words(words)
-    .start();
+  .size([width, height])
+  .fill(d3.scale.ordinal().range(["#7570b3", "#66a61e", "#d95f02", "#a6761d"]))
+  .words(words)
+  .start();
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
 //C++ connections
 function setData(json){
-    Qt.onJsLog("Data changed...");
-    //Qt.onJsLog(json);
-    words = JSON.parse(json);
-    draw();
+  Qt.onJsLog("Data changed...");
+  //Qt.onJsLog(json);
+  words = JSON.parse(json);
+  draw();
 }
 
 ////////////////////////////////////////////////////////////////
 
-    </script>
+  </script>
   </body>
 </html>

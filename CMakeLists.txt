@@ -24,7 +24,7 @@ if(APP_COMMAND_LINE)
     add_subdirectory (applications/command_line_tools)
     add_subdirectory (applications/command_line_tools/hsne_volume_analyzer)
     add_subdirectory (applications/command_line_tools/data_conversion)
-    #add_subdirectory (applications/command_line_tools/waow_visualization)
+    add_subdirectory (applications/command_line_tools/waow_visualization)
 endif(APP_COMMAND_LINE)
 
 if(APP_VISUAL_TESTS)

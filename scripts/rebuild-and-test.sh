@@ -5,6 +5,6 @@ export CPLUS_INCLUDE_PATH=/usr/local/include
 rm -drf build
 mkdir build
 cd build
-cmake ../
+cmake -DCMAKE_BUILD_TYPE=Release ..
 make -j 8
 ./applications/tdd/tdd

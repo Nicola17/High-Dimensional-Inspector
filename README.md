@@ -49,7 +49,7 @@ On Ubuntu 16.04 you can build and install HDI by running the following commands
 apt-get install qtbase5-dev libqt5webkit5-dev libflann-dev
 mkdir build
 cd build
-cmake ../
+cmake  -DCMAKE_BUILD_TYPE=Release ..
 make -j 8
 sudo make install
 ```

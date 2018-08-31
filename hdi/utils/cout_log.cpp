@@ -30,34 +30,34 @@
  *
  */
 
-#include <iostream>
 #include "hdi/utils/cout_log.h"
 #include <chrono>
 #include <ctime>
+#include <iostream>
 
-namespace hdi{
-  namespace utils{
+namespace hdi {
+namespace utils {
 
-    void CoutLog::clear(){
-      num_written_chars_ = 0;
-    }
-
-    void CoutLog::display(const std::string& d, bool time_stamp){
-      if(time_stamp){
-        std::time_t end_time = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
-        auto time_str = std::string(std::ctime(&end_time));
-        time_str = time_str.substr(0,time_str.size()-1);
-        std::cout << "[" << time_str << "]" << std::endl << d << std::endl;
-      }else{
-        std::cout << d << std::endl;
-      }
-      num_written_chars_ += d.size() + 1;
-    }
-
-    unsigned int CoutLog::num_written_chars()const{
-      return num_written_chars_;
-    }
-
-  }
+void CoutLog::clear() {
+  num_written_chars_ = 0;
 }
 
+void CoutLog::display(const std::string& d, bool time_stamp) {
+  if (time_stamp) {
+    std::time_t end_time = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+    auto time_str = std::string(std::ctime(&end_time));
+    time_str = time_str.substr(0, time_str.size() - 1);
+    std::cout << "[" << time_str << "]" << std::endl
+              << d << std::endl;
+  } else {
+    std::cout << d << std::endl;
+  }
+  num_written_chars_ += d.size() + 1;
+}
+
+unsigned int CoutLog::num_written_chars() const {
+  return num_written_chars_;
+}
+
+}  // namespace utils
+}  // namespace hdi

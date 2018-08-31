@@ -30,41 +30,41 @@
  *
  */
 
-#include <iostream>
 #include <fstream>
-#include <string>
-#include <sstream>
-#include <map>
 #include <iomanip>
+#include <iostream>
+#include <map>
+#include <sstream>
+#include <string>
 
 #include <stdint.h>
-#include "hdi/utils/cout_log.h"
-#include "hdi/utils/log_helper_functions.h"
 #include "hdi/data/panel_data.h"
+#include "hdi/utils/cout_log.h"
 #include "hdi/utils/dataset_utils.h"
+#include "hdi/utils/log_helper_functions.h"
 
-int main(int argc, char *argv[]){
-  try{
+int main(int argc, char* argv[]) {
+  try {
     typedef double scalar_type;
     hdi::utils::CoutLog log;
 
-    if(argc != 5){
-      hdi::utils::secureLog(&log,"Wrong number of input parameters...");
+    if (argc != 5) {
+      hdi::utils::secureLog(&log, "Wrong number of input parameters...");
       return 1;
     }
     std::ofstream out_file(argv[1], std::ios::out);
 
-    if (!out_file.is_open()){
+    if (!out_file.is_open()) {
       throw std::runtime_error("output file cannot be open");
     }
 
     hdi::data::PanelData<scalar_type> panel_data;
     std::vector<unsigned int> labels;
 
-    hdi::utils::IO::loadCifar10(panel_data,labels,argv[2],argv[3],std::atoi(argv[4]));
-    hdi::utils::secureLogValue(&log,"test",panel_data.dataAt(3,3));
+    hdi::utils::IO::loadCifar10(panel_data, labels, argv[2], argv[3], std::atoi(argv[4]));
+    hdi::utils::secureLogValue(&log, "test", panel_data.dataAt(3, 3));
     //hdi::data::unitNormalization(panel_data);
-    hdi::utils::secureLog(&log,"Data loaded...");
+    hdi::utils::secureLog(&log, "Data loaded...");
 
     const unsigned int num_dp(panel_data.numDataPoints());
     const unsigned int num_dims(panel_data.numDimensions());
@@ -73,25 +73,28 @@ int main(int argc, char *argv[]){
     out_file << num_dp << std::endl;
     out_file << num_dims << std::endl;
 
-    for(int i = 0; i < num_dims; ++i){
+    for (int i = 0; i < num_dims; ++i) {
       out_file << "D" << i;
-      if(i!=(num_dims-1)){
+      if (i != (num_dims - 1)) {
         out_file << ";";
-      }else{
+      } else {
         out_file << std::endl;
       }
     }
 
-    for(int i = 0; i < num_dp; ++i){
+    for (int i = 0; i < num_dp; ++i) {
       out_file << "P" << i << ";";
-      for(int d = 0; d < num_dims; ++d){
-        out_file << std::setprecision(5) << panel_data.dataAt(i,d) << ";";
+      for (int d = 0; d < num_dims; ++d) {
+        out_file << std::setprecision(5) << panel_data.dataAt(i, d) << ";";
       }
-      out_file <<  int(labels[i]) << ".0" << std::endl;
+      out_file << int(labels[i]) << ".0" << std::endl;
     }
 
+  } catch (std::logic_error& ex) {
+    std::cout << "Logic error: " << ex.what();
+  } catch (std::runtime_error& ex) {
+    std::cout << "Runtime error: " << ex.what();
+  } catch (...) {
+    std::cout << "An unknown error occurred";
   }
-  catch(std::logic_error& ex){ std::cout << "Logic error: " << ex.what();}
-  catch(std::runtime_error& ex){ std::cout << "Runtime error: " << ex.what();}
-  catch(...){ std::cout << "An unknown error occurred";}
 }

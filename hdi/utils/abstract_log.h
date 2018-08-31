@@ -33,21 +33,21 @@
 #ifndef ABSTRACT_LOG_H
 #define ABSTRACT_LOG_H
 
-#include <string>
 #include <sstream>
+#include <string>
 
-namespace hdi{
-  namespace utils{
+namespace hdi {
+namespace utils {
 
-    //! Abstract interface for a general logger
-    class AbstractLog{
-    public:
-      virtual ~AbstractLog(){}
-      //! clear the log
-      virtual void clear() = 0;
-      //! display some text on the logger
-      virtual void display(const std::string& d, bool time_stamp = false) = 0;
-    };
-  }
-}
-#endif // ABSTRACTLOG_H
+//! Abstract interface for a general logger
+class AbstractLog {
+ public:
+  virtual ~AbstractLog() {}
+  //! clear the log
+  virtual void clear() = 0;
+  //! display some text on the logger
+  virtual void display(const std::string& d, bool time_stamp = false) = 0;
+};
+}  // namespace utils
+}  // namespace hdi
+#endif  // ABSTRACTLOG_H

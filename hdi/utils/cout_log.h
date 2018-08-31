@@ -33,29 +33,29 @@
 #ifndef COUT_LOG_H
 #define COUT_LOG_H
 
-#include <string>
 #include <sstream>
+#include <string>
 #include "hdi/utils/abstract_log.h"
 
-namespace hdi{
-  namespace utils{
+namespace hdi {
+namespace utils {
 
-    //! shows log on the standar output stream
-    class CoutLog : public AbstractLog{
-    public:
-      CoutLog() :num_written_chars_(0){}
-      virtual ~CoutLog(){}
-      //! set the number of written characters to zero
-      virtual void clear();
-      //! display some text on the logger
-      virtual void display(const std::string& d, bool time_stamp = false);
-      //! return the number of written character
-      unsigned int num_written_chars()const;
+//! shows log on the standar output stream
+class CoutLog : public AbstractLog {
+ public:
+  CoutLog() : num_written_chars_(0) {}
+  virtual ~CoutLog() {}
+  //! set the number of written characters to zero
+  virtual void clear();
+  //! display some text on the logger
+  virtual void display(const std::string& d, bool time_stamp = false);
+  //! return the number of written character
+  unsigned int num_written_chars() const;
 
-    private:
-      unsigned int num_written_chars_;
-    };
-  }
-}
+ private:
+  unsigned int num_written_chars_;
+};
+}  // namespace utils
+}  // namespace hdi
 
-#endif // COUT_LOG_H
+#endif  // COUT_LOG_H

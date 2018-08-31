@@ -32,9 +32,9 @@
 
 #include "tsne_random_walks_inl.h"
 
-namespace hdi{
-  namespace dr{
-    template class TSNERandomWalks<float>;
-    //template class TSNERandomWalks<double>; //no support in FLANN :(
-  }
-}
+namespace hdi {
+namespace dr {
+template class TSNERandomWalks<float>;
+//template class TSNERandomWalks<double>; //no support in FLANN :(
+}  // namespace dr
+}  // namespace hdi

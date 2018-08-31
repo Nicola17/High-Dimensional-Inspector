@@ -33,23 +33,22 @@
 #ifndef VISUAL_UTILS_H
 #define VISUAL_UTILS_H
 
-#include "hdi/utils/visual_utils.h"
 #include <QImage>
+#include "hdi/utils/visual_utils.h"
 
+namespace hdi {
+namespace utils {
 
-namespace hdi{
-  namespace utils{
+template <typename scalar_type>
+QImage imageFromMatrix(const std::vector<std::vector<scalar_type>>& matrix, scalar_type max);
 
-    template <typename scalar_type>
-    QImage imageFromMatrix(const std::vector<std::vector<scalar_type>>& matrix, scalar_type max);
+template <typename map_type>
+QImage imageFromSparseMatrix(const std::vector<map_type>& sparse_matrix);
 
-    template <typename map_type>
-    QImage imageFromSparseMatrix(const std::vector<map_type>& sparse_matrix);
+template <typename map_type>
+QImage imageFromZeroCenteredSparseMatrix(const std::vector<map_type>& sparse_matrix);
 
-    template <typename map_type>
-    QImage imageFromZeroCenteredSparseMatrix(const std::vector<map_type>& sparse_matrix);
+}  // namespace utils
+}  // namespace hdi
 
-  }
-}
-
-#endif // TIMERS_H
+#endif  // TIMERS_H

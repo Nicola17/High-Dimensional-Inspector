@@ -30,7 +30,6 @@
  *
  */
 
-
 #include "catch.hpp"
 
 /***********************************************/
@@ -39,33 +38,32 @@
 #include "hdi/utils/log_helper_functions.h"
 /***********************************************/
 
-
 /***********************************************/
 /***********************************************/
 /***********************************************/
 
-TEST_CASE( "CoutLog works properly", "[log]" ) {
+TEST_CASE("CoutLog works properly", "[log]") {
   hdi::utils::CoutLog cout_log;
   std::string test_string("CoutLog test string");
 
-  SECTION("A newly constructed CoutLog has no written char"){
-    REQUIRE( cout_log.num_written_chars() == 0 );
+  SECTION("A newly constructed CoutLog has no written char") {
+    REQUIRE(cout_log.num_written_chars() == 0);
   }
 
-  SECTION("A CoutLog print something on the std::cout"){
+  SECTION("A CoutLog print something on the std::cout") {
     cout_log.display(test_string);
-    REQUIRE( cout_log.num_written_chars() > 0 );
+    REQUIRE(cout_log.num_written_chars() > 0);
   }
 
-  SECTION("A CoutLog print a number of chars which are equal to the dimension of a string plus one"){
+  SECTION("A CoutLog print a number of chars which are equal to the dimension of a string plus one") {
     cout_log.display(test_string);
-    REQUIRE( cout_log.num_written_chars() == test_string.size() + 1 );
+    REQUIRE(cout_log.num_written_chars() == test_string.size() + 1);
   }
 
-  SECTION("clear sets the number of written characters to zero"){
+  SECTION("clear sets the number of written characters to zero") {
     cout_log.display(test_string);
     cout_log.clear();
-    REQUIRE( cout_log.num_written_chars() == 0 );
+    REQUIRE(cout_log.num_written_chars() == 0);
   }
 }
 
@@ -73,7 +71,7 @@ TEST_CASE( "CoutLog works properly", "[log]" ) {
 /***********************************************/
 /***********************************************/
 
-TEST_CASE( "CoutLog works properly in combination with the log helpers functions", "[log]" ) {
+TEST_CASE("CoutLog works properly in combination with the log helpers functions", "[log]") {
   hdi::utils::CoutLog cout_log;
   std::string test_string("CoutLog + helpers test string");
   int intValue = 42;
@@ -81,54 +79,54 @@ TEST_CASE( "CoutLog works properly in combination with the log helpers functions
   double doubleValue = 17.17;
   std::string stringValue("Talk is cheap. Show me the code!");
 
-  SECTION("A call to secureLog on a CoutLog object print something on the std::cout"){
-    hdi::utils::secureLog(&cout_log,test_string);
-    REQUIRE( cout_log.num_written_chars() > 0 );
+  SECTION("A call to secureLog on a CoutLog object print something on the std::cout") {
+    hdi::utils::secureLog(&cout_log, test_string);
+    REQUIRE(cout_log.num_written_chars() > 0);
   }
 
-  SECTION("A call to secureLog on a CoutLog object with the enabled flag print something on the std::cout"){
-    hdi::utils::secureLog(&cout_log,test_string,true);
-    REQUIRE( cout_log.num_written_chars() > 0 );
+  SECTION("A call to secureLog on a CoutLog object with the enabled flag print something on the std::cout") {
+    hdi::utils::secureLog(&cout_log, test_string, true);
+    REQUIRE(cout_log.num_written_chars() > 0);
   }
 
-  SECTION("A call to secureLog on a CoutLog object without the enabled flag don't print something on the std::cout"){
-    hdi::utils::secureLog(&cout_log,test_string,false);
-    REQUIRE( cout_log.num_written_chars() == 0 );
+  SECTION("A call to secureLog on a CoutLog object without the enabled flag don't print something on the std::cout") {
+    hdi::utils::secureLog(&cout_log, test_string, false);
+    REQUIRE(cout_log.num_written_chars() == 0);
   }
 
-  SECTION("A call to secureLogValue on a CoutLog object print something on the std::cout"){
-    hdi::utils::secureLogValue(&cout_log,test_string,intValue);
-    REQUIRE( cout_log.num_written_chars() > 0 );
+  SECTION("A call to secureLogValue on a CoutLog object print something on the std::cout") {
+    hdi::utils::secureLogValue(&cout_log, test_string, intValue);
+    REQUIRE(cout_log.num_written_chars() > 0);
   }
 
-  SECTION("A call to secureLogValue on a CoutLog object with the enabled flag print something on the std::cout"){
-    hdi::utils::secureLogValue(&cout_log,test_string,intValue,true);
-    REQUIRE( cout_log.num_written_chars() > 0 );
+  SECTION("A call to secureLogValue on a CoutLog object with the enabled flag print something on the std::cout") {
+    hdi::utils::secureLogValue(&cout_log, test_string, intValue, true);
+    REQUIRE(cout_log.num_written_chars() > 0);
   }
 
-  SECTION("A call to secureLogValue on a CoutLog object without the enabled flag don't print something on the std::cout"){
-    hdi::utils::secureLogValue(&cout_log,test_string,intValue,false);
-    REQUIRE( cout_log.num_written_chars() == 0 );
+  SECTION("A call to secureLogValue on a CoutLog object without the enabled flag don't print something on the std::cout") {
+    hdi::utils::secureLogValue(&cout_log, test_string, intValue, false);
+    REQUIRE(cout_log.num_written_chars() == 0);
   }
 
-  SECTION("A call to secureLogValue on a CoutLog object can print an integer"){
-    hdi::utils::secureLogValue(&cout_log,test_string,intValue);
-    REQUIRE( cout_log.num_written_chars() > 0 );
+  SECTION("A call to secureLogValue on a CoutLog object can print an integer") {
+    hdi::utils::secureLogValue(&cout_log, test_string, intValue);
+    REQUIRE(cout_log.num_written_chars() > 0);
   }
 
-  SECTION("A call to secureLogValue on a CoutLog object can print a float"){
-    hdi::utils::secureLogValue(&cout_log,test_string,floatValue);
-    REQUIRE( cout_log.num_written_chars() > 0 );
+  SECTION("A call to secureLogValue on a CoutLog object can print a float") {
+    hdi::utils::secureLogValue(&cout_log, test_string, floatValue);
+    REQUIRE(cout_log.num_written_chars() > 0);
   }
 
-  SECTION("A call to secureLogValue on a CoutLog object can print a double"){
-    hdi::utils::secureLogValue(&cout_log,test_string,doubleValue);
-    REQUIRE( cout_log.num_written_chars() > 0 );
+  SECTION("A call to secureLogValue on a CoutLog object can print a double") {
+    hdi::utils::secureLogValue(&cout_log, test_string, doubleValue);
+    REQUIRE(cout_log.num_written_chars() > 0);
   }
 
-  SECTION("A call to secureLogValue on a CoutLog object can print a string"){
-    hdi::utils::secureLogValue(&cout_log,test_string,stringValue);
-    REQUIRE( cout_log.num_written_chars() > 0 );
+  SECTION("A call to secureLogValue on a CoutLog object can print a string") {
+    hdi::utils::secureLogValue(&cout_log, test_string, stringValue);
+    REQUIRE(cout_log.num_written_chars() > 0);
   }
 }
 

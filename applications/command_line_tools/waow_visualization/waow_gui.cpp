@@ -30,33 +30,32 @@
  *
  */
 
+#include <stdio.h>
+#include <QCommandLineOption>
+#include <QCommandLineParser>
+#include <QCoreApplication>
+#include <QIcon>
+#include <fstream>
+#include <iostream>
+#include "hdi/analytics/waow_vis_qobj.h"
+#include "hdi/data/embedding.h"
+#include "hdi/data/empty_data.h"
+#include "hdi/data/panel_data.h"
 #include "hdi/dimensionality_reduction/tsne.h"
 #include "hdi/utils/cout_log.h"
-#include "hdi/utils/log_helper_functions.h"
-#include <QCoreApplication>
-#include <QCommandLineParser>
-#include <QCommandLineOption>
-#include <QIcon>
-#include <iostream>
-#include <fstream>
-#include <stdio.h>
-#include "hdi/data/embedding.h"
-#include "hdi/data/panel_data.h"
-#include "hdi/data/empty_data.h"
 #include "hdi/utils/dataset_utils.h"
-#include "hdi/visualization/scatterplot_drawer_fixed_color.h"
-#include "hdi/visualization/scatterplot_drawer_scalar_attribute.h"
-#include "hdi/analytics/waow_vis_qobj.h"
+#include "hdi/utils/log_helper_functions.h"
 #include "hdi/visualization/embedding_lines_drawer.h"
 #include "hdi/visualization/histogram_view_qobj.h"
+#include "hdi/visualization/scatterplot_drawer_fixed_color.h"
+#include "hdi/visualization/scatterplot_drawer_scalar_attribute.h"
 #include "hdi/visualization/word_cloud_qobj.h"
 
-#include "application.h"
 #include <QInputDialog>
+#include "application.h"
 
-int main(int argc, char *argv[])
-{
-  try{
+int main(int argc, char* argv[]) {
+  try {
     hdi::utils::CoutLog log;
     QApplication app(argc, argv);
     QIcon icon;
@@ -76,9 +75,9 @@ int main(int argc, char *argv[])
     parser.addVersionOption();
     parser.addPositionalArgument("data", QCoreApplication::translate("main", "Input folder."));
 
-  ////////////////////////////////////////////////
-  ///////////////   Arguments  /////////////////
-  ////////////////////////////////////////////////
+    ////////////////////////////////////////////////
+    ///////////////   Arguments  /////////////////
+    ////////////////////////////////////////////////
 
     // Process the actual command line arguments given by the user
     parser.process(app);
@@ -86,18 +85,17 @@ int main(int argc, char *argv[])
     const QStringList args = parser.positionalArguments();
     // source is args.at(0), destination is args.at(1)
 
-  ////////////////////////////////////////////////
-  ////////////////////////////////////////////////
-  ////////////////////////////////////////////////
+    ////////////////////////////////////////////////
+    ////////////////////////////////////////////////
+    ////////////////////////////////////////////////
 
-    if(!(args.size()==1 || args.size()==2)){
+    if (!(args.size() == 1 || args.size() == 2)) {
       std::cout << "Wrong number of arguments!" << std::endl;
       return -1;
     }
 
-
     WAOWApplication application;
-    application.resize(1900,750);
+    application.resize(1900, 750);
     application._ui->centralwidget->setStyleSheet("background-color:white;");
     application.show();
     application._log = &log;
@@ -105,31 +103,30 @@ int main(int argc, char *argv[])
     hdi::analytics::WAOWVis waow_vis;
     waow_vis.setLogger(&log);
 
-  ////////////////////////////////////////////////
-  ////////////////////////////////////////////////
-  ////////////////////////////////////////////////
+    ////////////////////////////////////////////////
+    ////////////////////////////////////////////////
+    ////////////////////////////////////////////////
 
-    std::unordered_map<std::string,uint32_t> follower_id;
-    std::unordered_map<std::string,uint32_t> target_id;
+    std::unordered_map<std::string, uint32_t> follower_id;
+    std::unordered_map<std::string, uint32_t> target_id;
     std::shared_ptr<std::vector<Roaring>> follower_to_target(std::make_shared<std::vector<Roaring>>());
     std::shared_ptr<std::vector<Roaring>> target_to_follower(std::make_shared<std::vector<Roaring>>());
     follower_to_target->reserve(1000000);
     target_to_follower->reserve(3000);
 
-    hdi::utils::IO::loadTwitterFollowers(argv[1],*follower_to_target,*target_to_follower,follower_id,target_id);
+    hdi::utils::IO::loadTwitterFollowers(argv[1], *follower_to_target, *target_to_follower, follower_id, target_id);
 
     std::vector<std::shared_ptr<hdi::data::AbstractData>> data_followers(follower_to_target->size());
     std::vector<std::shared_ptr<hdi::data::AbstractData>> data_target(target_to_follower->size());
 
-    for(const auto& target: target_id){
+    for (const auto& target : target_id) {
       data_target[target.second] = std::make_shared<hdi::data::TextData>(target.first);
     }
 
-
-  ////////////////////////////////////////////////
-  //////////   TESTING  ////////////////////////
-  ////////////////////////////////////////////////
-/*
+    ////////////////////////////////////////////////
+    //////////   TESTING  ////////////////////////
+    ////////////////////////////////////////////////
+    /*
 {
   follower_to_target->resize(10000);
   data_followers.resize(10000);
@@ -160,9 +157,9 @@ int main(int argc, char *argv[])
 }
 */
 
-  ////////////////////////////////////////////////
-  ////////////////////////////////////////////////
-  ////////////////////////////////////////////////
+    ////////////////////////////////////////////////
+    ////////////////////////////////////////////////
+    ////////////////////////////////////////////////
 
     hdi::analytics::WAOWVis::hsne_type::Parameters params;
     params._seed = -1;
@@ -177,20 +174,19 @@ int main(int argc, char *argv[])
     params._monte_carlo_sampling = true;
     params._out_of_core_computation = true;
 
-
-    application._waow_vis  = &waow_vis;
+    application._waow_vis = &waow_vis;
     waow_vis.setInterfaceInitializer(&application);
     waow_vis.setVisualizationMode("Default");
-    if(args.size()==2){
+    if (args.size() == 2) {
       //Load from disk
-      waow_vis.initialize(follower_to_target,target_to_follower,data_followers,data_target,argv[2]);
-    }else{
-      waow_vis.initialize(follower_to_target,target_to_follower,data_followers,data_target);
+      waow_vis.initialize(follower_to_target, target_to_follower, data_followers, data_target, argv[2]);
+    } else {
+      waow_vis.initialize(follower_to_target, target_to_follower, data_followers, data_target);
     }
 
-  ////////////////////////////////////////////////
-  ////////////////////////////////////////////////
-  ////////////////////////////////////////////////
+    ////////////////////////////////////////////////
+    ////////////////////////////////////////////////
+    ////////////////////////////////////////////////
 
     hdi::viz::HistogramView histogram_view_before_A;
     hdi::viz::HistogramView histogram_view_after_A;
@@ -205,24 +201,23 @@ int main(int argc, char *argv[])
     histogram_view_before_B.setData(waow_vis.histogramB());
     histogram_view_after_B.setData(waow_vis.histogramUniqueB());
 
-
     application._ui->_histograms_setA_layout->addWidget(histogram_view_before_A.widgetPtr());
     application._ui->_histograms_setA_layout->addWidget(histogram_view_after_A.widgetPtr());
     application._ui->_histograms_setB_layout->addWidget(histogram_view_before_B.widgetPtr());
     application._ui->_histograms_setB_layout->addWidget(histogram_view_after_B.widgetPtr());
 
-  ////////////////////////////////////////////////
-  ////////////////////////////////////////////////
-  ////////////////////////////////////////////////
+    ////////////////////////////////////////////////
+    ////////////////////////////////////////////////
+    ////////////////////////////////////////////////
 
-    application.resize(1800,750);
+    application.resize(1800, 750);
     waow_vis.createOverview();
     waow_vis.setVisualizationMode("Weights");
 
     //waow_vis.save("WAOW_SAVE");
 
     int iter = 0;
-    while(true){
+    while (true) {
       //waow_vis.doAnIterateOnAllViews();
       //std::this_thread::sleep_for(std::chrono::milliseconds(10));
       application.iterate();
@@ -230,10 +225,13 @@ int main(int argc, char *argv[])
     }
     return app.exec();
 
-
+  } catch (std::logic_error& ex) {
+    std::cout << "Logic error: " << ex.what() << std::endl;
+  } catch (std::runtime_error& ex) {
+    std::cout << "Runtime error: " << ex.what() << std::endl;
+  } catch (std::bad_alloc& ba) {
+    std::cerr << "bad_alloc caught: " << ba.what() << std::endl;
+  } catch (...) {
+    std::cout << "An unknown error occurred" << std::endl;
   }
-  catch(std::logic_error& ex){ std::cout << "Logic error: " << ex.what() << std::endl;}
-  catch(std::runtime_error& ex){ std::cout << "Runtime error: " << ex.what() << std::endl;}
-  catch(std::bad_alloc& ba){ std::cerr << "bad_alloc caught: " << ba.what() << std::endl; }
-  catch(...){ std::cout << "An unknown error occurred" << std::endl;}
 }

@@ -32,168 +32,162 @@
 
 #include "hdi/visualization/scatterplot_drawer_scalar_attribute.h"
 #include <QOpenGLFunctions>
-#include "opengl_helpers.h"
 #include "hdi/utils/assert_by_exception.h"
+#include "opengl_helpers.h"
 
-#define GLSL(version, shader)  "#version " #version "\n" #shader
+#define GLSL(version, shader) "#version " #version "\n" #shader
 
-namespace hdi{
-  namespace viz{
+namespace hdi {
+namespace viz {
 
-    ScatterplotDrawerScalarAttribute::ScatterplotDrawerScalarAttribute():
-      _program(nullptr),
-      _vshader(nullptr),
-      _fshader(nullptr),
-      _color(qRgb(0,0,0)),
-      _selection_color(qRgb(255,150,0)),
-      _initialized(false),
-      _point_size(20),
-      _min_point_size(2),
-      _alpha(.7),
-      _z_coord(0),
-      _z_coord_selection(-0.5),
-      _min_val(0),
-      _max_val(1)
-    {
-      //initialize();
+ScatterplotDrawerScalarAttribute::ScatterplotDrawerScalarAttribute() : _program(nullptr),
+                                                                       _vshader(nullptr),
+                                                                       _fshader(nullptr),
+                                                                       _color(qRgb(0, 0, 0)),
+                                                                       _selection_color(qRgb(255, 150, 0)),
+                                                                       _initialized(false),
+                                                                       _point_size(20),
+                                                                       _min_point_size(2),
+                                                                       _alpha(.7),
+                                                                       _z_coord(0),
+                                                                       _z_coord_selection(-0.5),
+                                                                       _min_val(0),
+                                                                       _max_val(1) {
+  //initialize();
+}
 
-    }
+void ScatterplotDrawerScalarAttribute::initialize(QGLContext* context) {
+  {  //Points color
+    const char* vsrc = GLSL(130,
+                            in highp vec4 pos_attribute;
+                            in highp float scalar_attribute;
+                            in highp float flag_attribute;
+                            uniform highp mat4 matrix_uniform;
+                            uniform highp float alpha_uniform;
+                            uniform highp float z_coord_uniform;
+                            uniform highp float min_uniform;
+                            uniform highp float max_uniform;
+                            uniform highp float pnt_size_uniform;
+                            uniform highp float min_pnt_size_uniform;
+                            uniform highp vec4 color_uniform;
+                            uniform highp vec4 selection_color_uniform;
+                            out lowp vec4 col;
 
-    void ScatterplotDrawerScalarAttribute::initialize(QGLContext* context){
-      {//Points color
-        const char *vsrc = GLSL(130,
-          in highp vec4 pos_attribute;        
-          in highp float scalar_attribute;
-          in highp float flag_attribute;
-          uniform highp mat4 matrix_uniform;        
-          uniform highp float alpha_uniform;
-          uniform highp float z_coord_uniform;
-          uniform highp float min_uniform;
-          uniform highp float max_uniform;
-          uniform highp float pnt_size_uniform;
-          uniform highp float min_pnt_size_uniform;
-          uniform highp vec4 color_uniform;
-          uniform highp vec4 selection_color_uniform;
-          out lowp vec4 col;            
+                            void main() {
+                              float v = (scalar_attribute - min_uniform) / (max_uniform - min_uniform + 0.0001);
+                              if (v > 1)
+                                v = 1;
+                              if (v < 0)
+                                v = 0;
 
-          void main() {
-            float v = (scalar_attribute-min_uniform)/(max_uniform-min_uniform+0.0001);
-            if(v > 1)
-              v = 1;
-            if(v < 0)
-              v = 0;
+                              if ((int(0.01 + flag_attribute) % 2) == 1) {
+                                col = selection_color_uniform;
+                              } else {
+                                col = color_uniform;
+                              }
+                              col.a = alpha_uniform;
 
-            if((int(0.01+flag_attribute)%2) == 1){
-              col = selection_color_uniform;
-            }else{
-              col = color_uniform;
-            }
-            col.a = alpha_uniform;
+                              gl_Position = matrix_uniform * pos_attribute;
+                              gl_Position.z = z_coord_uniform;
+                              gl_PointSize = min_pnt_size_uniform + v * (pnt_size_uniform - min_pnt_size_uniform);
+                            });
+    const char* fsrc = GLSL(130,
+                            in lowp vec4 col;
+                            void main() {
+                              gl_FragColor = col;
+                            });
 
-            gl_Position = matrix_uniform * pos_attribute;
-            gl_Position.z = z_coord_uniform;
-            gl_PointSize = min_pnt_size_uniform + v * (pnt_size_uniform-min_pnt_size_uniform);
-          }                    
-        );
-        const char *fsrc = GLSL(130,
-          in lowp vec4 col;            
-          void main() {                
-             gl_FragColor = col;
-          }                      
-        );
+    _vshader = std::unique_ptr<QGLShader>(new QGLShader(QGLShader::Vertex));
+    _fshader = std::unique_ptr<QGLShader>(new QGLShader(QGLShader::Fragment));
 
-        _vshader = std::unique_ptr<QGLShader>(new QGLShader(QGLShader::Vertex));
-        _fshader = std::unique_ptr<QGLShader>(new QGLShader(QGLShader::Fragment));
+    _vshader->compileSourceCode(vsrc);
+    _fshader->compileSourceCode(fsrc);
 
-        _vshader->compileSourceCode(vsrc);
-        _fshader->compileSourceCode(fsrc);
+    _program = std::unique_ptr<QGLShaderProgram>(new QGLShaderProgram());
+    _program->addShader(_vshader.get());
+    _program->addShader(_fshader.get());
+    _program->link();
 
+    _coords_attribute = _program->attributeLocation("pos_attribute");
+    _flags_attribute = _program->attributeLocation("flag_attribute");
+    _scalar_attribute = _program->attributeLocation("scalar_attribute");
 
-        _program = std::unique_ptr<QGLShaderProgram>(new QGLShaderProgram());
-        _program->addShader(_vshader.get());
-        _program->addShader(_fshader.get());
-        _program->link();
+    _z_coord_uniform = _program->uniformLocation("z_coord_uniform");
+    _alpha_uniform = _program->uniformLocation("alpha_uniform");
+    _matrix_uniform = _program->uniformLocation("matrix_uniform");
+    _min_uniform = _program->uniformLocation("min_uniform");
+    _max_uniform = _program->uniformLocation("max_uniform");
+    _pnt_size_uniform = _program->uniformLocation("pnt_size_uniform");
+    _color_uniform = _program->uniformLocation("color_uniform");
+    _selection_color_uniform = _program->uniformLocation("selection_color_uniform");
+    _min_pnt_size_uniform = _program->uniformLocation("min_pnt_size_uniform");
 
-        _coords_attribute  = _program->attributeLocation("pos_attribute");
-        _flags_attribute  = _program->attributeLocation("flag_attribute");
-        _scalar_attribute  = _program->attributeLocation("scalar_attribute");
+    _program->release();
+  }
 
-        _z_coord_uniform  = _program->uniformLocation("z_coord_uniform");
-        _alpha_uniform    = _program->uniformLocation("alpha_uniform");
-        _matrix_uniform    = _program->uniformLocation("matrix_uniform");
-        _min_uniform    = _program->uniformLocation("min_uniform");
-        _max_uniform    = _program->uniformLocation("max_uniform");
-        _pnt_size_uniform   = _program->uniformLocation("pnt_size_uniform");
-        _color_uniform   = _program->uniformLocation("color_uniform");
-        _selection_color_uniform   = _program->uniformLocation("selection_color_uniform");
-        _min_pnt_size_uniform   = _program->uniformLocation("min_pnt_size_uniform");
+  _initialized = true;
+}
 
-        _program->release();
-      }
+void ScatterplotDrawerScalarAttribute::draw(const point_type& bl, const point_type& tr) {
+  checkAndThrowLogic(_initialized, "Shader must be initilized");
+  ScopedCapabilityEnabler blend_helper(GL_BLEND);
+  ScopedCapabilityEnabler depth_test_helper(GL_DEPTH_TEST);
+  ScopedCapabilityEnabler point_smooth_helper(GL_POINT_SMOOTH);
+  ScopedCapabilityEnabler multisample_helper(GL_MULTISAMPLE);
+  ScopedCapabilityEnabler point_size_helper(GL_PROGRAM_POINT_SIZE);
+  glDepthMask(GL_FALSE);
 
-      _initialized = true;
-    }
+  {
+    glPointSize(_point_size);
+    _program->bind();
+    QMatrix4x4 matrix;
+    matrix.ortho(bl.x(), tr.x(), bl.y(), tr.y(), 1, -1);
 
-    void ScatterplotDrawerScalarAttribute::draw(const point_type& bl, const point_type& tr){
-      checkAndThrowLogic(_initialized,"Shader must be initilized");
-      ScopedCapabilityEnabler blend_helper(GL_BLEND);
-      ScopedCapabilityEnabler depth_test_helper(GL_DEPTH_TEST);
-      ScopedCapabilityEnabler point_smooth_helper(GL_POINT_SMOOTH);
-      ScopedCapabilityEnabler multisample_helper(GL_MULTISAMPLE);
-      ScopedCapabilityEnabler point_size_helper(GL_PROGRAM_POINT_SIZE);
-      glDepthMask(GL_FALSE);
+    _program->setUniformValue(_min_uniform, _min_val);
+    _program->setUniformValue(_max_uniform, _max_val);
+    _program->setUniformValue(_pnt_size_uniform, _point_size);
+    _program->setUniformValue(_min_pnt_size_uniform, _min_point_size);
+    _program->setUniformValue(_matrix_uniform, matrix);
+    _program->setUniformValue(_alpha_uniform, _alpha);
+    _program->setUniformValue(_z_coord_uniform, _z_coord);
+    _program->setUniformValue(_color_uniform, _color);
+    _program->setUniformValue(_selection_color_uniform, _selection_color);
 
-      {
-        glPointSize(_point_size);
-        _program->bind();
-          QMatrix4x4 matrix;
-          matrix.ortho(bl.x(), tr.x(), bl.y(), tr.y(), 1, -1);
+    QOpenGLFunctions glFuncs(QOpenGLContext::currentContext());
+    glFuncs.glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE);
+    _program->enableAttributeArray(_coords_attribute);
+    glFuncs.glVertexAttribPointer(_coords_attribute, 2, GL_FLOAT, GL_FALSE, 0, _embedding);
 
-          _program->setUniformValue(_min_uniform, _min_val);
-          _program->setUniformValue(_max_uniform, _max_val);
-          _program->setUniformValue(_pnt_size_uniform, _point_size);
-          _program->setUniformValue(_min_pnt_size_uniform, _min_point_size);
-          _program->setUniformValue(_matrix_uniform, matrix);
-          _program->setUniformValue(_alpha_uniform, _alpha);
-          _program->setUniformValue(_z_coord_uniform, _z_coord);
-          _program->setUniformValue(_color_uniform, _color);
-          _program->setUniformValue(_selection_color_uniform, _selection_color);
+    _program->enableAttributeArray(_scalar_attribute);
+    glFuncs.glVertexAttribPointer(_scalar_attribute, 1, GL_FLOAT, GL_FALSE, 0, _attribute);
 
-          QOpenGLFunctions glFuncs(QOpenGLContext::currentContext());
-          glFuncs.glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE);
-          _program->enableAttributeArray(_coords_attribute);
-          glFuncs.glVertexAttribPointer(_coords_attribute, 2, GL_FLOAT, GL_FALSE, 0, _embedding);
+    _program->enableAttributeArray(_flags_attribute);
+    glFuncs.glVertexAttribPointer(_flags_attribute, 1, GL_UNSIGNED_INT, GL_FALSE, 0, _flags);
 
-          _program->enableAttributeArray(_scalar_attribute);
-          glFuncs.glVertexAttribPointer(_scalar_attribute, 1, GL_FLOAT, GL_FALSE, 0, _attribute);
+    glDrawArrays(GL_POINTS, 0, _num_points);
+    _program->release();
+  }
 
-          _program->enableAttributeArray(_flags_attribute);
-          glFuncs.glVertexAttribPointer(_flags_attribute, 1, GL_UNSIGNED_INT, GL_FALSE, 0, _flags);
+  glDepthMask(GL_TRUE);
+}
 
-          glDrawArrays(GL_POINTS, 0, _num_points);
-        _program->release();
-      }
+void ScatterplotDrawerScalarAttribute::setData(const scalar_type* embedding, const scalar_type* attribute, const flag_type* flags, int num_points) {
+  _embedding = embedding;
+  _attribute = attribute;
+  _flags = flags;
+  _num_points = num_points;
+}
 
-      glDepthMask(GL_TRUE);
-    }
-
-    void ScatterplotDrawerScalarAttribute::setData(const scalar_type* embedding, const scalar_type* attribute, const flag_type* flags, int num_points){
-      _embedding = embedding;
-      _attribute = attribute;
-      _flags = flags;
-      _num_points = num_points;
-    }
-
-    void ScatterplotDrawerScalarAttribute::updateLimitsFromData(){
-      _min_val = std::numeric_limits<scalar_type>::max();
-      _max_val = -std::numeric_limits<scalar_type>::max();
-      scalar_type avg = 0; //QUICKPAPER
-      for(int i = 0; i < _num_points; ++i){
-        _min_val = std::min(_attribute[i],_min_val);
-        _max_val = std::max(_attribute[i],_max_val);
-        avg += _attribute[i];//QUICKPAPER
-      }
-    }
-
+void ScatterplotDrawerScalarAttribute::updateLimitsFromData() {
+  _min_val = std::numeric_limits<scalar_type>::max();
+  _max_val = -std::numeric_limits<scalar_type>::max();
+  scalar_type avg = 0;  //QUICKPAPER
+  for (int i = 0; i < _num_points; ++i) {
+    _min_val = std::min(_attribute[i], _min_val);
+    _max_val = std::max(_attribute[i], _max_val);
+    avg += _attribute[i];  //QUICKPAPER
   }
 }
+
+}  // namespace viz
+}  // namespace hdi

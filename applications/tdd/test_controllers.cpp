@@ -30,13 +30,13 @@
  *
  */
 
-#include "catch.hpp"
-#include "hdi/visualization/controller_embedding_selection_qobj.h"
-#include "hdi/data/panel_data.h"
-#include "hdi/data/embedding.h"
-#include "hdi/visualization/scatterplot_canvas_qobj.h"
 #include <QApplication>
+#include "catch.hpp"
+#include "hdi/data/embedding.h"
+#include "hdi/data/panel_data.h"
 #include "hdi/utils/cout_log.h"
+#include "hdi/visualization/controller_embedding_selection_qobj.h"
+#include "hdi/visualization/scatterplot_canvas_qobj.h"
 
 /*
 TEST_CASE( "ControllerSelectionEmbedding throws the right exceptions", "[controllers]" ) {

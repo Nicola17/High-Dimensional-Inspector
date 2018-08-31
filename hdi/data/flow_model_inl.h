@@ -35,11 +35,9 @@
 
 #include "flow_model.h"
 
-namespace hdi{
-  namespace data{
-
-
-  }
+namespace hdi {
+namespace data {
 }
+}  // namespace hdi
 
 #endif

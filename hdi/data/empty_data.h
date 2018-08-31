@@ -35,22 +35,21 @@
 
 #include "hdi/data/abstract_data.h"
 
-namespace hdi{
-  namespace data{
+namespace hdi {
+namespace data {
 
-    //! Empty data type
-    /*!
+//! Empty data type
+/*!
       Empty data type
       \author Nicola Pezzotti
     */
-    class EmptyData: public AbstractData{
-    public:
-      EmptyData(){}
-      virtual ~EmptyData(){}
-    };
+class EmptyData : public AbstractData {
+ public:
+  EmptyData() {}
+  virtual ~EmptyData() {}
+};
 
-  }
-}
-
+}  // namespace data
+}  // namespace hdi
 
 #endif

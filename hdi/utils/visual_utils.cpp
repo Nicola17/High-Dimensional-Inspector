@@ -30,32 +30,31 @@
  *
  */
 
-#include "visual_utils_inl.h"
 #include <map>
 #include <unordered_map>
 #include <vector>
 #include "hdi/data/map_mem_eff.h"
+#include "visual_utils_inl.h"
 
-namespace hdi{
-  namespace utils{
+namespace hdi {
+namespace utils {
 
-    template QImage imageFromMatrix(const std::vector<std::vector<float>>& matrix, float max);
-    template QImage imageFromMatrix(const std::vector<std::vector<double>>& matrix, double max);
+template QImage imageFromMatrix(const std::vector<std::vector<float>>& matrix, float max);
+template QImage imageFromMatrix(const std::vector<std::vector<double>>& matrix, double max);
 
-    template QImage imageFromSparseMatrix(const std::vector<std::unordered_map<unsigned int,double> >& sparse_matrix);
-    template QImage imageFromSparseMatrix(const std::vector<std::unordered_map<unsigned int,float> >& sparse_matrix);
-    template QImage imageFromSparseMatrix(const std::vector<std::map<unsigned int,double> >& sparse_matrix);
-    template QImage imageFromSparseMatrix(const std::vector<std::map<unsigned int,float> >& sparse_matrix);
-    template QImage imageFromSparseMatrix(const std::vector<hdi::data::MapMemEff<unsigned int,double> >& sparse_matrix);
-    template QImage imageFromSparseMatrix(const std::vector<hdi::data::MapMemEff<unsigned int,float> >& sparse_matrix);
+template QImage imageFromSparseMatrix(const std::vector<std::unordered_map<unsigned int, double>>& sparse_matrix);
+template QImage imageFromSparseMatrix(const std::vector<std::unordered_map<unsigned int, float>>& sparse_matrix);
+template QImage imageFromSparseMatrix(const std::vector<std::map<unsigned int, double>>& sparse_matrix);
+template QImage imageFromSparseMatrix(const std::vector<std::map<unsigned int, float>>& sparse_matrix);
+template QImage imageFromSparseMatrix(const std::vector<hdi::data::MapMemEff<unsigned int, double>>& sparse_matrix);
+template QImage imageFromSparseMatrix(const std::vector<hdi::data::MapMemEff<unsigned int, float>>& sparse_matrix);
 
-    template QImage imageFromZeroCenteredSparseMatrix(const std::vector<std::unordered_map<unsigned int,double> >& sparse_matrix);
-    template QImage imageFromZeroCenteredSparseMatrix(const std::vector<std::unordered_map<unsigned int,float> >& sparse_matrix);
-    template QImage imageFromZeroCenteredSparseMatrix(const std::vector<std::map<unsigned int,double> >& sparse_matrix);
-    template QImage imageFromZeroCenteredSparseMatrix(const std::vector<std::map<unsigned int,float> >& sparse_matrix);
-    template QImage imageFromZeroCenteredSparseMatrix(const std::vector<hdi::data::MapMemEff<unsigned int,double> >& sparse_matrix);
-    template QImage imageFromZeroCenteredSparseMatrix(const std::vector<hdi::data::MapMemEff<unsigned int,float> >& sparse_matrix);
+template QImage imageFromZeroCenteredSparseMatrix(const std::vector<std::unordered_map<unsigned int, double>>& sparse_matrix);
+template QImage imageFromZeroCenteredSparseMatrix(const std::vector<std::unordered_map<unsigned int, float>>& sparse_matrix);
+template QImage imageFromZeroCenteredSparseMatrix(const std::vector<std::map<unsigned int, double>>& sparse_matrix);
+template QImage imageFromZeroCenteredSparseMatrix(const std::vector<std::map<unsigned int, float>>& sparse_matrix);
+template QImage imageFromZeroCenteredSparseMatrix(const std::vector<hdi::data::MapMemEff<unsigned int, double>>& sparse_matrix);
+template QImage imageFromZeroCenteredSparseMatrix(const std::vector<hdi::data::MapMemEff<unsigned int, float>>& sparse_matrix);
 
-  }
-}
-
+}  // namespace utils
+}  // namespace hdi

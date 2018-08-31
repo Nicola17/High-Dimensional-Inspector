@@ -33,74 +33,68 @@
 #ifndef HISTOGRAM_INL
 #define HISTOGRAM_INL
 
-#include "hdi/data/histogram.h"
 #include <algorithm>
 #include <limits>
-#include <algorithm>
+#include "hdi/data/histogram.h"
 
-namespace hdi{
-  namespace data{
+namespace hdi {
+namespace data {
 
-    template <typename scalar_type>
-    Histogram<scalar_type>::Histogram():
-      _max(0),
-      _min(0),
-      _num_buckets(0)
-    {}
-    template <typename scalar_type>
-    Histogram<scalar_type>::Histogram(scalar_type min, scalar_type max, unsigned int num_buckets):
-      _max(max),
-      _min(min),
-      _num_buckets(num_buckets),
-      _histogram(num_buckets,0)
-    {}
+template <typename scalar_type>
+Histogram<scalar_type>::Histogram() : _max(0),
+                                      _min(0),
+                                      _num_buckets(0) {}
+template <typename scalar_type>
+Histogram<scalar_type>::Histogram(scalar_type min, scalar_type max, unsigned int num_buckets) : _max(max),
+                                                                                                _min(min),
+                                                                                                _num_buckets(num_buckets),
+                                                                                                _histogram(num_buckets, 0) {}
 
-    template <typename scalar_type>
-    void Histogram<scalar_type>::resize(scalar_type min, scalar_type max, unsigned int num_buckets){
-      _max = max;
-      _min = min;
-      _num_buckets = num_buckets;
-      _histogram.resize(num_buckets);
-      clear();
-    }
+template <typename scalar_type>
+void Histogram<scalar_type>::resize(scalar_type min, scalar_type max, unsigned int num_buckets) {
+  _max = max;
+  _min = min;
+  _num_buckets = num_buckets;
+  _histogram.resize(num_buckets);
+  clear();
+}
 
-    template <typename scalar_type>
-    void Histogram<scalar_type>::clear(){
-      for(auto& b: _histogram){
-        b = 0;
-      }
-    }
-
-    template <typename scalar_type>
-    scalar_type Histogram<scalar_type>::sum()const{
-      scalar_type n = 0;
-      for(auto& b: _histogram){
-        n += b;
-      }
-      return n;
-    }
-
-    template <typename scalar_type>
-    void Histogram<scalar_type>::add(scalar_type v){
-      if(v < _min || v > _max){
-        return;
-      }
-      if(v == _max){
-        ++_histogram[_num_buckets-1];
-        return;
-      }
-      int id = (v-_min)/(_max-_min)*num_buckets();
-      ++_histogram[id];
-    }
-
-
-    template <typename scalar_type>
-    std::pair<scalar_type, scalar_type> Histogram<scalar_type>::getBucketLimits(unsigned int id)const{
-      scalar_type l = (_max-_min)/num_buckets();
-      return std::pair<scalar_type,scalar_type>(_min+id*l,_min+(id+1)*l);
-    }
-
+template <typename scalar_type>
+void Histogram<scalar_type>::clear() {
+  for (auto& b : _histogram) {
+    b = 0;
   }
 }
+
+template <typename scalar_type>
+scalar_type Histogram<scalar_type>::sum() const {
+  scalar_type n = 0;
+  for (auto& b : _histogram) {
+    n += b;
+  }
+  return n;
+}
+
+template <typename scalar_type>
+void Histogram<scalar_type>::add(scalar_type v) {
+  if (v < _min || v > _max) {
+    return;
+  }
+  if (v == _max) {
+    ++_histogram[_num_buckets - 1];
+    return;
+  }
+  int id = (v - _min) / (_max - _min) * num_buckets();
+  ++_histogram[id];
+}
+
+template <typename scalar_type>
+std::pair<scalar_type, scalar_type> Histogram<scalar_type>::getBucketLimits(unsigned int id) const {
+  scalar_type l = (_max - _min) / num_buckets();
+  return std::pair<scalar_type, scalar_type>(_min + id * l, _min + (id + 1) * l);
+}
+
+}  // namespace data
+}  // namespace hdi
 
 #endif

@@ -37,41 +37,41 @@
 #include <ctime>
 #include "hdi/utils/timing_utils.h"
 
-namespace hdi{
-  namespace utils{
+namespace hdi {
+namespace utils {
 
-    class Timer{
-    private:
-      typedef std::chrono::time_point<std::chrono::system_clock> TimePoint;
+class Timer {
+ private:
+  typedef std::chrono::time_point<std::chrono::system_clock> TimePoint;
 
-    public:
-      Timer();
+ public:
+  Timer();
 
-      //! return the elapsed time
-      template <class UnitOfMeas>
-      double elapsedTime()const;
-      //! start the timer
-      void start();
-      //! stop the timer
-      void stop();
-      //! return the timer condition
-      bool isStarted()const;
-      //! return the availability of the elapsed time
-      bool isElapsedTimeAvailable()const;
+  //! return the elapsed time
+  template <class UnitOfMeas>
+  double elapsedTime() const;
+  //! start the timer
+  void start();
+  //! stop the timer
+  void stop();
+  //! return the timer condition
+  bool isStarted() const;
+  //! return the availability of the elapsed time
+  bool isElapsedTimeAvailable() const;
 
-    private:
-      TimePoint _start;
-      TimePoint _stop;
+ private:
+  TimePoint _start;
+  TimePoint _stop;
 
-      bool _started;
-      bool _elapsed_time_available;
-    };
+  bool _started;
+  bool _elapsed_time_available;
+};
 
-    template <class UnitOfMeas>
-    double Timer::elapsedTime()const{
-      return std::chrono::duration<double, typename UnitOfMeas::period>(_stop - _start).count();
-    }
-  }
+template <class UnitOfMeas>
+double Timer::elapsedTime() const {
+  return std::chrono::duration<double, typename UnitOfMeas::period>(_stop - _start).count();
 }
+}  // namespace utils
+}  // namespace hdi
 
-#endif // TIMERS_H
+#endif  // TIMERS_H

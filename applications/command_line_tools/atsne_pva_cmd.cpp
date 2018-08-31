@@ -30,31 +30,30 @@
  *
  */
 
+#include "hdi/data/embedding.h"
+#include "hdi/data/io.h"
+#include "hdi/data/panel_data.h"
+#include "hdi/dimensionality_reduction/hd_joint_probability_generator.h"
+#include "hdi/dimensionality_reduction/sparse_tsne_user_def_probabilities.h"
 #include "hdi/dimensionality_reduction/tsne.h"
 #include "hdi/utils/cout_log.h"
 #include "hdi/utils/log_helper_functions.h"
-#include "hdi/data/embedding.h"
-#include "hdi/data/panel_data.h"
-#include "hdi/data/io.h"
-#include "hdi/dimensionality_reduction/hd_joint_probability_generator.h"
-#include "hdi/dimensionality_reduction/sparse_tsne_user_def_probabilities.h"
-#include "hdi/utils/visual_utils.h"
 #include "hdi/utils/scoped_timers.h"
+#include "hdi/utils/visual_utils.h"
 #include "hdi/visualization/scatterplot_canvas_qobj.h"
 #include "hdi/visualization/scatterplot_drawer_fixed_color.h"
 
 #include <QApplication>
-#include <QCommandLineParser>
 #include <QCommandLineOption>
+#include <QCommandLineParser>
 #include <QIcon>
 
-#include <iostream>
-#include <fstream>
 #include <stdio.h>
+#include <fstream>
+#include <iostream>
 
-int main(int argc, char *argv[])
-{
-  try{
+int main(int argc, char* argv[]) {
+  try {
     QApplication app(argc, argv);
     QApplication::setApplicationName("Approximated tSNE with Progressive Visualization");
     QApplication::setApplicationVersion("0.1");
@@ -72,44 +71,51 @@ int main(int argc, char *argv[])
     ///////////////   Arguments    /////////////////
     ////////////////////////////////////////////////
     // Verbose
-    QCommandLineOption verbose_option(QStringList() << "o" << "verbose",
-        QCoreApplication::translate("main", "Verbose"));
+    QCommandLineOption verbose_option(QStringList() << "o"
+                                                    << "verbose",
+                                      QCoreApplication::translate("main", "Verbose"));
     parser.addOption(verbose_option);
 
     // Iterations
-    QCommandLineOption iterations_option(QStringList() << "i" << "iterations",
-        QCoreApplication::translate("main", "Run the gradient for <iterations>."),
-        QCoreApplication::translate("main", "iterations"));
+    QCommandLineOption iterations_option(QStringList() << "i"
+                                                       << "iterations",
+                                         QCoreApplication::translate("main", "Run the gradient for <iterations>."),
+                                         QCoreApplication::translate("main", "iterations"));
     parser.addOption(iterations_option);
 
     //Dimensions
-    QCommandLineOption target_dimensions_option(QStringList() << "d" << "target_dimensions",
-        QCoreApplication::translate("main", "Reduce the dimensionality to <target_dimensions>."),
-        QCoreApplication::translate("main", "target_dimensions"));
+    QCommandLineOption target_dimensions_option(QStringList() << "d"
+                                                              << "target_dimensions",
+                                                QCoreApplication::translate("main", "Reduce the dimensionality to <target_dimensions>."),
+                                                QCoreApplication::translate("main", "target_dimensions"));
     parser.addOption(target_dimensions_option);
 
     //Exaggeration iter
-    QCommandLineOption exaggeration_iter_option(QStringList() << "x" << "exaggeration_iter",
-        QCoreApplication::translate("main", "Remove the exaggeration factor after <exaggeration_iter> iterations."),
-        QCoreApplication::translate("main", "exaggeration_iter"));
+    QCommandLineOption exaggeration_iter_option(QStringList() << "x"
+                                                              << "exaggeration_iter",
+                                                QCoreApplication::translate("main", "Remove the exaggeration factor after <exaggeration_iter> iterations."),
+                                                QCoreApplication::translate("main", "exaggeration_iter"));
     parser.addOption(exaggeration_iter_option);
 
     //Perplexity
-    QCommandLineOption perplexity_option(QStringList() << "p" << "perplexity",
-        QCoreApplication::translate("main", "Use perplexity value of <perplexity>."),
-        QCoreApplication::translate("main", "perplexity"));
+    QCommandLineOption perplexity_option(QStringList() << "p"
+                                                       << "perplexity",
+                                         QCoreApplication::translate("main", "Use perplexity value of <perplexity>."),
+                                         QCoreApplication::translate("main", "perplexity"));
     parser.addOption(perplexity_option);
 
     //Perplexity
-    QCommandLineOption theta_option(QStringList() << "t" << "theta",
-        QCoreApplication::translate("main", "Use theta value of <theta> in the BH computation [0 <= t <= 1]."),
-        QCoreApplication::translate("main", "theta"));
+    QCommandLineOption theta_option(QStringList() << "t"
+                                                  << "theta",
+                                    QCoreApplication::translate("main", "Use theta value of <theta> in the BH computation [0 <= t <= 1]."),
+                                    QCoreApplication::translate("main", "theta"));
     parser.addOption(theta_option);
 
     //Save similarities
-    QCommandLineOption save_similarities_option(QStringList() << "s" << "similarities",
-        QCoreApplication::translate("main", "Save the similarity matrix P in <similarities>."),
-        QCoreApplication::translate("main", "similarities"));
+    QCommandLineOption save_similarities_option(QStringList() << "s"
+                                                              << "similarities",
+                                                QCoreApplication::translate("main", "Save the similarity matrix P in <similarities>."),
+                                                QCoreApplication::translate("main", "similarities"));
     parser.addOption(save_similarities_option);
 
     // Process the actual command line arguments given by the user
@@ -118,45 +124,44 @@ int main(int argc, char *argv[])
     const QStringList args = parser.positionalArguments();
     // source is args.at(0), destination is args.at(1)
 
-  ////////////////////////////////////////////////
-  ////////////////////////////////////////////////
-  ////////////////////////////////////////////////
+    ////////////////////////////////////////////////
+    ////////////////////////////////////////////////
+    ////////////////////////////////////////////////
 
-    if(args.size()!=4){
+    if (args.size() != 4) {
       std::cout << "Not enough arguments!" << std::endl;
       return -1;
     }
 
-    int num_data_points         = atoi(args.at(2).toStdString().c_str());
-    int num_dimensions          = atoi(args.at(3).toStdString().c_str());
+    int num_data_points = atoi(args.at(2).toStdString().c_str());
+    int num_dimensions = atoi(args.at(3).toStdString().c_str());
 
-    bool verbose                = false;
-    int iterations              = 1000;
-    int exaggeration_iter       = 250;
-    int perplexity              = 30;
-    double theta                = 0.5;
-    int num_target_dimensions   = 2;
+    bool verbose = false;
+    int iterations = 1000;
+    int exaggeration_iter = 250;
+    int perplexity = 30;
+    double theta = 0.5;
+    int num_target_dimensions = 2;
 
-
-    verbose     = parser.isSet(verbose_option);
-    if(parser.isSet(iterations_option)){
-      iterations  = atoi(parser.value(iterations_option).toStdString().c_str());
+    verbose = parser.isSet(verbose_option);
+    if (parser.isSet(iterations_option)) {
+      iterations = atoi(parser.value(iterations_option).toStdString().c_str());
     }
-    if(parser.isSet(exaggeration_iter_option)){
+    if (parser.isSet(exaggeration_iter_option)) {
       exaggeration_iter = atoi(parser.value(exaggeration_iter_option).toStdString().c_str());
     }
-    if(parser.isSet(perplexity_option)){
+    if (parser.isSet(perplexity_option)) {
       perplexity = atoi(parser.value(perplexity_option).toStdString().c_str());
     }
-    if(parser.isSet(theta_option)){
+    if (parser.isSet(theta_option)) {
       theta = atof(parser.value(theta_option).toStdString().c_str());
       hdi::checkAndThrowRuntime(theta >= 0 && theta <= 1, "Invalid theta value");
     }
-    if(parser.isSet(target_dimensions_option)){
+    if (parser.isSet(target_dimensions_option)) {
       num_target_dimensions = atoi(parser.value(target_dimensions_option).toStdString().c_str());
       hdi::checkAndThrowRuntime(num_target_dimensions >= 1, "Invalid number of target dimensions");
     }
-    if(verbose){
+    if (verbose) {
       std::cout << "===============================================" << std::endl;
       std::cout << "Arguments" << std::endl;
       std::cout << "\tHigh-Dim:\t\t" << args.at(0).toStdString() << std::endl;
@@ -171,19 +176,18 @@ int main(int argc, char *argv[])
       std::cout << "===============================================" << std::endl;
     }
 
-
     ////////////////////////////////////////////////
     ////////////////////////////////////////////////
     ////////////////////////////////////////////////
 
-    float data_loading_time         = 0;
-    float similarities_comp_time    = 0;
-    float gradient_desc_comp_time   = 0;
-    float data_saving_time          = 0;
+    float data_loading_time = 0;
+    float similarities_comp_time = 0;
+    float gradient_desc_comp_time = 0;
+    float data_saving_time = 0;
 
-  ////////////////////////////////////////////////
-  ////////////////////////////////////////////////
-  ////////////////////////////////////////////////
+    ////////////////////////////////////////////////
+    ////////////////////////////////////////////////
+    ////////////////////////////////////////////////
 
     typedef float scalar_type;
     //Input
@@ -191,20 +195,20 @@ int main(int argc, char *argv[])
     data.resize(num_data_points * num_dimensions);
 
     {
-      hdi::utils::ScopedTimer<float,hdi::utils::Seconds> timer(data_loading_time);
-      std::ifstream input_file (args.at(0).toStdString(), std::ios::in|std::ios::binary|std::ios::ate);
-      if(int(input_file.tellg()) != int(sizeof(scalar_type) * num_dimensions * num_data_points)){
-          std::cout << "Input file size doesn't agree with input parameters!" << std::endl;
-          return 1;
+      hdi::utils::ScopedTimer<float, hdi::utils::Seconds> timer(data_loading_time);
+      std::ifstream input_file(args.at(0).toStdString(), std::ios::in | std::ios::binary | std::ios::ate);
+      if (int(input_file.tellg()) != int(sizeof(scalar_type) * num_dimensions * num_data_points)) {
+        std::cout << "Input file size doesn't agree with input parameters!" << std::endl;
+        return 1;
       }
-      input_file.seekg (0, std::ios::beg);
-      input_file.read (reinterpret_cast<char*>(data.data()), sizeof(scalar_type) * num_dimensions * num_data_points);
+      input_file.seekg(0, std::ios::beg);
+      input_file.read(reinterpret_cast<char*>(data.data()), sizeof(scalar_type) * num_dimensions * num_data_points);
       input_file.close();
     }
 
-  ////////////////////////////////////////////////
-  ////////////////////////////////////////////////
-  ////////////////////////////////////////////////
+    ////////////////////////////////////////////////
+    ////////////////////////////////////////////////
+    ////////////////////////////////////////////////
 
     hdi::utils::CoutLog log;
     hdi::dr::HDJointProbabilityGenerator<scalar_type> prob_gen;
@@ -215,24 +219,24 @@ int main(int argc, char *argv[])
     hdi::data::Embedding<scalar_type> embedding;
 
     {
-      hdi::utils::ScopedTimer<float,hdi::utils::Seconds> timer(similarities_comp_time);
+      hdi::utils::ScopedTimer<float, hdi::utils::Seconds> timer(similarities_comp_time);
       prob_gen_param._perplexity = perplexity;
-      prob_gen.computeProbabilityDistributions(data.data(),num_dimensions,num_data_points,distributions,prob_gen_param);
+      prob_gen.computeProbabilityDistributions(data.data(), num_dimensions, num_data_points, distributions, prob_gen_param);
     }
 
     tSNE_param._embedding_dimensionality = num_target_dimensions;
     tSNE_param._mom_switching_iter = exaggeration_iter;
     tSNE_param._remove_exaggeration_iter = exaggeration_iter;
-    tSNE.initialize(distributions,&embedding,tSNE_param);
+    tSNE.initialize(distributions, &embedding, tSNE_param);
     tSNE.setTheta(theta);
 
     hdi::viz::ScatterplotCanvas canvas;
-    canvas.setBackgroundColors(qRgb(255,255,255),qRgb(255,255,255));
-    canvas.setSelectionColor(qRgb(255,155,0));
-    canvas.resize(800,800);
+    canvas.setBackgroundColors(qRgb(255, 255, 255), qRgb(255, 255, 255));
+    canvas.setSelectionColor(qRgb(255, 155, 0));
+    canvas.resize(800, 800);
     canvas.show();
 
-    std::vector<uint32_t> flags(num_data_points,0);
+    std::vector<uint32_t> flags(num_data_points, 0);
     hdi::viz::ScatterplotDrawerFixedColor drawer;
     drawer.initialize(canvas.context());
     drawer.setData(embedding.getContainer().data(), flags.data(), num_data_points);
@@ -240,24 +244,24 @@ int main(int argc, char *argv[])
     drawer.setPointSize(20);
     canvas.addDrawer(&drawer);
     {
-      hdi::utils::ScopedTimer<float,hdi::utils::Seconds> timer(gradient_desc_comp_time);
-      hdi::utils::secureLog(&log,"Computing gradient descent...");
-      for(int iter = 0; iter < iterations; ++iter){
+      hdi::utils::ScopedTimer<float, hdi::utils::Seconds> timer(gradient_desc_comp_time);
+      hdi::utils::secureLog(&log, "Computing gradient descent...");
+      for (int iter = 0; iter < iterations; ++iter) {
         tSNE.doAnIteration();
-        {//Compute limits
-            std::vector<scalar_type> limits;
-            embedding.computeEmbeddingBBox(limits,0.25);
-            auto tr = QVector2D(limits[1],limits[3]);
-            auto bl = QVector2D(limits[0],limits[2]);
-            canvas.setTopRightCoordinates(tr);
-            canvas.setBottomLeftCoordinates(bl);
+        {  //Compute limits
+          std::vector<scalar_type> limits;
+          embedding.computeEmbeddingBBox(limits, 0.25);
+          auto tr = QVector2D(limits[1], limits[3]);
+          auto bl = QVector2D(limits[0], limits[2]);
+          canvas.setTopRightCoordinates(tr);
+          canvas.setBottomLeftCoordinates(bl);
         }
         canvas.updateGL();
-        hdi::utils::secureLogValue(&log,"Iter",iter,verbose);
+        hdi::utils::secureLogValue(&log, "Iter", iter, verbose);
         QApplication::processEvents();
       }
     }
-    hdi::utils::secureLog(&log,"... done!");
+    hdi::utils::secureLog(&log, "... done!");
 
     ////////////////////////////////////////////////
     ////////////////////////////////////////////////
@@ -265,14 +269,14 @@ int main(int argc, char *argv[])
 
     {
       //Output
-      hdi::utils::ScopedTimer<float,hdi::utils::Seconds> timer(data_saving_time);
+      hdi::utils::ScopedTimer<float, hdi::utils::Seconds> timer(data_saving_time);
       {
-        std::ofstream output_file (args.at(1).toStdString(), std::ios::out|std::ios::binary);
-        output_file.write(reinterpret_cast<const char*>(embedding.getContainer().data()),sizeof(scalar_type)*embedding.getContainer().size());
+        std::ofstream output_file(args.at(1).toStdString(), std::ios::out | std::ios::binary);
+        output_file.write(reinterpret_cast<const char*>(embedding.getContainer().data()), sizeof(scalar_type) * embedding.getContainer().size());
       }
-      if(parser.isSet(save_similarities_option)){
-        std::ofstream output_file (parser.value(save_similarities_option).toStdString().c_str(), std::ios::out|std::ios::binary);
-        hdi::data::IO::saveSparseMatrix(distributions,output_file);
+      if (parser.isSet(save_similarities_option)) {
+        std::ofstream output_file(parser.value(save_similarities_option).toStdString().c_str(), std::ios::out | std::ios::binary);
+        hdi::data::IO::saveSparseMatrix(distributions, output_file);
       }
     }
 
@@ -280,14 +284,18 @@ int main(int argc, char *argv[])
     ////////////////////////////////////////////////
     ////////////////////////////////////////////////
 
-    hdi::utils::secureLogValue(&log,"Data loading (sec)",data_loading_time);
-    hdi::utils::secureLogValue(&log,"Similarities computation (sec)",similarities_comp_time);
-    hdi::utils::secureLogValue(&log,"Gradient descent (sec)",gradient_desc_comp_time);
-    hdi::utils::secureLogValue(&log,"Data saving (sec)",data_saving_time);
+    hdi::utils::secureLogValue(&log, "Data loading (sec)", data_loading_time);
+    hdi::utils::secureLogValue(&log, "Similarities computation (sec)", similarities_comp_time);
+    hdi::utils::secureLogValue(&log, "Gradient descent (sec)", gradient_desc_comp_time);
+    hdi::utils::secureLogValue(&log, "Data saving (sec)", data_saving_time);
 
     return app.exec();
+  } catch (std::logic_error& ex) {
+    std::cout << "Logic error: " << ex.what() << std::endl;
+  } catch (std::runtime_error& ex) {
+    std::cout << "Runtime error: " << ex.what() << std::endl;
+  } catch (...) {
+    std::cout << "An unknown error occurred" << std::endl;
+    ;
   }
-  catch(std::logic_error& ex){ std::cout << "Logic error: " << ex.what() << std::endl;}
-  catch(std::runtime_error& ex){ std::cout << "Runtime error: " << ex.what() << std::endl;}
-  catch(...){ std::cout << "An unknown error occurred" << std::endl;;}
 }

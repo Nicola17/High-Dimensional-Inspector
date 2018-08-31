@@ -31,20 +31,19 @@
  */
 
 #include <assert.h>
-#include "hdi/visualization/sankey_diagram_qobj.h"
 #include "hdi/data/flow_model.h"
+#include "hdi/visualization/sankey_diagram_qobj.h"
 
 #include <QApplication>
+#include <QIcon>
+#include <iostream>
+#include "hdi/utils/assert_by_exception.h"
 #include "hdi/utils/cout_log.h"
 #include "hdi/utils/log_helper_functions.h"
-#include "hdi/utils/assert_by_exception.h"
-#include <iostream>
 #include "hdi/utils/timing_utils.h"
-#include <QIcon>
 
-
-int main(int argc, char *argv[]){
-  try{
+int main(int argc, char* argv[]) {
+  try {
     QApplication app(argc, argv);
     QIcon icon;
     icon.addFile(":/brick32.png");
@@ -59,54 +58,55 @@ int main(int argc, char *argv[]){
     diagram.setLogger(&log);
     diagram.setVerbose(true);
     diagram.show();
-    diagram.resize(QSize(750,350));
+    diagram.resize(QSize(750, 350));
 
-    for(int i = 0; i < 5; ++i){
+    for (int i = 0; i < 5; ++i) {
       typedef hdi::data::DefaultFlowModelTrait::node_type node_type;
       typedef hdi::data::DefaultFlowModelTrait::flow_type flow_type;
 
-      node_type a,b;
+      node_type a, b;
       a.id() = 0;
       b.id() = 1;
-      hdi::checkAndThrowLogic(a!=b,"0");
-      hdi::checkAndThrowLogic(!(a==b),"1");
-      hdi::checkAndThrowLogic(a<b,"2");
-      hdi::checkAndThrowLogic(!(a>b),"3");
-      hdi::checkAndThrowLogic(a<=b,"4");
-      hdi::checkAndThrowLogic(!(a>=b),"5");
-
+      hdi::checkAndThrowLogic(a != b, "0");
+      hdi::checkAndThrowLogic(!(a == b), "1");
+      hdi::checkAndThrowLogic(a < b, "2");
+      hdi::checkAndThrowLogic(!(a > b), "3");
+      hdi::checkAndThrowLogic(a <= b, "4");
+      hdi::checkAndThrowLogic(!(a >= b), "5");
 
       hdi::data::FlowModel<hdi::data::DefaultFlowModelTrait> model;
-      model.addNode(node_type(0,"D0"));
-      model.addNode(node_type(1,"D1"));
-      model.addNode(node_type(2,"D2"));
-      model.addNode(node_type(3,"D3"));
-      model.addNode(node_type(4,"D4"));
-      model.addNode(node_type(5,"D5"));
+      model.addNode(node_type(0, "D0"));
+      model.addNode(node_type(1, "D1"));
+      model.addNode(node_type(2, "D2"));
+      model.addNode(node_type(3, "D3"));
+      model.addNode(node_type(4, "D4"));
+      model.addNode(node_type(5, "D5"));
 
-      model.addNode(node_type(6,"L0"));
-      model.addNode(node_type(7,"L1"));
-      model.addNode(node_type(8,"L2"));
-      model.addNode(node_type(9,"L3"));
+      model.addNode(node_type(6, "L0"));
+      model.addNode(node_type(7, "L1"));
+      model.addNode(node_type(8, "L2"));
+      model.addNode(node_type(9, "L3"));
 
       const unsigned int num_flows(30);
-      for(int i = 0; i < num_flows; ++i){
-        model.addFlow(flow_type(i,rand()%6,6+rand()%4,(rand()%100)/100.));
+      for (int i = 0; i < num_flows; ++i) {
+        model.addFlow(flow_type(i, rand() % 6, 6 + rand() % 4, (rand() % 100) / 100.));
       }
 
       diagram.visualizeFlow(model);
 
-      for(int i = 0; i < 250; ++i){//OMG are you really doing this!? :P
+      for (int i = 0; i < 250; ++i) {  //OMG are you really doing this!? :P
         hdi::utils::sleepFor<hdi::utils::Milliseconds>(10);
         QApplication::processEvents();
       }
     }
 
-
     return app.exec();
 
+  } catch (std::logic_error& ex) {
+    std::cout << "Logic error: " << ex.what();
+  } catch (std::runtime_error& ex) {
+    std::cout << "Runtime error: " << ex.what();
+  } catch (...) {
+    std::cout << "An unknown error occurred";
   }
-  catch(std::logic_error& ex){ std::cout << "Logic error: " << ex.what();}
-  catch(std::runtime_error& ex){ std::cout << "Runtime error: " << ex.what();}
-  catch(...){ std::cout << "An unknown error occurred";}
 }

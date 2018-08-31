@@ -30,18 +30,18 @@
  *
  */
 
-#include "wtsne_inl.h"
-#include <vector>
 #include <map>
 #include <unordered_map>
+#include <vector>
+#include "wtsne_inl.h"
 
-namespace hdi{
-  namespace dr{
-    template class WeightedTSNE<float,std::vector<std::map<uint32_t,float>>>;
-    template class WeightedTSNE<double,std::vector<std::map<uint32_t,double>>>;
-    template class WeightedTSNE<float,std::vector<std::unordered_map<uint32_t,float>>>;
-    template class WeightedTSNE<double,std::vector<std::unordered_map<uint32_t,double>>>;
-    template class WeightedTSNE<float,std::vector<hdi::data::MapMemEff<uint32_t,float>>>;
-    template class WeightedTSNE<double,std::vector<hdi::data::MapMemEff<uint32_t,double>>>;
-  }
-}
+namespace hdi {
+namespace dr {
+template class WeightedTSNE<float, std::vector<std::map<uint32_t, float>>>;
+template class WeightedTSNE<double, std::vector<std::map<uint32_t, double>>>;
+template class WeightedTSNE<float, std::vector<std::unordered_map<uint32_t, float>>>;
+template class WeightedTSNE<double, std::vector<std::unordered_map<uint32_t, double>>>;
+template class WeightedTSNE<float, std::vector<hdi::data::MapMemEff<uint32_t, float>>>;
+template class WeightedTSNE<double, std::vector<hdi::data::MapMemEff<uint32_t, double>>>;
+}  // namespace dr
+}  // namespace hdi

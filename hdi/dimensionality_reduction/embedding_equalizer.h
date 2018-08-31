@@ -33,71 +33,67 @@
 #ifndef EMBEDDING_EQUALIZER_H
 #define EMBEDDING_EQUALIZER_H
 
-#include <vector>
 #include <stdint.h>
-#include "hdi/utils/assert_by_exception.h"
-#include "hdi/utils/abstract_log.h"
-#include "hdi/data/embedding.h"
 #include <unordered_map>
+#include <vector>
+#include "hdi/data/embedding.h"
+#include "hdi/utils/abstract_log.h"
+#include "hdi/utils/assert_by_exception.h"
 
-namespace hdi{
-  namespace dr{
+namespace hdi {
+namespace dr {
 
-    template <typename scalar_type = float>
-    class EmbeddingEqualizer{
-    public:
-      typedef std::vector<scalar_type> scalar_vector_type;
-      typedef uint32_t data_handle_type;
-      typedef std::vector<std::unordered_map<uint32_t,uint32_t>> connections_type;
+template <typename scalar_type = float>
+class EmbeddingEqualizer {
+ public:
+  typedef std::vector<scalar_type> scalar_vector_type;
+  typedef uint32_t data_handle_type;
+  typedef std::vector<std::unordered_map<uint32_t, uint32_t>> connections_type;
 
-    public:
-      class Params{
-      public:
-        Params();
-      };
+ public:
+  class Params {
+   public:
+    Params();
+  };
 
+ public:
+  EmbeddingEqualizer();
 
-    public:
-      EmbeddingEqualizer();
+  void initialize(data::Embedding<scalar_type>* embedding_master, data::Embedding<scalar_type>* embedding_slave);
+  void initialize(data::Embedding<scalar_type>* embedding_master, data::Embedding<scalar_type>* embedding_slave, const connections_type* connections);
 
-      void initialize(data::Embedding<scalar_type>* embedding_master, data::Embedding<scalar_type>* embedding_slave);
-      void initialize(data::Embedding<scalar_type>* embedding_master, data::Embedding<scalar_type>* embedding_slave, const connections_type* connections);
+  scalar_type& step_size() { return _step_size; }
+  const scalar_type& step_size() const { return _step_size; }
+  scalar_type& momentum() { return _momentum; }
+  const scalar_type& momentum() const { return _momentum; }
 
-          scalar_type& step_size()   {return _step_size;}
-      const scalar_type& step_size()const{return _step_size;}
-          scalar_type& momentum()    {return _momentum;}
-      const scalar_type& momentum()const {return _momentum;}
+  //! Return the current log
+  utils::AbstractLog* logger() const { return _logger; }
+  //! Set a pointer to an existing log
+  void setLogger(utils::AbstractLog* logger) { _logger = logger; }
+  //! Do an iteration of the gradient descent
+  void doAnIteration(double mult = 1);
 
+ private:
+  void doAnIteration1Dto1D(double mult);
+  void doAnIteration1Dto2D(double mult);
+  void doAnIteration2Dto1D(double mult);
+  void doAnIteration1Dto1DConnections(double mult);
+  void doAnIteration1Dto2DConnections(double mult);
+  void doAnIteration2Dto1DConnections(double mult);
 
-      //! Return the current log
-      utils::AbstractLog* logger()const{return _logger;}
-      //! Set a pointer to an existing log
-      void setLogger(utils::AbstractLog* logger){_logger = logger;}
-      //! Do an iteration of the gradient descent
-      void doAnIteration(double mult = 1);
+ private:
+  data::Embedding<scalar_type>* _embedding_master;
+  data::Embedding<scalar_type>* _embedding_slave;
+  const connections_type* _connections;
+  std::vector<scalar_type> _previous_update;
 
+  scalar_type _step_size;
+  scalar_type _momentum;
 
-    private:
-      void doAnIteration1Dto1D(double mult);
-      void doAnIteration1Dto2D(double mult);
-      void doAnIteration2Dto1D(double mult);
-      void doAnIteration1Dto1DConnections(double mult);
-      void doAnIteration1Dto2DConnections(double mult);
-      void doAnIteration2Dto1DConnections(double mult);
-
-    private:
-      data::Embedding<scalar_type>* _embedding_master;
-      data::Embedding<scalar_type>* _embedding_slave;
-      const connections_type*     _connections;
-      std::vector<scalar_type>    _previous_update;
-
-      scalar_type _step_size;
-      scalar_type _momentum;
-
-      bool _initialized;
-      utils::AbstractLog* _logger;
-  
-    };
-  }
-}
-#endif 
+  bool _initialized;
+  utils::AbstractLog* _logger;
+};
+}  // namespace dr
+}  // namespace hdi
+#endif

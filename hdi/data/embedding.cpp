@@ -30,28 +30,28 @@
  *
  */
 
-#include "embedding_inl.h"
-#include <unordered_map>
 #include <map>
+#include <unordered_map>
+#include "embedding_inl.h"
 #include "hdi/data/map_mem_eff.h"
 
-namespace hdi{
-  namespace data{
+namespace hdi {
+namespace data {
 
-    template class Embedding<float>;
-    template class Embedding<double>;
+template class Embedding<float>;
+template class Embedding<double>;
 
-    template void interpolateEmbeddingPositions(const Embedding<float>& input, Embedding<float>& output, const std::vector<std::unordered_map<unsigned int, float>>& weights);
-    template void interpolateEmbeddingPositions(const Embedding<double>& input, Embedding<double>& output, const std::vector<std::unordered_map<unsigned int, double>>& weights);
-    template void interpolateEmbeddingPositions(const Embedding<float>& input, Embedding<float>& output, const std::vector<std::map<unsigned int, float>>& weights);
-    template void interpolateEmbeddingPositions(const Embedding<double>& input, Embedding<double>& output, const std::vector<std::map<unsigned int, double>>& weights);
-    template void interpolateEmbeddingPositions(const Embedding<float>& input, Embedding<float>& output, const std::vector<hdi::data::MapMemEff<unsigned int, float>>& weights);
-    template void interpolateEmbeddingPositions(const Embedding<double>& input, Embedding<double>& output, const std::vector<hdi::data::MapMemEff<unsigned int, double>>& weights);
+template void interpolateEmbeddingPositions(const Embedding<float>& input, Embedding<float>& output, const std::vector<std::unordered_map<unsigned int, float>>& weights);
+template void interpolateEmbeddingPositions(const Embedding<double>& input, Embedding<double>& output, const std::vector<std::unordered_map<unsigned int, double>>& weights);
+template void interpolateEmbeddingPositions(const Embedding<float>& input, Embedding<float>& output, const std::vector<std::map<unsigned int, float>>& weights);
+template void interpolateEmbeddingPositions(const Embedding<double>& input, Embedding<double>& output, const std::vector<std::map<unsigned int, double>>& weights);
+template void interpolateEmbeddingPositions(const Embedding<float>& input, Embedding<float>& output, const std::vector<hdi::data::MapMemEff<unsigned int, float>>& weights);
+template void interpolateEmbeddingPositions(const Embedding<double>& input, Embedding<double>& output, const std::vector<hdi::data::MapMemEff<unsigned int, double>>& weights);
 
-    template void copyAndRemap1D2DVertical(const Embedding<float>& input, Embedding<float>& output, const std::vector<float>& weights);
-    template void copyAndRemap1D2DVertical(const Embedding<double>& input, Embedding<double>& output, const std::vector<double>& weights);
-    template void copyAndRemap2D2D(const Embedding<float>& input, Embedding<float>& output, const std::vector<float>& weights, bool fix_aspect_ratio);
-    template void copyAndRemap2D2D(const Embedding<double>& input, Embedding<double>& output, const std::vector<double>& weights, bool fix_aspect_ratio);
+template void copyAndRemap1D2DVertical(const Embedding<float>& input, Embedding<float>& output, const std::vector<float>& weights);
+template void copyAndRemap1D2DVertical(const Embedding<double>& input, Embedding<double>& output, const std::vector<double>& weights);
+template void copyAndRemap2D2D(const Embedding<float>& input, Embedding<float>& output, const std::vector<float>& weights, bool fix_aspect_ratio);
+template void copyAndRemap2D2D(const Embedding<double>& input, Embedding<double>& output, const std::vector<double>& weights, bool fix_aspect_ratio);
 
-  }
-}
+}  // namespace data
+}  // namespace hdi

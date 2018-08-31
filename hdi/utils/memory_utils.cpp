@@ -30,8 +30,7 @@
  *
  */
 
-namespace hdi{
-  namespace utils{
-
-  }
+namespace hdi {
+namespace utils {
 }
+}  // namespace hdi

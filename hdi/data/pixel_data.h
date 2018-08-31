@@ -33,31 +33,30 @@
 #ifndef PIXEL_DATA_H
 #define PIXEL_DATA_H
 
-#include "hdi/data/abstract_data.h"
 #include <QImage>
+#include "hdi/data/abstract_data.h"
 
-namespace hdi{
-  namespace data{
+namespace hdi {
+namespace data {
 
-    //! Pixel data type
-    /*!
+//! Pixel data type
+/*!
       Pixel data type
       \author Nicola Pezzotti
     */
-    class PixelData : public AbstractData{
-    public:
-      PixelData(int u = -1, int v = -1, int width = -1, int height = -1) :_u(u), _v(v), _width(width), _height(height){}
-      virtual ~PixelData(){}
+class PixelData : public AbstractData {
+ public:
+  PixelData(int u = -1, int v = -1, int width = -1, int height = -1) : _u(u), _v(v), _width(width), _height(height) {}
+  virtual ~PixelData() {}
 
-    public:
-      int _u;
-      int _v;
-      int _width;
-      int _height;
-    };
+ public:
+  int _u;
+  int _v;
+  int _width;
+  int _height;
+};
 
-  }
-}
-
+}  // namespace data
+}  // namespace hdi
 
 #endif

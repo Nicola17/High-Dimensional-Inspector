@@ -30,34 +30,33 @@
  *
  */
 
-#include <iostream>
 #include <fstream>
-#include <string>
-#include <sstream>
+#include <iostream>
 #include <map>
+#include <sstream>
+#include <string>
 
 #include "hdi/utils/cout_log.h"
 #include "hdi/utils/log_helper_functions.h"
 
-int main(int argc, char *argv[]){
-
+int main(int argc, char *argv[]) {
   hdi::utils::CoutLog log;
 
-  std::ofstream out_file(argv[1], std::ios::out|std::ios::binary);
+  std::ofstream out_file(argv[1], std::ios::out | std::ios::binary);
   std::ifstream in_file(argv[2], std::ios::in);
   std::string line;
 
   std::map<unsigned int, unsigned int> stats;
   unsigned int num_rows = 0;
 
-  while(std::getline(in_file,line)){
-    std::stringstream      line_stream(line);
-    std::string        cell;
+  while (std::getline(in_file, line)) {
+    std::stringstream line_stream(line);
+    std::string cell;
 
     unsigned int num_cells = 0;
-    while(std::getline(line_stream,cell,',')){
+    while (std::getline(line_stream, cell, ',')) {
       float v = std::atof(cell.c_str());
-      out_file.write((char*)(&v),sizeof(float));
+      out_file.write((char *)(&v), sizeof(float));
       ++num_cells;
     }
     ++stats[num_cells];
@@ -65,9 +64,8 @@ int main(int argc, char *argv[]){
   }
 
   hdi::utils::secureLogValue(&log, "#rows", num_rows);
-  for(auto e: stats){
+  for (auto e : stats) {
     hdi::utils::secureLogValue(&log, "\tcolumns", e.first);
     hdi::utils::secureLogValue(&log, "\t#rows", e.second);
   }
-
 }

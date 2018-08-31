@@ -33,20 +33,20 @@
 #ifndef ABSTRACT_DATA_H
 #define ABSTRACT_DATA_H
 
-namespace hdi{
-  namespace data{
-  
-    //! Abstract class that represents every type of data
-    /*!
+namespace hdi {
+namespace data {
+
+//! Abstract class that represents every type of data
+/*!
       Abstract class that represents every type of data
       \author Nicola Pezzotti
     */
-    class AbstractData{
-    public:
-      AbstractData(){}
-      virtual ~AbstractData(){}
-    };
+class AbstractData {
+ public:
+  AbstractData() {}
+  virtual ~AbstractData() {}
+};
 
-  }
-}
+}  // namespace data
+}  // namespace hdi
 #endif

@@ -34,22 +34,22 @@
 #include "hdi/visualization/heatmap_view_qobj.h"
 
 #include <QApplication>
-#include "hdi/utils/cout_log.h"
-#include "hdi/utils/log_helper_functions.h"
-#include "hdi/utils/assert_by_exception.h"
 #include <iostream>
-#include "hdi/utils/timing_utils.h"
 #include "hdi/data/panel_data.h"
-#include "hdi/utils/dataset_utils.h"
 #include "hdi/dimensionality_reduction/hd_joint_probability_generator.h"
 #include "hdi/dimensionality_reduction/sparse_tsne_user_def_probabilities.h"
-#include "hdi/visualization/scatterplot_canvas_qobj.h"
-#include "hdi/visualization/controller_embedding_selection_qobj.h"
-#include "hdi/visualization/scatterplot_drawer_labels.h"
+#include "hdi/utils/assert_by_exception.h"
+#include "hdi/utils/cout_log.h"
+#include "hdi/utils/dataset_utils.h"
+#include "hdi/utils/log_helper_functions.h"
+#include "hdi/utils/timing_utils.h"
 #include "hdi/utils/visual_utils.h"
+#include "hdi/visualization/controller_embedding_selection_qobj.h"
+#include "hdi/visualization/scatterplot_canvas_qobj.h"
+#include "hdi/visualization/scatterplot_drawer_labels.h"
 
-int main(int argc, char *argv[]){
-  try{
+int main(int argc, char* argv[]) {
+  try {
     QApplication app(argc, argv);
     QIcon icon;
     icon.addFile(":/brick32.png");
@@ -63,12 +63,12 @@ int main(int argc, char *argv[]){
 
     std::vector<unsigned int> labels;
     hdi::data::PanelData<scalar_type> panel_data;
-    hdi::utils::loadGaussianSpheres(panel_data,labels,10,1000,10);
+    hdi::utils::loadGaussianSpheres(panel_data, labels, 10, 1000, 10);
 
     hdi::dr::HDJointProbabilityGenerator<scalar_type>::sparse_scalar_matrix_type probability;
     hdi::dr::HDJointProbabilityGenerator<scalar_type> prob_gen;
     prob_gen.setLogger(&log);
-    prob_gen.computeJointProbabilityDistribution(panel_data.getData().data(),panel_data.numDimensions(),panel_data.numDataPoints(),probability);
+    prob_gen.computeJointProbabilityDistribution(panel_data.getData().data(), panel_data.numDimensions(), panel_data.numDataPoints(), probability);
 
     hdi::data::Embedding<scalar_type> embedding;
     hdi::dr::SparseTSNEUserDefProbabilities<scalar_type> tSNE;
@@ -78,54 +78,54 @@ int main(int argc, char *argv[]){
     tSNE_params._exaggeration_factor = 4;
     tSNE.setTheta(0.5);
     {
-      tSNE.initialize(probability,&embedding,tSNE_params);
+      tSNE.initialize(probability, &embedding, tSNE_params);
     }
 
     std::map<unsigned int, QColor> palette;
-    for(int i = 0; i < 100; ++i){
-      palette[i] = qRgb(rand()%256,rand()%256,rand()%256);
+    for (int i = 0; i < 100; ++i) {
+      palette[i] = qRgb(rand() % 256, rand() % 256, rand() % 256);
     }
 
     hdi::viz::ScatterplotCanvas viewer;
-    viewer.setBackgroundColors(qRgb(255,255,255),qRgb(255,255,255));
-    viewer.setSelectionColor(qRgb(50,50,50));
-    viewer.resize(500,500);
+    viewer.setBackgroundColors(qRgb(255, 255, 255), qRgb(255, 255, 255));
+    viewer.setSelectionColor(qRgb(50, 50, 50));
+    viewer.resize(500, 500);
     viewer.show();
     hdi::viz::ScatterplotDrawerLabels drawer;
     drawer.initialize(viewer.context());
-    drawer.setData(embedding.getContainer().data(),panel_data.getFlagsDataPoints().data(),labels.data(),palette, panel_data.numDataPoints());
+    drawer.setData(embedding.getContainer().data(), panel_data.getFlagsDataPoints().data(), labels.data(), palette, panel_data.numDataPoints());
     drawer.setAlpha(0.5);
-    drawer.setSelectionColor(qRgb(170,170,170));
+    drawer.setSelectionColor(qRgb(170, 170, 170));
     drawer.setSelectionPointSizeMult(5);
     drawer.setPointSize(5);
     viewer.addDrawer(&drawer);
 
     hdi::viz::HeatMapView heatmap_view;
     heatmap_view.setPanelData(&panel_data);
-    heatmap_view.resize(QSize(400,800));
+    heatmap_view.resize(QSize(400, 800));
     heatmap_view.show();
 
     hdi::viz::ControllerSelectionEmbedding selection_controller;
-    selection_controller.setActors(&panel_data,&embedding,&viewer);
+    selection_controller.setActors(&panel_data, &embedding, &viewer);
     //selection_controller.setLogger(&log);
     selection_controller.initialize();
     selection_controller.addView(&heatmap_view);
 
     {
       int iter = 0;
-      while(iter < 1000){
+      while (iter < 1000) {
         tSNE.doAnIteration();
-        {//limits
+        {  //limits
           std::vector<scalar_type> limits;
-          embedding.computeEmbeddingBBox(limits,0.25);
-          auto tr = QVector2D(limits[1],limits[3]);
-          auto bl = QVector2D(limits[0],limits[2]);
+          embedding.computeEmbeddingBBox(limits, 0.25);
+          auto tr = QVector2D(limits[1], limits[3]);
+          auto bl = QVector2D(limits[0], limits[2]);
           viewer.setTopRightCoordinates(tr);
           viewer.setBottomLeftCoordinates(bl);
         }
 
-        if(((iter+1)%50) == 0){
-          hdi::utils::secureLogValue(&log,"Iter",iter+1);
+        if (((iter + 1) % 50) == 0) {
+          hdi::utils::secureLogValue(&log, "Iter", iter + 1);
         }
         viewer.updateGL();
         QApplication::processEvents();
@@ -135,8 +135,11 @@ int main(int argc, char *argv[]){
 
     return app.exec();
 
+  } catch (std::logic_error& ex) {
+    std::cout << "Logic error: " << ex.what();
+  } catch (std::runtime_error& ex) {
+    std::cout << "Runtime error: " << ex.what();
+  } catch (...) {
+    std::cout << "An unknown error occurred";
   }
-  catch(std::logic_error& ex){ std::cout << "Logic error: " << ex.what();}
-  catch(std::runtime_error& ex){ std::cout << "Runtime error: " << ex.what();}
-  catch(...){ std::cout << "An unknown error occurred";}
 }

@@ -63,9 +63,9 @@
 
 #include "weighted_sptree_inl.h"
 
-namespace hdi{
-  namespace dr{
-    template class WeightedSPTree<double>;
-    template class WeightedSPTree<float>;
-  }
-}
+namespace hdi {
+namespace dr {
+template class WeightedSPTree<double>;
+template class WeightedSPTree<float>;
+}  // namespace dr
+}  // namespace hdi

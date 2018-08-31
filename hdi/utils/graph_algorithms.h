@@ -35,24 +35,24 @@
 
 #include <vector>
 
-namespace hdi{
-  namespace utils{
+namespace hdi {
+namespace utils {
 
-    template <class map_type>
-    void computeConnectedComponents(const std::vector<map_type>& weighted_graph, std::vector<unsigned int>& vertex_to_cluster, std::vector<unsigned int>& cluster_to_vertex, std::vector<unsigned int>& cluster_size, typename map_type::mapped_type thresh = 0);
+template <class map_type>
+void computeConnectedComponents(const std::vector<map_type>& weighted_graph, std::vector<unsigned int>& vertex_to_cluster, std::vector<unsigned int>& cluster_to_vertex, std::vector<unsigned int>& cluster_size, typename map_type::mapped_type thresh = 0);
 
-    //! Extract a subgraph with the selected indexes and the vertices connected to them by an edge with a weight higher then thresh
-    template <class map_type>
-    void extractSubGraph(const std::vector<map_type>& orig_transition_matrix, const std::vector<unsigned int>& selected_idxes, std::vector<map_type>& new_transition_matrix, std::vector<unsigned int>& new_idxes, typename map_type::mapped_type thresh = 0);
+//! Extract a subgraph with the selected indexes and the vertices connected to them by an edge with a weight higher then thresh
+template <class map_type>
+void extractSubGraph(const std::vector<map_type>& orig_transition_matrix, const std::vector<unsigned int>& selected_idxes, std::vector<map_type>& new_transition_matrix, std::vector<unsigned int>& new_idxes, typename map_type::mapped_type thresh = 0);
 
-    //! Remove the edges to the vertices that  are not included in valid vertices
-    template <class sparse_scalar_matrix_type>
-    void removeEdgesToUnselectedVertices(sparse_scalar_matrix_type& adjacency_matrix, const std::vector<unsigned int>& valid_vertices);
+//! Remove the edges to the vertices that  are not included in valid vertices
+template <class sparse_scalar_matrix_type>
+void removeEdgesToUnselectedVertices(sparse_scalar_matrix_type& adjacency_matrix, const std::vector<unsigned int>& valid_vertices);
 
-    //! expand the matrix (see Markov Clustering)
-    template <class sparse_scalar_matrix_type>
-    void expand(const sparse_scalar_matrix_type& src, sparse_scalar_matrix_type& dest);
-  }
-}
+//! expand the matrix (see Markov Clustering)
+template <class sparse_scalar_matrix_type>
+void expand(const sparse_scalar_matrix_type& src, sparse_scalar_matrix_type& dest);
+}  // namespace utils
+}  // namespace hdi
 
 #endif

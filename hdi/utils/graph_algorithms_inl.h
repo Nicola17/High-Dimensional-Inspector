@@ -33,174 +33,170 @@
 #ifndef GRAPH_ALGORITHMS_INL
 #define GRAPH_ALGORITHMS_INL
 
-#include "hdi/utils/graph_algorithms.h"
-#include <limits>
-#include <queue>
-#include <map>
-#include <unordered_map>
 #include <cmath>
+#include <limits>
+#include <map>
+#include <queue>
+#include <unordered_map>
+#include "hdi/utils/graph_algorithms.h"
 #include "hdi/utils/math_utils.h"
 
-namespace hdi{
-  namespace utils{
+namespace hdi {
+namespace utils {
 
-    template <class map_type>
-    void computeConnectedComponents(const std::vector<map_type>& weighted_graph, std::vector<unsigned int>& vertex_to_cluster, std::vector<unsigned int>& cluster_to_vertex, std::vector<unsigned int>& cluster_size, typename map_type::mapped_type thresh){
-      vertex_to_cluster.clear();
-      cluster_size.clear();
-      cluster_to_vertex.clear();
+template <class map_type>
+void computeConnectedComponents(const std::vector<map_type>& weighted_graph, std::vector<unsigned int>& vertex_to_cluster, std::vector<unsigned int>& cluster_to_vertex, std::vector<unsigned int>& cluster_size, typename map_type::mapped_type thresh) {
+  vertex_to_cluster.clear();
+  cluster_size.clear();
+  cluster_to_vertex.clear();
 
-      const unsigned int invalid = std::numeric_limits<unsigned int>::max();
-      vertex_to_cluster.resize(weighted_graph.size(),invalid);
-      const unsigned int n = weighted_graph.size();
-      unsigned int cluster_idx = 0;
+  const unsigned int invalid = std::numeric_limits<unsigned int>::max();
+  vertex_to_cluster.resize(weighted_graph.size(), invalid);
+  const unsigned int n = weighted_graph.size();
+  unsigned int cluster_idx = 0;
 
-      for(unsigned int i = 0; i < n; ++i){
-        if(vertex_to_cluster[i] == invalid){
-          std::queue<unsigned int> queue;
-          queue.push(i);
-          vertex_to_cluster[i] = cluster_idx;
-          cluster_to_vertex.push_back(i);
-          unsigned int c_size = 0;
-          while(!queue.empty()){
-            ++c_size;
-            auto idx = queue.front();
-            queue.pop();
-            for(auto& v: weighted_graph[idx]){
-              if(vertex_to_cluster[v.first] != invalid){
-                continue;
-              }
-              if(v.second > thresh){
-                vertex_to_cluster[v.first] = cluster_idx;
-                queue.push(v.first);
-              }
-            }
+  for (unsigned int i = 0; i < n; ++i) {
+    if (vertex_to_cluster[i] == invalid) {
+      std::queue<unsigned int> queue;
+      queue.push(i);
+      vertex_to_cluster[i] = cluster_idx;
+      cluster_to_vertex.push_back(i);
+      unsigned int c_size = 0;
+      while (!queue.empty()) {
+        ++c_size;
+        auto idx = queue.front();
+        queue.pop();
+        for (auto& v : weighted_graph[idx]) {
+          if (vertex_to_cluster[v.first] != invalid) {
+            continue;
           }
-          cluster_size.push_back(c_size);
-          ++cluster_idx;
+          if (v.second > thresh) {
+            vertex_to_cluster[v.first] = cluster_idx;
+            queue.push(v.first);
+          }
+        }
+      }
+      cluster_size.push_back(c_size);
+      ++cluster_idx;
+    }
+  }
+}
+
+template <class map_type>
+void extractSubGraph(const std::vector<map_type>& orig_transition_matrix, const std::vector<unsigned int>& selected_idxes, std::vector<map_type>& new_transition_matrix, std::vector<unsigned int>& new_idxes, typename map_type::mapped_type thresh) {
+  new_transition_matrix.clear();
+  new_idxes.clear();
+  std::map<unsigned int, unsigned int> map_selected_idxes;
+  std::map<unsigned int, unsigned int> map_non_selected_idxes;
+  //The selected rows must be taken completely
+  for (auto id : selected_idxes) {
+    map_selected_idxes[id] = new_idxes.size();
+    new_idxes.push_back(id);
+  }
+
+  //Vertices that are connected to a selected vertex
+  for (auto& e : map_selected_idxes) {
+    for (auto& row_elem : orig_transition_matrix[e.first]) {
+      if (row_elem.second > thresh) {
+        if (map_selected_idxes.find(row_elem.first) == map_selected_idxes.end() &&
+            map_non_selected_idxes.find(row_elem.first) == map_non_selected_idxes.end()) {
+          map_non_selected_idxes[row_elem.first] = new_idxes.size();
+          new_idxes.push_back(row_elem.first);
         }
       }
     }
+  }
 
-
-    template <class map_type>
-    void extractSubGraph(const std::vector<map_type>& orig_transition_matrix, const std::vector<unsigned int>& selected_idxes, std::vector<map_type>& new_transition_matrix, std::vector<unsigned int>& new_idxes, typename map_type::mapped_type thresh){
-      new_transition_matrix.clear();
-      new_idxes.clear();
-      std::map<unsigned int,unsigned int> map_selected_idxes;
-      std::map<unsigned int,unsigned int> map_non_selected_idxes;
-      //The selected rows must be taken completely
-      for(auto id: selected_idxes){
-        map_selected_idxes[id] = new_idxes.size();
-        new_idxes.push_back(id);
-      }
-
-      //Vertices that are connected to a selected vertex
-      for(auto& e: map_selected_idxes){
-        for(auto& row_elem: orig_transition_matrix[e.first]){
-          if(row_elem.second > thresh){
-            if(map_selected_idxes.find(row_elem.first) == map_selected_idxes.end() &&
-               map_non_selected_idxes.find(row_elem.first) == map_non_selected_idxes.end()){
-              map_non_selected_idxes[row_elem.first] = new_idxes.size();
-              new_idxes.push_back(row_elem.first);
-            }
-          }
-        }
-      }
-
-      //Now that I have the maps, I generate the new transition matrix
-      new_transition_matrix.resize(map_non_selected_idxes.size() + map_selected_idxes.size());
-      for(auto e: map_selected_idxes){
-        for(auto row_elem: orig_transition_matrix[e.first]){
-          if(map_selected_idxes.find(row_elem.first) != map_selected_idxes.end()){
-            new_transition_matrix[e.second][map_selected_idxes[row_elem.first]] = row_elem.second;
-          }else if(map_non_selected_idxes.find(row_elem.first) != map_non_selected_idxes.end()){
-            new_transition_matrix[e.second][map_non_selected_idxes[row_elem.first]] = row_elem.second;
-          }
-        }
-      }
-      for(auto e: map_non_selected_idxes){
-        for(auto row_elem: orig_transition_matrix[e.first]){
-          if(map_selected_idxes.find(row_elem.first) != map_selected_idxes.end()){
-            new_transition_matrix[e.second][map_selected_idxes[row_elem.first]] = row_elem.second;
-          }else if(map_non_selected_idxes.find(row_elem.first) != map_non_selected_idxes.end()){
-            new_transition_matrix[e.second][map_non_selected_idxes[row_elem.first]] = row_elem.second;
-          }
-        }
-      }
-
-      //Finally, the new transition matrix must be normalized
-      double sum = 0;
-      for(auto& row: new_transition_matrix){
-        for(auto& elem: row){
-          sum += elem.second;
-        }
-      }
-      for(auto& row: new_transition_matrix){
-        for(auto& elem: row){
-          elem.second = new_transition_matrix.size() * elem.second/sum;
-        }
+  //Now that I have the maps, I generate the new transition matrix
+  new_transition_matrix.resize(map_non_selected_idxes.size() + map_selected_idxes.size());
+  for (auto e : map_selected_idxes) {
+    for (auto row_elem : orig_transition_matrix[e.first]) {
+      if (map_selected_idxes.find(row_elem.first) != map_selected_idxes.end()) {
+        new_transition_matrix[e.second][map_selected_idxes[row_elem.first]] = row_elem.second;
+      } else if (map_non_selected_idxes.find(row_elem.first) != map_non_selected_idxes.end()) {
+        new_transition_matrix[e.second][map_non_selected_idxes[row_elem.first]] = row_elem.second;
       }
     }
-
-    template <class sparse_scalar_matrix_type>
-    void removeEdgesToUnselectedVertices(sparse_scalar_matrix_type& adjacency_matrix, const std::vector<unsigned int>& valid_vertices){
-
-      std::unordered_map<unsigned int,unsigned int> valid_set;
-      for(int i = 0; i < valid_vertices.size(); ++i){
-        valid_set[valid_vertices[i]] = i;
+  }
+  for (auto e : map_non_selected_idxes) {
+    for (auto row_elem : orig_transition_matrix[e.first]) {
+      if (map_selected_idxes.find(row_elem.first) != map_selected_idxes.end()) {
+        new_transition_matrix[e.second][map_selected_idxes[row_elem.first]] = row_elem.second;
+      } else if (map_non_selected_idxes.find(row_elem.first) != map_non_selected_idxes.end()) {
+        new_transition_matrix[e.second][map_non_selected_idxes[row_elem.first]] = row_elem.second;
       }
-
-      sparse_scalar_matrix_type new_map(adjacency_matrix.size());
-      for(int i = 0; i < adjacency_matrix.size(); ++i){
-        for (auto& elem: adjacency_matrix[i]){
-          auto search_iter = valid_set.find(elem.first);
-          if(search_iter != valid_set.end()){
-            new_map[i][search_iter->second] = elem.second;
-          }
-        }
-      }
-      adjacency_matrix = new_map;
-
     }
+  }
 
-    //! expand the matrix (see Markov Clustering)
-    template <class sparse_scalar_matrix_type>
-    void expand(const sparse_scalar_matrix_type& src, sparse_scalar_matrix_type& dst){
-      typedef typename sparse_scalar_matrix_type::value_type::mapped_type scalar_type;
-      dst.clear();
-      dst.resize(src.size());
+  //Finally, the new transition matrix must be normalized
+  double sum = 0;
+  for (auto& row : new_transition_matrix) {
+    for (auto& elem : row) {
+      sum += elem.second;
+    }
+  }
+  for (auto& row : new_transition_matrix) {
+    for (auto& elem : row) {
+      elem.second = new_transition_matrix.size() * elem.second / sum;
+    }
+  }
+}
 
-      int smoothing_iters = 2;
+template <class sparse_scalar_matrix_type>
+void removeEdgesToUnselectedVertices(sparse_scalar_matrix_type& adjacency_matrix, const std::vector<unsigned int>& valid_vertices) {
+  std::unordered_map<unsigned int, unsigned int> valid_set;
+  for (int i = 0; i < valid_vertices.size(); ++i) {
+    valid_set[valid_vertices[i]] = i;
+  }
 
-      for(int j = 0; j < src.size(); ++j){
-        std::vector<scalar_type> a(src.size(),0);
-        a[j] = 1;
-        std::vector<scalar_type> c(src.size(),0);
-        for(int i = 0; i < smoothing_iters; ++i){
-          multiply(a,src,c);
-          a = c;
-        }
-        for(int i = 0; i < c.size(); ++i){
-          if(c[i]!=0 && i!=j){
-            dst[j][i] = c[i];
-          }
-        }
+  sparse_scalar_matrix_type new_map(adjacency_matrix.size());
+  for (int i = 0; i < adjacency_matrix.size(); ++i) {
+    for (auto& elem : adjacency_matrix[i]) {
+      auto search_iter = valid_set.find(elem.first);
+      if (search_iter != valid_set.end()) {
+        new_map[i][search_iter->second] = elem.second;
       }
+    }
+  }
+  adjacency_matrix = new_map;
+}
 
-      //normalize
-      for(int j = 0; j < dst.size(); ++j){
-        double sum = 0;
-        for(auto& it: dst[j]){
-          sum += it.second;
-        }
-        for(auto& it: dst[j]){
-          it.second /= sum;
-        }
+//! expand the matrix (see Markov Clustering)
+template <class sparse_scalar_matrix_type>
+void expand(const sparse_scalar_matrix_type& src, sparse_scalar_matrix_type& dst) {
+  typedef typename sparse_scalar_matrix_type::value_type::mapped_type scalar_type;
+  dst.clear();
+  dst.resize(src.size());
+
+  int smoothing_iters = 2;
+
+  for (int j = 0; j < src.size(); ++j) {
+    std::vector<scalar_type> a(src.size(), 0);
+    a[j] = 1;
+    std::vector<scalar_type> c(src.size(), 0);
+    for (int i = 0; i < smoothing_iters; ++i) {
+      multiply(a, src, c);
+      a = c;
+    }
+    for (int i = 0; i < c.size(); ++i) {
+      if (c[i] != 0 && i != j) {
+        dst[j][i] = c[i];
       }
+    }
+  }
 
+  //normalize
+  for (int j = 0; j < dst.size(); ++j) {
+    double sum = 0;
+    for (auto& it : dst[j]) {
+      sum += it.second;
+    }
+    for (auto& it : dst[j]) {
+      it.second /= sum;
+    }
+  }
 
-      /*
+  /*
       dst.clear();
       dst.resize(src.size());
 
@@ -231,13 +227,9 @@ namespace hdi{
         }
       }
       */
-    }
-
-
-
-
-
-  }
 }
+
+}  // namespace utils
+}  // namespace hdi
 
 #endif

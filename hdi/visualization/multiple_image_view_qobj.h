@@ -35,57 +35,53 @@
 
 #include "ui_multiple_image_view_qobj.h"
 
-#include <qdialog.h>
 #include <qcolor.h>
+#include <qdialog.h>
+#include <QLabel>
 #include <memory>
 #include "hdi/data/abstract_data.h"
 #include "hdi/visualization/abstract_view.h"
-#include <QLabel>
 
+namespace hdi {
+namespace viz {
 
-
-namespace hdi{
-  namespace viz{
-
-    //! View for data::ImageData
-    /*!
+//! View for data::ImageData
+/*!
       View for data::ImageData
       \author Nicola Pezzotti
     */
-    class MultipleImageView : public QWidget, public AbstractView{
-      Q_OBJECT
-    public:
-      MultipleImageView(QWidget* parent = nullptr);
-      virtual ~MultipleImageView(){}
+class MultipleImageView : public QWidget, public AbstractView {
+  Q_OBJECT
+ public:
+  MultipleImageView(QWidget* parent = nullptr);
+  virtual ~MultipleImageView() {}
 
-      virtual QWidget* widgetPtr(){ return this; }
-      virtual const QWidget* widgetPtr()const{ return this; }
+  virtual QWidget* widgetPtr() { return this; }
+  virtual const QWidget* widgetPtr() const { return this; }
 
-      virtual void updateView();
+  virtual void updateView();
 
-      void setDetailsVisible(bool);
+  void setDetailsVisible(bool);
 
-    public slots:
-      virtual void onSelectionChanged();
+ public slots:
+  virtual void onSelectionChanged();
 
-    private slots:
-      void onNumOfColumnsChanged(int n);
-      void onImageHeightChanged(int n);
+ private slots:
+  void onNumOfColumnsChanged(int n);
+  void onImageHeightChanged(int n);
 
+ private:
+  Ui::MultipleImageView _ui;
+  std::vector<std::shared_ptr<QLabel>> _image_labels;
 
-    private:
-      Ui::MultipleImageView _ui;
-      std::vector<std::shared_ptr<QLabel>> _image_labels;
+  unsigned int _num_columns;
+  unsigned int _img_height;
 
-      unsigned int _num_columns;
-      unsigned int _img_height;
+ public:
+  bool _text_data_as_os_path;
+};
 
-    public:
-      bool _text_data_as_os_path;
-
-    };
-
-  }
-}
+}  // namespace viz
+}  // namespace hdi
 
 #endif

@@ -32,11 +32,11 @@
 
 #include "kmeans_inl.h"
 
-namespace hdi{
-  namespace clustering{
+namespace hdi {
+namespace clustering {
 
-    template class KMeans<float>;
-    template class KMeans<double>;
+template class KMeans<float>;
+template class KMeans<double>;
 
-  }
-}
+}  // namespace clustering
+}  // namespace hdi

@@ -33,72 +33,71 @@
 #ifndef KMEANS_INL
 #define KMEANS_INL
 
-#include "kmeans.h"
-#include "hdi/utils/math_utils.h"
 #include <limits>
 #include <random>
+#include "hdi/utils/math_utils.h"
+#include "kmeans.h"
 
-namespace hdi{
-  namespace clustering{
+namespace hdi {
+namespace clustering {
 
-    template <typename scalar_type>
-    void KMeans<scalar_type>::initialize(){
-      std::default_random_engine generator;
-      std::uniform_int_distribution<> distribution_int(0, _num_points-1);
-      for(unsigned int c = 0; c < _num_clusters; ++c){
-        const unsigned int i = distribution_int(generator);
-        for(unsigned int d = 0; d < _dimensionality; ++d){
-          _centroids[c*_dimensionality+d] += _data[i*_dimensionality+d];
-        }
-      }
+template <typename scalar_type>
+void KMeans<scalar_type>::initialize() {
+  std::default_random_engine generator;
+  std::uniform_int_distribution<> distribution_int(0, _num_points - 1);
+  for (unsigned int c = 0; c < _num_clusters; ++c) {
+    const unsigned int i = distribution_int(generator);
+    for (unsigned int d = 0; d < _dimensionality; ++d) {
+      _centroids[c * _dimensionality + d] += _data[i * _dimensionality + d];
     }
-
-    template <typename scalar_type>
-    void KMeans<scalar_type>::doAnIteration(){
-      _clusters.resize(_num_points);
-      _cluster_size.resize(_num_clusters);
-
-      for(unsigned int c = 0; c < _num_clusters; ++c){
-        _cluster_size[c] = 0;
-      }
-
-      //1) Assign data-points to centroids
-      for(unsigned int i = 0; i < _num_points; ++i){
-        double min_distance(std::numeric_limits<double>::max());
-        for(unsigned int c = 0; c < _num_clusters; ++c){
-          auto distance = utils::euclideanDistanceSquared(_data+i*_dimensionality,_data+(i+1)*_dimensionality,_centroids+c*_dimensionality,_centroids+(c+1)*_dimensionality);
-          if(min_distance > distance){
-            min_distance = distance;
-            _clusters[i] = c;
-          }
-        }
-        ++_cluster_size[_clusters[i]];
-      }
-
-      //2) Update centroid position
-      for(unsigned int c = 0; c < _num_clusters; ++c){
-        if(_cluster_size[c] == 0){
-          continue;
-        }
-        for(unsigned int d = 0; d < _dimensionality; ++d){
-          _centroids[c*_dimensionality+d] = 0;
-        }
-      }
-      for(unsigned int i = 0; i < _num_points; ++i){
-        const unsigned int c = _clusters[i];
-        for(unsigned int d = 0; d < _dimensionality; ++d){
-          _centroids[c*_dimensionality+d] += _data[i*_dimensionality+d];
-        }
-      }
-      for(unsigned int c = 0; c < _num_clusters; ++c){
-        for(unsigned int d = 0; d < _dimensionality; ++d){
-          _centroids[c*_dimensionality+d] /= _cluster_size[c];
-        }
-      }
-
-    }
-
   }
 }
+
+template <typename scalar_type>
+void KMeans<scalar_type>::doAnIteration() {
+  _clusters.resize(_num_points);
+  _cluster_size.resize(_num_clusters);
+
+  for (unsigned int c = 0; c < _num_clusters; ++c) {
+    _cluster_size[c] = 0;
+  }
+
+  //1) Assign data-points to centroids
+  for (unsigned int i = 0; i < _num_points; ++i) {
+    double min_distance(std::numeric_limits<double>::max());
+    for (unsigned int c = 0; c < _num_clusters; ++c) {
+      auto distance = utils::euclideanDistanceSquared(_data + i * _dimensionality, _data + (i + 1) * _dimensionality, _centroids + c * _dimensionality, _centroids + (c + 1) * _dimensionality);
+      if (min_distance > distance) {
+        min_distance = distance;
+        _clusters[i] = c;
+      }
+    }
+    ++_cluster_size[_clusters[i]];
+  }
+
+  //2) Update centroid position
+  for (unsigned int c = 0; c < _num_clusters; ++c) {
+    if (_cluster_size[c] == 0) {
+      continue;
+    }
+    for (unsigned int d = 0; d < _dimensionality; ++d) {
+      _centroids[c * _dimensionality + d] = 0;
+    }
+  }
+  for (unsigned int i = 0; i < _num_points; ++i) {
+    const unsigned int c = _clusters[i];
+    for (unsigned int d = 0; d < _dimensionality; ++d) {
+      _centroids[c * _dimensionality + d] += _data[i * _dimensionality + d];
+    }
+  }
+  for (unsigned int c = 0; c < _num_clusters; ++c) {
+    for (unsigned int d = 0; d < _dimensionality; ++d) {
+      _centroids[c * _dimensionality + d] /= _cluster_size[c];
+    }
+  }
+}
+
+}  // namespace clustering
+}  // namespace hdi
 
 #endif

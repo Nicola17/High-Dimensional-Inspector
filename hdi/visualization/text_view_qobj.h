@@ -33,56 +33,55 @@
 #ifndef TEXT_VIEW_H
 #define TEXT_VIEW_H
 
-
-#include <qdialog.h>
 #include <qcolor.h>
+#include <qdialog.h>
 #include <memory>
 #include "hdi/data/abstract_data.h"
 #include "hdi/visualization/abstract_view.h"
 
-namespace Ui{
-  class TextView;
+namespace Ui {
+class TextView;
 }
-namespace hdi{
-  namespace viz{
+namespace hdi {
+namespace viz {
 
-    //! View for data::TextData
-    /*!
+//! View for data::TextData
+/*!
       View for data::TextData
       \author Nicola Pezzotti
     */
-    class TextView : public QWidget, public AbstractView{
-      Q_OBJECT
-    public:
-      TextView(QWidget* parent = nullptr);
-      virtual ~TextView(){}
+class TextView : public QWidget, public AbstractView {
+  Q_OBJECT
+ public:
+  TextView(QWidget* parent = nullptr);
+  virtual ~TextView() {}
 
-      virtual QWidget* widgetPtr(){ return this; }
-      virtual const QWidget* widgetPtr()const{ return this; }
+  virtual QWidget* widgetPtr() { return this; }
+  virtual const QWidget* widgetPtr() const { return this; }
 
-      virtual void updateView();
+  virtual void updateView();
 
-    public slots:
-      //! Communicate to the widget that the data changed
-      void onSelectionChanged();
+ public slots:
+  //! Communicate to the widget that the data changed
+  void onSelectionChanged();
 
-    private slots:
-      //! Do a selection in the view
-      void onSelectTexts();
-      //! Unselect data in the view
-      void onUnselectTexts();
-      //! Export selected texts
-      void onExportTexts()const;
-      //! Import a selection
-      void onImportTextSelection();
+ private slots:
+  //! Do a selection in the view
+  void onSelectTexts();
+  //! Unselect data in the view
+  void onUnselectTexts();
+  //! Export selected texts
+  void onExportTexts() const;
+  //! Import a selection
+  void onImportTextSelection();
 
-    signals:
-      void sgnSelectionChanged();
+ signals:
+  void sgnSelectionChanged();
 
-    private:
-      Ui::TextView* _ui;
-    };
-  }
-}
+ private:
+  Ui::TextView* _ui;
+};
+}  // namespace viz
+}  // namespace hdi
 
 #endif

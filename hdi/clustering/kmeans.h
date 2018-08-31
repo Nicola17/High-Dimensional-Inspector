@@ -35,32 +35,30 @@
 
 #include <vector>
 
-namespace hdi{
-  namespace clustering{
+namespace hdi {
+namespace clustering {
 
-    template <typename scalar_type>
-    class KMeans{
-    public:
-      KMeans():
-        _dimensionality(0),
-        _num_points(0),
-        _num_clusters(0)
-      {}
+template <typename scalar_type>
+class KMeans {
+ public:
+  KMeans() : _dimensionality(0),
+             _num_points(0),
+             _num_clusters(0) {}
 
-      void initialize();
-      void doAnIteration();
+  void initialize();
+  void doAnIteration();
 
-    public:
-      scalar_type* _data;
-      scalar_type* _centroids;
-      unsigned int _dimensionality;
-      unsigned int _num_points;
-      unsigned int _num_clusters;
-      std::vector<unsigned int> _clusters;
-      std::vector<unsigned int> _cluster_size;
-    };
+ public:
+  scalar_type* _data;
+  scalar_type* _centroids;
+  unsigned int _dimensionality;
+  unsigned int _num_points;
+  unsigned int _num_clusters;
+  std::vector<unsigned int> _clusters;
+  std::vector<unsigned int> _cluster_size;
+};
 
-  }
-}
+}  // namespace clustering
+}  // namespace hdi
 
 #endif

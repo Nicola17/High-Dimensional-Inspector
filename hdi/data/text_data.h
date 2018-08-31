@@ -33,31 +33,30 @@
 #ifndef TEXT_DATA_H
 #define TEXT_DATA_H
 
-#include "hdi/data/abstract_data.h"
 #include <string>
+#include "hdi/data/abstract_data.h"
 
-namespace hdi{
-  namespace data{
+namespace hdi {
+namespace data {
 
-    //! Text data type
-    /*!
+//! Text data type
+/*!
       Text data type
       \author Nicola Pezzotti
     */
-    class TextData: public AbstractData{
-    public:
-      TextData(std::string text = std::string()):_text(text){}
-      virtual ~TextData(){}
+class TextData : public AbstractData {
+ public:
+  TextData(std::string text = std::string()) : _text(text) {}
+  virtual ~TextData() {}
 
-      void setText(std::string& text){_text = text;}
-      const std::string& text()const{return _text;}
+  void setText(std::string& text) { _text = text; }
+  const std::string& text() const { return _text; }
 
-    private:
-      std::string _text;
-    };
+ private:
+  std::string _text;
+};
 
-  }
-}
-
+}  // namespace data
+}  // namespace hdi
 
 #endif

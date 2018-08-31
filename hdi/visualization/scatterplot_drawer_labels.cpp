@@ -32,222 +32,212 @@
 
 #include "hdi/visualization/scatterplot_drawer_labels.h"
 #include <QOpenGLFunctions>
-#include "opengl_helpers.h"
 #include "hdi/utils/assert_by_exception.h"
+#include "opengl_helpers.h"
 
-#define GLSL(version, shader)  "#version " #version "\n" #shader
+#define GLSL(version, shader) "#version " #version "\n" #shader
 
-namespace hdi{
-  namespace viz{
+namespace hdi {
+namespace viz {
 
-    ScatterplotDrawerLabels::ScatterplotDrawerLabels():
-      _program(nullptr),
-      _vshader(nullptr),
-      _fshader(nullptr),
-      _selection_color(qRgb(255,150,0)),
-      _initialized(false),
-      _point_size(2.5),
-      _selection_pt_size_mult(1.5),
-      _z_coord(0),
-      _alpha(0.5),
-      _z_coord_selection(-0.5)
-    {
-      //initialize();
+ScatterplotDrawerLabels::ScatterplotDrawerLabels() : _program(nullptr),
+                                                     _vshader(nullptr),
+                                                     _fshader(nullptr),
+                                                     _selection_color(qRgb(255, 150, 0)),
+                                                     _initialized(false),
+                                                     _point_size(2.5),
+                                                     _selection_pt_size_mult(1.5),
+                                                     _z_coord(0),
+                                                     _alpha(0.5),
+                                                     _z_coord_selection(-0.5) {
+  //initialize();
+}
 
-    }
+void ScatterplotDrawerLabels::initialize(QGLContext* context) {
+  {  //Points color
+    const char* vsrc = GLSL(130,
+                            in highp vec4 pos_attribute;
+                            in highp vec4 color_attribute;
+                            in highp float flag_attribute;
+                            uniform highp mat4 matrix_uniform;
+                            uniform highp float alpha_uniform;
+                            uniform highp float z_coord_uniform;
+                            out lowp vec4 col;
 
-    void ScatterplotDrawerLabels::initialize(QGLContext* context){
-      {//Points color
-        const char *vsrc = GLSL(130,
-          in highp vec4 pos_attribute;        
-          in highp vec4 color_attribute;        
-          in highp float flag_attribute;    
-          uniform highp mat4 matrix_uniform;        
-          uniform highp float alpha_uniform;
-          uniform highp float z_coord_uniform;
-          out lowp vec4 col;            
+                            void main() {
+                              col = color_attribute;
+                              col.a = alpha_uniform;
+                              gl_Position = matrix_uniform * pos_attribute;
+                              gl_Position.z = z_coord_uniform;
+                              gl_PointSize = 13;
+                            });
+    const char* fsrc = GLSL(130,
+                            in lowp vec4 col;
+                            void main() {
+                              gl_FragColor = col;
+                            });
 
-          void main() {              
-            col = color_attribute;  
-            col.a = alpha_uniform;
-            gl_Position = matrix_uniform * pos_attribute;
-            gl_Position.z = z_coord_uniform;
-            gl_PointSize = 13;
+    _vshader = std::unique_ptr<QGLShader>(new QGLShader(QGLShader::Vertex));
+    _fshader = std::unique_ptr<QGLShader>(new QGLShader(QGLShader::Fragment));
 
-          }                    
-        );
-        const char *fsrc = GLSL(130,
-          in lowp vec4 col;            
-          void main() {                
-             gl_FragColor = col;
-          }                      
-        );
+    _vshader->compileSourceCode(vsrc);
+    _fshader->compileSourceCode(fsrc);
 
-        _vshader = std::unique_ptr<QGLShader>(new QGLShader(QGLShader::Vertex));
-        _fshader = std::unique_ptr<QGLShader>(new QGLShader(QGLShader::Fragment));
+    _program = std::unique_ptr<QGLShaderProgram>(new QGLShaderProgram());
+    _program->addShader(_vshader.get());
+    _program->addShader(_fshader.get());
+    _program->link();
 
-        _vshader->compileSourceCode(vsrc);
-        _fshader->compileSourceCode(fsrc);
+    _coords_attribute = _program->attributeLocation("pos_attribute");
+    _flags_attribute = _program->attributeLocation("flag_attribute");
+    _colors_attribute = _program->attributeLocation("color_attribute");
 
+    _z_coord_uniform = _program->uniformLocation("z_coord_uniform");
+    _alpha_uniform = _program->uniformLocation("alpha_uniform");
+    _matrix_uniform = _program->uniformLocation("matrix_uniform");
 
-        _program = std::unique_ptr<QGLShaderProgram>(new QGLShaderProgram());
-        _program->addShader(_vshader.get());
-        _program->addShader(_fshader.get());
-        _program->link();
+    _program->release();
+  }
 
-        _coords_attribute  = _program->attributeLocation("pos_attribute");
-        _flags_attribute  = _program->attributeLocation("flag_attribute");
-        _colors_attribute  = _program->attributeLocation("color_attribute");
+  {  //selection
+    const char* vsrc = GLSL(130,
+                            in highp vec4 pos_attribute;
+                            in highp float flag_attribute;
+                            uniform highp mat4 matrix_uniform;
+                            uniform highp float z_coord_uniform;
+                            uniform highp float alpha_uniform;
+                            uniform highp vec4 color_uniform;
+                            out lowp vec4 col;
 
-        _z_coord_uniform  = _program->uniformLocation("z_coord_uniform");
-        _alpha_uniform    = _program->uniformLocation("alpha_uniform");
-        _matrix_uniform    = _program->uniformLocation("matrix_uniform");
+                            void main() {
+                              gl_Position = matrix_uniform * pos_attribute;
+                              gl_Position.z = -0.5;  //z_coord_uniform;
+                              if ((int(0.01 + flag_attribute) % 2) == 1) {
+                                col = color_uniform;
+                                col.a = 1;
+                              } else {
+                                col.a = 0;
+                              }
+                            });
+    const char* fsrc = GLSL(130,
+                            in lowp vec4 col;
+                            void main() {
+                              gl_FragColor = col;
+                            });
 
-        _program->release();
-      }
+    _vshader_selection = std::unique_ptr<QGLShader>(new QGLShader(QGLShader::Vertex));
+    _fshader_selection = std::unique_ptr<QGLShader>(new QGLShader(QGLShader::Fragment));
 
-      {//selection
-        const char *vsrc = GLSL(130,
-          in highp vec4 pos_attribute;        
-          in highp float flag_attribute;    
-          uniform highp mat4 matrix_uniform;        
-          uniform highp float z_coord_uniform;      
-          uniform highp float alpha_uniform;      
-          uniform highp vec4 color_uniform;      
-          out lowp vec4 col;            
+    _vshader_selection->compileSourceCode(vsrc);
+    _fshader_selection->compileSourceCode(fsrc);
 
-          void main() {              
-            gl_Position = matrix_uniform * pos_attribute;
-            gl_Position.z = -0.5;//z_coord_uniform;
-            if((int(0.01+flag_attribute)%2) == 1){
-              col = color_uniform;
-              col.a = 1;
-            }else{
-              col.a = 0;
-            }
-          }                    
-        );
-        const char *fsrc = GLSL(130,
-          in lowp vec4 col;            
-          void main() {                
-             gl_FragColor = col;
-          }                      
-        );
+    _program_selection = std::unique_ptr<QGLShaderProgram>(new QGLShaderProgram());
+    _program_selection->addShader(_vshader_selection.get());
+    _program_selection->addShader(_fshader_selection.get());
+    _program_selection->link();
 
-        _vshader_selection = std::unique_ptr<QGLShader>(new QGLShader(QGLShader::Vertex));
-        _fshader_selection = std::unique_ptr<QGLShader>(new QGLShader(QGLShader::Fragment));
+    _coords_attribute_selection = _program_selection->attributeLocation("pos_attribute");
+    _flags_attribute_selection = _program_selection->attributeLocation("flag_attribute");
 
-        _vshader_selection->compileSourceCode(vsrc);
-        _fshader_selection->compileSourceCode(fsrc);
+    _matrix_uniform_selection = _program_selection->uniformLocation("matrix_uniform");
+    _color_uniform_selection = _program_selection->uniformLocation("color_uniform");
+    _alpha_uniform_selection = _program_selection->uniformLocation("alpha_uniform");
+    _z_coord_uniform_selection = _program_selection->uniformLocation("z_coord_uniform");
 
+    _program_selection->release();
+  }
+  _initialized = true;
+}
 
-        _program_selection = std::unique_ptr<QGLShaderProgram>(new QGLShaderProgram());
-        _program_selection->addShader(_vshader_selection.get());
-        _program_selection->addShader(_fshader_selection.get());
-        _program_selection->link();
+void ScatterplotDrawerLabels::draw(const point_type& bl, const point_type& tr) {
+  checkAndThrowLogic(_initialized, "Shader must be initilized");
+  ScopedCapabilityEnabler blend_helper(GL_BLEND);
+  ScopedCapabilityEnabler depth_test_helper(GL_DEPTH_TEST);
+  ScopedCapabilityEnabler point_smooth_helper(GL_POINT_SMOOTH);
+  ScopedCapabilityEnabler multisample_helper(GL_MULTISAMPLE);
+  ScopedCapabilityEnabler point_size_helper(GL_PROGRAM_POINT_SIZE);
+  glDepthMask(GL_FALSE);
 
-        _coords_attribute_selection  = _program_selection->attributeLocation("pos_attribute");
-        _flags_attribute_selection  = _program_selection->attributeLocation("flag_attribute");
+  {
+    glPointSize(_point_size * _selection_pt_size_mult);
+    _program_selection->bind();
+    QMatrix4x4 matrix;
+    matrix.ortho(bl.x(), tr.x(), bl.y(), tr.y(), 1, -1);
 
-        _matrix_uniform_selection  = _program_selection->uniformLocation("matrix_uniform");
-        _color_uniform_selection  = _program_selection->uniformLocation("color_uniform");
-        _alpha_uniform_selection  = _program_selection->uniformLocation("alpha_uniform");
-        _z_coord_uniform_selection  = _program_selection->uniformLocation("z_coord_uniform");
+    _program_selection->setUniformValue(_matrix_uniform, matrix);
+    _program_selection->setUniformValue(_alpha_uniform, _alpha);
+    _program_selection->setUniformValue(_z_coord_uniform, _z_coord_selection);
+    _program_selection->setUniformValue(_color_uniform_selection, _selection_color);
 
-        _program_selection->release();
-      }
-      _initialized = true;
-    }
+    QOpenGLFunctions glFuncs(QOpenGLContext::currentContext());
+    glFuncs.glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE);
+    _program_selection->enableAttributeArray(_coords_attribute_selection);
+    glFuncs.glVertexAttribPointer(_coords_attribute_selection, 2, GL_FLOAT, GL_FALSE, 0, _embedding);
 
-    void ScatterplotDrawerLabels::draw(const point_type& bl, const point_type& tr){
-      checkAndThrowLogic(_initialized,"Shader must be initilized");
-      ScopedCapabilityEnabler blend_helper(GL_BLEND);
-      ScopedCapabilityEnabler depth_test_helper(GL_DEPTH_TEST);
-      ScopedCapabilityEnabler point_smooth_helper(GL_POINT_SMOOTH);
-      ScopedCapabilityEnabler multisample_helper(GL_MULTISAMPLE);
-      ScopedCapabilityEnabler point_size_helper(GL_PROGRAM_POINT_SIZE);
-      glDepthMask(GL_FALSE);
+    _program_selection->enableAttributeArray(_flags_attribute_selection);
+    glFuncs.glVertexAttribPointer(_flags_attribute_selection, 1, GL_UNSIGNED_INT, GL_FALSE, 0, _flags);
 
-      {
-        glPointSize(_point_size*_selection_pt_size_mult);
-        _program_selection->bind();
-          QMatrix4x4 matrix;
-          matrix.ortho(bl.x(), tr.x(), bl.y(), tr.y(), 1, -1);
+    glDrawArrays(GL_POINTS, 0, _num_points);
+    _program_selection->release();
+  }
 
-          _program_selection->setUniformValue(_matrix_uniform, matrix);
-          _program_selection->setUniformValue(_alpha_uniform, _alpha);
-          _program_selection->setUniformValue(_z_coord_uniform, _z_coord_selection);
-          _program_selection->setUniformValue(_color_uniform_selection, _selection_color);
+  {
+    glPointSize(_point_size);
+    _program->bind();
+    QMatrix4x4 matrix;
+    matrix.ortho(bl.x(), tr.x(), bl.y(), tr.y(), 1, -1);
 
-          QOpenGLFunctions glFuncs(QOpenGLContext::currentContext());
-          glFuncs.glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE);
-          _program_selection->enableAttributeArray(_coords_attribute_selection);
-          glFuncs.glVertexAttribPointer(_coords_attribute_selection, 2, GL_FLOAT, GL_FALSE, 0, _embedding);
+    _program->setUniformValue(_matrix_uniform, matrix);
+    _program->setUniformValue(_alpha_uniform, _alpha);
+    _program->setUniformValue(_z_coord_uniform, _z_coord);
 
-          _program_selection->enableAttributeArray(_flags_attribute_selection);
-          glFuncs.glVertexAttribPointer(_flags_attribute_selection, 1, GL_UNSIGNED_INT, GL_FALSE, 0, _flags);
+    QOpenGLFunctions glFuncs(QOpenGLContext::currentContext());
+    glFuncs.glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE);
+    _program->enableAttributeArray(_coords_attribute);
+    glFuncs.glVertexAttribPointer(_coords_attribute, 2, GL_FLOAT, GL_FALSE, 0, _embedding);
 
-          glDrawArrays(GL_POINTS, 0, _num_points);
-        _program_selection->release();
-      }
+    _program->enableAttributeArray(_colors_attribute);
+    glFuncs.glVertexAttribPointer(_colors_attribute, 3, GL_FLOAT, GL_FALSE, 0, _colors.data());
 
-      {
-        glPointSize(_point_size);
-        _program->bind();
-          QMatrix4x4 matrix;
-          matrix.ortho(bl.x(), tr.x(), bl.y(), tr.y(), 1, -1);
+    _program->enableAttributeArray(_flags_attribute);
+    glFuncs.glVertexAttribPointer(_flags_attribute, 1, GL_UNSIGNED_INT, GL_FALSE, 0, _flags);
 
-          _program->setUniformValue(_matrix_uniform, matrix);
-          _program->setUniformValue(_alpha_uniform, _alpha);
-          _program->setUniformValue(_z_coord_uniform, _z_coord);
+    glDrawArrays(GL_POINTS, 0, _num_points);
+    _program->release();
+  }
 
-          QOpenGLFunctions glFuncs(QOpenGLContext::currentContext());
-          glFuncs.glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE);
-          _program->enableAttributeArray(_coords_attribute);
-          glFuncs.glVertexAttribPointer(_coords_attribute, 2, GL_FLOAT, GL_FALSE, 0, _embedding);
+  glDepthMask(GL_TRUE);
+}
 
-          _program->enableAttributeArray(_colors_attribute);
-          glFuncs.glVertexAttribPointer(_colors_attribute, 3, GL_FLOAT, GL_FALSE, 0, _colors.data());
+void ScatterplotDrawerLabels::setData(const scalar_type* embedding, const flag_type* flags, const unsigned int* labels, const std::map<unsigned int, QColor>& palette, int num_points) {
+  _embedding = embedding;
+  _flags = flags;
+  _num_points = num_points;
+  _colors.reserve(num_points * 3);
 
-          _program->enableAttributeArray(_flags_attribute);
-          glFuncs.glVertexAttribPointer(_flags_attribute, 1, GL_UNSIGNED_INT, GL_FALSE, 0, _flags);
-
-          glDrawArrays(GL_POINTS, 0, _num_points);
-        _program->release();
-      }
-
-      glDepthMask(GL_TRUE);
-    }
-
-    void ScatterplotDrawerLabels::setData(const scalar_type* embedding, const flag_type* flags, const unsigned int* labels, const std::map<unsigned int, QColor>& palette, int num_points){
-      _embedding = embedding;
-      _flags = flags;
-      _num_points = num_points;
-      _colors.reserve(num_points*3);
-
-      for(int i = 0; i < num_points; ++i){
-        auto it = palette.find(labels[i]);
-        assert(it != palette.end());
-        _colors.push_back(it->second.redF());
-        _colors.push_back(it->second.greenF());
-        _colors.push_back(it->second.blueF());
-      }
-    }
-
-    void ScatterplotDrawerLabels::setData(const scalar_type* embedding, const flag_type* flags, const scalar_type* labels, const std::map<scalar_type, QColor>& palette, int num_points){
-      _embedding = embedding;
-      _flags = flags;
-      _num_points = num_points;
-      _colors.reserve(num_points*3);
-
-      for(int i = 0; i < num_points; ++i){
-        auto it = palette.find(labels[i]);
-         // assert(it != palette.end());
-        _colors.push_back(it->second.redF());
-        _colors.push_back(it->second.greenF());
-        _colors.push_back(it->second.blueF());
-      }
-    }
-
+  for (int i = 0; i < num_points; ++i) {
+    auto it = palette.find(labels[i]);
+    assert(it != palette.end());
+    _colors.push_back(it->second.redF());
+    _colors.push_back(it->second.greenF());
+    _colors.push_back(it->second.blueF());
   }
 }
+
+void ScatterplotDrawerLabels::setData(const scalar_type* embedding, const flag_type* flags, const scalar_type* labels, const std::map<scalar_type, QColor>& palette, int num_points) {
+  _embedding = embedding;
+  _flags = flags;
+  _num_points = num_points;
+  _colors.reserve(num_points * 3);
+
+  for (int i = 0; i < num_points; ++i) {
+    auto it = palette.find(labels[i]);
+    // assert(it != palette.end());
+    _colors.push_back(it->second.redF());
+    _colors.push_back(it->second.greenF());
+    _colors.push_back(it->second.blueF());
+  }
+}
+
+}  // namespace viz
+}  // namespace hdi

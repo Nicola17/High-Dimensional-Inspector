@@ -30,15 +30,15 @@
  *
  */
 
-#include "histogram_inl.h"
-#include <unordered_map>
 #include <map>
+#include <unordered_map>
+#include "histogram_inl.h"
 
-namespace hdi{
-  namespace data{
+namespace hdi {
+namespace data {
 
-    template class Histogram<float>;
-    template class Histogram<double>;
+template class Histogram<float>;
+template class Histogram<double>;
 
-  }
-}
+}  // namespace data
+}  // namespace hdi

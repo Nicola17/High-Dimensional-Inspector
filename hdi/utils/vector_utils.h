@@ -33,84 +33,84 @@
 #ifndef VECTOR_UTILS_H
 #define VECTOR_UTILS_H
 
-#include <vector>
 #include <assert.h>
 #include <cmath>
+#include <vector>
 
-namespace hdi{
-  namespace utils{
+namespace hdi {
+namespace utils {
 
-    template <typename scalar_type>
-    void sum(std::vector<scalar_type>& res, const std::vector<scalar_type>& a, const std::vector<scalar_type>& b){
-      assert( res.size() == a.size() && a.size() == b.size() );
-      for(int i = 0; i < res.size(); ++i){
-        res[i] = a[i] + b[i];
-      }
-    }
-
-    template <typename scalar_type>
-    void multiply(std::vector<scalar_type>& v, scalar_type a){
-      for(int i = 0; i < v.size(); ++i){
-        v[i] *= a;
-      }
-    }
-
-    template <typename scalar_type>
-    void normalize(std::vector<scalar_type>& v){
-      scalar_type sum = 0;
-      for(int i = 0; i < v.size(); ++i){
-        sum += v[i]*v[i];
-      }
-      if(sum != 0){
-        sum = std::sqrt(sum);
-        for(int i = 0; i < v.size(); ++i){
-          v[i] /= sum;
-        }
-      }else{
-        for(int i = 0; i < v.size(); ++i){
-          v[i] = 1./v.size();
-        }
-      }
-    }
-
-    template <typename scalar_type>
-    void normalizeL1(std::vector<scalar_type>& v){
-      double sum = 0;
-      for(int i = 0; i < v.size(); ++i){
-        sum += v[i];
-      }
-      if(sum != 0){
-        for(int i = 0; i < v.size(); ++i){
-          v[i] /= sum;
-        }
-      }else{
-        for(int i = 0; i < v.size(); ++i){
-          v[i] = 1./v.size();
-        }
-      }
-    }
-    template <typename scalar_type>
-    void softMax(std::vector<scalar_type>& v){
-      double sum = 0;
-      for(int i = 0; i < v.size(); ++i){
-        v[i] = std::exp(v[i]);
-        sum += v[i];
-      }
-      for(int i = 0; i < v.size(); ++i){
-        v[i] /= sum;
-      }
-    }
-
-    template <typename scalar_type>
-    scalar_type dotProduct(const std::vector<scalar_type>& a, const std::vector<scalar_type>& b){
-      assert(a.size() == b.size());
-      double res(0);
-      for(int i = 0; i < a.size(); ++i){
-        res += double(a[i])*double(b[i]);
-      }
-      return static_cast<scalar_type>(res);
-    }
-
+template <typename scalar_type>
+void sum(std::vector<scalar_type>& res, const std::vector<scalar_type>& a, const std::vector<scalar_type>& b) {
+  assert(res.size() == a.size() && a.size() == b.size());
+  for (int i = 0; i < res.size(); ++i) {
+    res[i] = a[i] + b[i];
   }
 }
+
+template <typename scalar_type>
+void multiply(std::vector<scalar_type>& v, scalar_type a) {
+  for (int i = 0; i < v.size(); ++i) {
+    v[i] *= a;
+  }
+}
+
+template <typename scalar_type>
+void normalize(std::vector<scalar_type>& v) {
+  scalar_type sum = 0;
+  for (int i = 0; i < v.size(); ++i) {
+    sum += v[i] * v[i];
+  }
+  if (sum != 0) {
+    sum = std::sqrt(sum);
+    for (int i = 0; i < v.size(); ++i) {
+      v[i] /= sum;
+    }
+  } else {
+    for (int i = 0; i < v.size(); ++i) {
+      v[i] = 1. / v.size();
+    }
+  }
+}
+
+template <typename scalar_type>
+void normalizeL1(std::vector<scalar_type>& v) {
+  double sum = 0;
+  for (int i = 0; i < v.size(); ++i) {
+    sum += v[i];
+  }
+  if (sum != 0) {
+    for (int i = 0; i < v.size(); ++i) {
+      v[i] /= sum;
+    }
+  } else {
+    for (int i = 0; i < v.size(); ++i) {
+      v[i] = 1. / v.size();
+    }
+  }
+}
+template <typename scalar_type>
+void softMax(std::vector<scalar_type>& v) {
+  double sum = 0;
+  for (int i = 0; i < v.size(); ++i) {
+    v[i] = std::exp(v[i]);
+    sum += v[i];
+  }
+  for (int i = 0; i < v.size(); ++i) {
+    v[i] /= sum;
+  }
+}
+
+template <typename scalar_type>
+scalar_type dotProduct(const std::vector<scalar_type>& a, const std::vector<scalar_type>& b) {
+  assert(a.size() == b.size());
+  double res(0);
+  for (int i = 0; i < a.size(); ++i) {
+    res += double(a[i]) * double(b[i]);
+  }
+  return static_cast<scalar_type>(res);
+}
+
+}  // namespace utils
+}  // namespace hdi
 #endif

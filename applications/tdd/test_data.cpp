@@ -31,20 +31,20 @@
  */
 
 #include "catch.hpp"
+#include "hdi/data/histogram.h"
 #include "hdi/data/panel_data.h"
 #include "hdi/data/text_data.h"
-#include "hdi/data/histogram.h"
 
-TEST_CASE( "Initialization of a PanelData", "[PanelData]" ) {
+TEST_CASE("Initialization of a PanelData", "[PanelData]") {
   hdi::data::PanelData<float> panel_data;
   std::vector<float> high_dim(5);
 
   REQUIRE_THROWS(panel_data.initialize());
   REQUIRE(panel_data.isInitialized() == false);
-  REQUIRE_THROWS(panel_data.addDataPoint(std::make_shared<hdi::data::TextData>(hdi::data::TextData()),high_dim));
+  REQUIRE_THROWS(panel_data.addDataPoint(std::make_shared<hdi::data::TextData>(hdi::data::TextData()), high_dim));
   REQUIRE_THROWS(panel_data.reserve(10));
 
-////////////////////////////////////////////////
+  ////////////////////////////////////////////////
   REQUIRE_NOTHROW(panel_data.addDimension(std::make_shared<hdi::data::TextData>(hdi::data::TextData())));
   REQUIRE_NOTHROW(panel_data.addDimension(std::make_shared<hdi::data::TextData>(hdi::data::TextData())));
   REQUIRE_NOTHROW(panel_data.addDimension(std::make_shared<hdi::data::TextData>(hdi::data::TextData())));
@@ -56,14 +56,14 @@ TEST_CASE( "Initialization of a PanelData", "[PanelData]" ) {
   REQUIRE(panel_data.isInitialized() == true);
   REQUIRE_NOTHROW(panel_data.reserve(10));
 
-  REQUIRE_NOTHROW(panel_data.addDataPoint(std::make_shared<hdi::data::TextData>(hdi::data::TextData()),high_dim));
-  REQUIRE_NOTHROW(panel_data.addDataPoint(std::make_shared<hdi::data::TextData>(hdi::data::TextData()),high_dim));
-  REQUIRE_NOTHROW(panel_data.addDataPoint(std::make_shared<hdi::data::TextData>(hdi::data::TextData()),high_dim));
-  REQUIRE_NOTHROW(panel_data.addDataPoint(std::make_shared<hdi::data::TextData>(hdi::data::TextData()),high_dim));
-  REQUIRE(panel_data.addDataPoint(std::make_shared<hdi::data::TextData>(hdi::data::TextData()),high_dim) == 4);
+  REQUIRE_NOTHROW(panel_data.addDataPoint(std::make_shared<hdi::data::TextData>(hdi::data::TextData()), high_dim));
+  REQUIRE_NOTHROW(panel_data.addDataPoint(std::make_shared<hdi::data::TextData>(hdi::data::TextData()), high_dim));
+  REQUIRE_NOTHROW(panel_data.addDataPoint(std::make_shared<hdi::data::TextData>(hdi::data::TextData()), high_dim));
+  REQUIRE_NOTHROW(panel_data.addDataPoint(std::make_shared<hdi::data::TextData>(hdi::data::TextData()), high_dim));
+  REQUIRE(panel_data.addDataPoint(std::make_shared<hdi::data::TextData>(hdi::data::TextData()), high_dim) == 4);
   REQUIRE(panel_data.numDataPoints() == 5);
 
-  REQUIRE_THROWS(panel_data.addDataPoint(std::make_shared<hdi::data::TextData>(hdi::data::TextData()),std::vector<float>(10)));
+  REQUIRE_THROWS(panel_data.addDataPoint(std::make_shared<hdi::data::TextData>(hdi::data::TextData()), std::vector<float>(10)));
 
   REQUIRE(panel_data.getData().size() == 25);
   REQUIRE(panel_data.getDataPoints().size() == 5);
@@ -71,7 +71,7 @@ TEST_CASE( "Initialization of a PanelData", "[PanelData]" ) {
   REQUIRE(panel_data.getFlagsDataPoints().size() == 5);
   REQUIRE(panel_data.getFlagsDimensions().size() == 5);
 
-////////////////////////////////////////////////
+  ////////////////////////////////////////////////
   REQUIRE_NOTHROW(panel_data.clear());
   REQUIRE(panel_data.numDimensions() == 0);
   REQUIRE(panel_data.numDataPoints() == 0);
@@ -82,11 +82,11 @@ TEST_CASE( "Initialization of a PanelData", "[PanelData]" ) {
   REQUIRE(panel_data.getFlagsDimensions().size() == 0);
 }
 
-TEST_CASE( "Transposed PanelData", "[PanelData]" ) {
+TEST_CASE("Transposed PanelData", "[PanelData]") {
   hdi::data::PanelData<float> panel_data;
   hdi::data::PanelData<float> transposed_panel_data;
 
-////////////////////////////////////////////////
+  ////////////////////////////////////////////////
   REQUIRE_NOTHROW(panel_data.addDimension(std::make_shared<hdi::data::TextData>(hdi::data::TextData())));
   REQUIRE_NOTHROW(panel_data.addDimension(std::make_shared<hdi::data::TextData>(hdi::data::TextData())));
   REQUIRE_NOTHROW(panel_data.addDimension(std::make_shared<hdi::data::TextData>(hdi::data::TextData())));
@@ -98,26 +98,24 @@ TEST_CASE( "Transposed PanelData", "[PanelData]" ) {
   REQUIRE(panel_data.isInitialized() == true);
   REQUIRE_NOTHROW(panel_data.reserve(10));
 
-  REQUIRE_NOTHROW(panel_data.addDataPoint(std::make_shared<hdi::data::TextData>(hdi::data::TextData()),std::vector<float>(5,0)));
-  REQUIRE_NOTHROW(panel_data.addDataPoint(std::make_shared<hdi::data::TextData>(hdi::data::TextData()),std::vector<float>(5,1)));
-  REQUIRE_NOTHROW(panel_data.addDataPoint(std::make_shared<hdi::data::TextData>(hdi::data::TextData()),std::vector<float>(5,2)));
-  REQUIRE_NOTHROW(panel_data.addDataPoint(std::make_shared<hdi::data::TextData>(hdi::data::TextData()),std::vector<float>(5,3)));
+  REQUIRE_NOTHROW(panel_data.addDataPoint(std::make_shared<hdi::data::TextData>(hdi::data::TextData()), std::vector<float>(5, 0)));
+  REQUIRE_NOTHROW(panel_data.addDataPoint(std::make_shared<hdi::data::TextData>(hdi::data::TextData()), std::vector<float>(5, 1)));
+  REQUIRE_NOTHROW(panel_data.addDataPoint(std::make_shared<hdi::data::TextData>(hdi::data::TextData()), std::vector<float>(5, 2)));
+  REQUIRE_NOTHROW(panel_data.addDataPoint(std::make_shared<hdi::data::TextData>(hdi::data::TextData()), std::vector<float>(5, 3)));
 
-  REQUIRE_NOTHROW(hdi::data::transposePanelData(panel_data,transposed_panel_data));
+  REQUIRE_NOTHROW(hdi::data::transposePanelData(panel_data, transposed_panel_data));
 
-  for(int i = 0; i < panel_data.numDataPoints(); ++i){
-    for(int f = 0; f < panel_data.numDimensions(); ++f){
-      REQUIRE(panel_data.dataAt(i,f) == transposed_panel_data.dataAt(f,i));
+  for (int i = 0; i < panel_data.numDataPoints(); ++i) {
+    for (int f = 0; f < panel_data.numDimensions(); ++f) {
+      REQUIRE(panel_data.dataAt(i, f) == transposed_panel_data.dataAt(f, i));
     }
   }
-
 }
 
-TEST_CASE( "PanelData properties", "[PanelData]" ) {
+TEST_CASE("PanelData properties", "[PanelData]") {
   hdi::data::PanelData<float> panel_data;
 
-
-////////////////////////////////////////////////
+  ////////////////////////////////////////////////
   REQUIRE_NOTHROW(panel_data.addDimension(std::make_shared<hdi::data::TextData>(hdi::data::TextData())));
   REQUIRE_NOTHROW(panel_data.addDimension(std::make_shared<hdi::data::TextData>(hdi::data::TextData())));
   REQUIRE_NOTHROW(panel_data.addDimension(std::make_shared<hdi::data::TextData>(hdi::data::TextData())));
@@ -135,16 +133,14 @@ TEST_CASE( "PanelData properties", "[PanelData]" ) {
   REQUIRE(panel_data.getProperty("Test").size() == 0);
   REQUIRE_THROWS(panel_data.getProperty("Test2"));
 
-
-  REQUIRE_NOTHROW(panel_data.addDataPoint(std::make_shared<hdi::data::TextData>(hdi::data::TextData()),std::vector<float>(5,0)));
+  REQUIRE_NOTHROW(panel_data.addDataPoint(std::make_shared<hdi::data::TextData>(hdi::data::TextData()), std::vector<float>(5, 0)));
   REQUIRE(panel_data.getProperty("Test").size() == 1);
-  REQUIRE_NOTHROW(panel_data.addDataPoint(std::make_shared<hdi::data::TextData>(hdi::data::TextData()),std::vector<float>(5,1)));
+  REQUIRE_NOTHROW(panel_data.addDataPoint(std::make_shared<hdi::data::TextData>(hdi::data::TextData()), std::vector<float>(5, 1)));
   REQUIRE(panel_data.getProperty("Test").size() == 2);
-  REQUIRE_NOTHROW(panel_data.addDataPoint(std::make_shared<hdi::data::TextData>(hdi::data::TextData()),std::vector<float>(5,2)));
+  REQUIRE_NOTHROW(panel_data.addDataPoint(std::make_shared<hdi::data::TextData>(hdi::data::TextData()), std::vector<float>(5, 2)));
   REQUIRE(panel_data.getProperty("Test").size() == 3);
-  REQUIRE_NOTHROW(panel_data.addDataPoint(std::make_shared<hdi::data::TextData>(hdi::data::TextData()),std::vector<float>(5,3)));
+  REQUIRE_NOTHROW(panel_data.addDataPoint(std::make_shared<hdi::data::TextData>(hdi::data::TextData()), std::vector<float>(5, 3)));
   REQUIRE(panel_data.getProperty("Test").size() == 4);
-
 
   REQUIRE(panel_data.hasProperty("Test") == true);
   REQUIRE_NOTHROW(panel_data.releaseProperty("Test"));
@@ -156,10 +152,10 @@ TEST_CASE( "PanelData properties", "[PanelData]" ) {
   REQUIRE(panel_data.getProperty("Test").size() == 4);
 }
 
-TEST_CASE( "PanelData dimension properties", "[PanelData]" ) {
+TEST_CASE("PanelData dimension properties", "[PanelData]") {
   hdi::data::PanelData<float> panel_data;
 
-////////////////////////////////////////////////
+  ////////////////////////////////////////////////
   REQUIRE_NOTHROW(panel_data.addDimension(std::make_shared<hdi::data::TextData>(hdi::data::TextData())));
   REQUIRE_NOTHROW(panel_data.addDimension(std::make_shared<hdi::data::TextData>(hdi::data::TextData())));
   REQUIRE_NOTHROW(panel_data.addDimension(std::make_shared<hdi::data::TextData>(hdi::data::TextData())));
@@ -186,17 +182,16 @@ TEST_CASE( "PanelData dimension properties", "[PanelData]" ) {
   REQUIRE_NOTHROW(panel_data.requestDimProperty("Test"));
   REQUIRE(panel_data.hasDimProperty("Test") == true);
   REQUIRE(panel_data.getDimProperty("Test").size() == 4);
-
 }
 
 template <typename scalar_type>
-void testHistogram(){
+void testHistogram() {
   hdi::data::Histogram<scalar_type> h;
   REQUIRE(h.min() == 0);
   REQUIRE(h.max() == 0);
   REQUIRE(h.num_buckets() == 0);
 
-  h = hdi::data::Histogram<scalar_type>(0,10,10);
+  h = hdi::data::Histogram<scalar_type>(0, 10, 10);
   REQUIRE(h.min() == 0);
   REQUIRE(h.max() == 10);
   REQUIRE(h.num_buckets() == 10);
@@ -228,8 +223,7 @@ void testHistogram(){
   REQUIRE(h.data()[0] == 1);
 }
 
-
-TEST_CASE( "Histogram<float>", "[Histogram]" ) {
+TEST_CASE("Histogram<float>", "[Histogram]") {
   testHistogram<float>();
   testHistogram<double>();
 }

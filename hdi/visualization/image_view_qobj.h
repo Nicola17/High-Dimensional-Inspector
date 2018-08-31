@@ -35,56 +35,53 @@
 
 #include "ui_image_view_qobj.h"
 
-#include <qdialog.h>
 #include <qcolor.h>
+#include <qdialog.h>
 #include <memory>
 #include "hdi/data/abstract_data.h"
 #include "hdi/visualization/abstract_view.h"
 
+namespace hdi {
+namespace viz {
 
-
-namespace hdi{
-  namespace viz{
-
-    //! View for data::ImageData
-    /*!
+//! View for data::ImageData
+/*!
       View for data::ImageData
       \author Nicola Pezzotti
     */
-    class ImageView : public QWidget, public AbstractView{
-      Q_OBJECT
-    public:
-      ImageView(QWidget* parent = nullptr);
-      virtual ~ImageView(){}
+class ImageView : public QWidget, public AbstractView {
+  Q_OBJECT
+ public:
+  ImageView(QWidget* parent = nullptr);
+  virtual ~ImageView() {}
 
-      //! Set the size of the images visualized in this view
-      void setImageSize(int w, int h);
+  //! Set the size of the images visualized in this view
+  void setImageSize(int w, int h);
 
-      virtual QWidget* widgetPtr(){ return this; }
-      virtual const QWidget* widgetPtr()const{ return this; }
+  virtual QWidget* widgetPtr() { return this; }
+  virtual const QWidget* widgetPtr() const { return this; }
 
-      virtual void updateView();
+  virtual void updateView();
 
-    public slots:
-      virtual void onSelectionChanged();
+ public slots:
+  virtual void onSelectionChanged();
 
-      //! Return the resolution multiplier
-      int resMultiplier(){ return _res_mult; }
-      //! Set the resolution multiplier
-      void setResMultiplier(int res_mult){ _res_mult = res_mult; }
+  //! Return the resolution multiplier
+  int resMultiplier() { return _res_mult; }
+  //! Set the resolution multiplier
+  void setResMultiplier(int res_mult) { _res_mult = res_mult; }
 
-    signals:
-      void sgnSelectionChanged();
+ signals:
+  void sgnSelectionChanged();
 
-    private:
-      Ui::ImageView _ui;
-      QImage _image;
+ private:
+  Ui::ImageView _ui;
+  QImage _image;
 
-      int _res_mult;
+  int _res_mult;
+};
 
-    };
-
-  }
-}
+}  // namespace viz
+}  // namespace hdi
 
 #endif

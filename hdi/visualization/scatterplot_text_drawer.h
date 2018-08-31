@@ -33,42 +33,42 @@
 #ifndef SCATTERPLOT_TEXT_DRAWER_H
 #define SCATTERPLOT_TEXT_DRAWER_H
 
+#include <stdint.h>
 #include <QColor>
 #include <QImage>
-#include <stdint.h>
 #include <memory>
 #include "hdi/visualization/abstract_scatterplot_drawer.h"
 
-namespace hdi{
-  namespace viz{
+namespace hdi {
+namespace viz {
 
-    class ScatterplotTextDrawer: public AbstractScatterplotDrawer{
+class ScatterplotTextDrawer : public AbstractScatterplotDrawer {
+ public:
+  ScatterplotTextDrawer();
 
-    public:
-      ScatterplotTextDrawer();
-
-      //! Draw on canvas
-      virtual void draw(const point_type& bl, const point_type& tr);
-      virtual void initialize(QGLContext* context);
-      void setText(const std::string& text, QColor color = Qt::black, std::string font = "Helvetica");
-      const std::string& text()const{return _text;}
-      void setCoordinates(const point_type& coords, float height){_coords = coords; _height = height;}
-      void setAlpha(float alpha){_alpha = alpha;}
-
-
-    private:
-      QImage _image;
-      bool _initialized;
-      std::string _text;
-      float _alpha;
-
-      point_type  _coords;
-      float     _height;
-      GLuint    _textureID;
-
-    };
-
+  //! Draw on canvas
+  virtual void draw(const point_type& bl, const point_type& tr);
+  virtual void initialize(QGLContext* context);
+  void setText(const std::string& text, QColor color = Qt::black, std::string font = "Helvetica");
+  const std::string& text() const { return _text; }
+  void setCoordinates(const point_type& coords, float height) {
+    _coords = coords;
+    _height = height;
   }
-}
+  void setAlpha(float alpha) { _alpha = alpha; }
+
+ private:
+  QImage _image;
+  bool _initialized;
+  std::string _text;
+  float _alpha;
+
+  point_type _coords;
+  float _height;
+  GLuint _textureID;
+};
+
+}  // namespace viz
+}  // namespace hdi
 
 #endif

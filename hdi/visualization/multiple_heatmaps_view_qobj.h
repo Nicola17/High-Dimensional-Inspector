@@ -35,60 +35,57 @@
 
 #include "ui_multiple_heatmaps_view_qobj.h"
 
-#include <qdialog.h>
 #include <qcolor.h>
+#include <qdialog.h>
+#include <QLabel>
 #include <memory>
 #include "hdi/data/abstract_data.h"
 #include "hdi/visualization/abstract_view.h"
-#include <QLabel>
 
+namespace hdi {
+namespace viz {
 
-
-namespace hdi{
-  namespace viz{
-
-    //! Heatmap viewer for any type of data::AbstractData
-    /*!
+//! Heatmap viewer for any type of data::AbstractData
+/*!
       View for data::ImageData
       \author Nicola Pezzotti
     */
-    class MultipleHeatmapsView : public QWidget, public AbstractView{
-      Q_OBJECT
-      typedef float scalar_type;
-    public:
-      MultipleHeatmapsView(QWidget* parent = nullptr);
-      virtual ~MultipleHeatmapsView(){}
+class MultipleHeatmapsView : public QWidget, public AbstractView {
+  Q_OBJECT
+  typedef float scalar_type;
 
-      virtual QWidget* widgetPtr(){ return this; }
-      virtual const QWidget* widgetPtr()const{ return this; }
+ public:
+  MultipleHeatmapsView(QWidget* parent = nullptr);
+  virtual ~MultipleHeatmapsView() {}
 
-      virtual void updateView();
+  virtual QWidget* widgetPtr() { return this; }
+  virtual const QWidget* widgetPtr() const { return this; }
 
-      //! An AbstractPanelData shuold be already assigned
-      void setAuxData(unsigned int num_dimensions, const scalar_type* data);
+  virtual void updateView();
 
-    public slots:
-      virtual void onSelectionChanged();
+  //! An AbstractPanelData shuold be already assigned
+  void setAuxData(unsigned int num_dimensions, const scalar_type* data);
 
-    private slots:
-      void onNumOfColumnsChanged(int n);
-      void onImageHeightChanged(int n);
+ public slots:
+  virtual void onSelectionChanged();
 
+ private slots:
+  void onNumOfColumnsChanged(int n);
+  void onImageHeightChanged(int n);
 
-    private:
-      Ui::MultipleHeatmapsView _ui;
-      std::vector<std::shared_ptr<QLabel>> _image_labels;
+ private:
+  Ui::MultipleHeatmapsView _ui;
+  std::vector<std::shared_ptr<QLabel>> _image_labels;
 
-      unsigned int _num_columns;
-      unsigned int _img_height;
+  unsigned int _num_columns;
+  unsigned int _img_height;
 
-      unsigned int _num_dimensions;
-      const scalar_type* _data;
-      scalar_type _data_min,_data_max;
+  unsigned int _num_dimensions;
+  const scalar_type* _data;
+  scalar_type _data_min, _data_max;
+};
 
-    };
-
-  }
-}
+}  // namespace viz
+}  // namespace hdi
 
 #endif

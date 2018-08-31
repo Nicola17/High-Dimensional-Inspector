@@ -33,30 +33,29 @@
 #ifndef VOXEL_DATA_H
 #define VOXEL_DATA_H
 
-#include "hdi/data/abstract_data.h"
 #include <QImage>
+#include "hdi/data/abstract_data.h"
 
-namespace hdi{
-  namespace data{
+namespace hdi {
+namespace data {
 
-    //! Voxel data type
-    /*!
+//! Voxel data type
+/*!
       Voxel data type
       \author Nicola Pezzotti
     */
-    class VoxelData : public AbstractData{
-    public:
-      VoxelData(int x = -1, int y = -1, int z = -1) :_x(x), _y(y), _z(z){}
-      virtual ~VoxelData(){}
+class VoxelData : public AbstractData {
+ public:
+  VoxelData(int x = -1, int y = -1, int z = -1) : _x(x), _y(y), _z(z) {}
+  virtual ~VoxelData() {}
 
-    public:
-      int _x;
-      int _y;
-      int _z;
-    };
+ public:
+  int _x;
+  int _y;
+  int _z;
+};
 
-  }
-}
-
+}  // namespace data
+}  // namespace hdi
 
 #endif

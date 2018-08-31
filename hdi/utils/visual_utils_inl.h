@@ -33,101 +33,100 @@
 #ifndef VISUAL_UTILS_INL
 #define VISUAL_UTILS_INL
 
-#include "hdi/utils/visual_utils.h"
-#include <QColor>
 #include <assert.h>
+#include <QColor>
 #include <cmath>
+#include "hdi/utils/visual_utils.h"
 
-namespace hdi{
-  namespace utils{
+namespace hdi {
+namespace utils {
 
-    template <typename scalar_type>
-    QImage imageFromMatrix(const std::vector<std::vector<scalar_type>>& matrix, scalar_type max){
-      const unsigned int size = static_cast<unsigned int>(matrix.size());
-      QImage image(size,size,QImage::Format_RGB32);
-      for(int j = 0; j < size; ++j){
-        for(int i = 0; i < size; ++i){
-          scalar_type norm = std::min<scalar_type>(matrix[j][i]/max,1);
-          auto color = qRgb(norm*255,norm*255,norm*255);
-          image.setPixel(i,j,color);
-        }
-      }
-      return image;
+template <typename scalar_type>
+QImage imageFromMatrix(const std::vector<std::vector<scalar_type>>& matrix, scalar_type max) {
+  const unsigned int size = static_cast<unsigned int>(matrix.size());
+  QImage image(size, size, QImage::Format_RGB32);
+  for (int j = 0; j < size; ++j) {
+    for (int i = 0; i < size; ++i) {
+      scalar_type norm = std::min<scalar_type>(matrix[j][i] / max, 1);
+      auto color = qRgb(norm * 255, norm * 255, norm * 255);
+      image.setPixel(i, j, color);
     }
-
-    template <typename map_type>
-    QImage imageFromSparseMatrix(const std::vector<map_type>& sparse_matrix){
-      typedef typename map_type::mapped_type scalar_type;
-
-      const unsigned int size = static_cast<unsigned int>(sparse_matrix.size());
-      QImage image(size,size,QImage::Format_RGB32);
-      scalar_type max = -std::numeric_limits<scalar_type>::max();
-
-      for(int j = 0; j < size; ++j){
-        for(int i = 0; i < size; ++i){
-          image.setPixel(i,j,qRgb(50,0,0));
-        }
-      }
-
-      //max
-      for(int j = 0; j < size; ++j){
-        for(auto& v: sparse_matrix[j]){
-          max = std::max(max,v.second);
-        }
-      }
-
-      for(int j = 0; j < size; ++j){
-        for(auto& v: sparse_matrix[j]){
-          assert(v.first < size);
-          scalar_type norm = v.second/max;
-          auto color = qRgb(norm*255,norm*255,norm*255);
-          image.setPixel(v.first,j,color);
-        }
-      }
-
-      return image;
-    }
-
-
-    template <typename map_type>
-    QImage imageFromZeroCenteredSparseMatrix(const std::vector<map_type>& sparse_matrix){
-      typedef typename map_type::mapped_type scalar_type;
-
-      const unsigned int size = static_cast<unsigned int>(sparse_matrix.size());
-      QImage image(size,size,QImage::Format_RGB32);
-      scalar_type max = -std::numeric_limits<scalar_type>::max();
-
-      for(int j = 0; j < size; ++j){
-        for(int i = 0; i < size; ++i){
-          image.setPixel(i,j,qRgb(50,0,0));
-        }
-      }
-
-      //max
-      for(int j = 0; j < size; ++j){
-        for(auto& v: sparse_matrix[j]){
-          max = std::max(max,std::abs(v.second));
-        }
-      }
-
-      for(int j = 0; j < size; ++j){
-        for(auto& v: sparse_matrix[j]){
-          assert(v.first < size);
-          scalar_type norm = std::abs(v.second)/max;
-          if(v.second >= 0){
-            auto color = qRgb(norm*255,0,0);
-            image.setPixel(v.first,j,color);
-          }else{
-            auto color = qRgb(0,norm*255,0);
-            image.setPixel(v.first,j,color);
-          }
-        }
-      }
-
-      return image;
-    }
-
   }
+  return image;
 }
 
-#endif // TIMERS_H
+template <typename map_type>
+QImage imageFromSparseMatrix(const std::vector<map_type>& sparse_matrix) {
+  typedef typename map_type::mapped_type scalar_type;
+
+  const unsigned int size = static_cast<unsigned int>(sparse_matrix.size());
+  QImage image(size, size, QImage::Format_RGB32);
+  scalar_type max = -std::numeric_limits<scalar_type>::max();
+
+  for (int j = 0; j < size; ++j) {
+    for (int i = 0; i < size; ++i) {
+      image.setPixel(i, j, qRgb(50, 0, 0));
+    }
+  }
+
+  //max
+  for (int j = 0; j < size; ++j) {
+    for (auto& v : sparse_matrix[j]) {
+      max = std::max(max, v.second);
+    }
+  }
+
+  for (int j = 0; j < size; ++j) {
+    for (auto& v : sparse_matrix[j]) {
+      assert(v.first < size);
+      scalar_type norm = v.second / max;
+      auto color = qRgb(norm * 255, norm * 255, norm * 255);
+      image.setPixel(v.first, j, color);
+    }
+  }
+
+  return image;
+}
+
+template <typename map_type>
+QImage imageFromZeroCenteredSparseMatrix(const std::vector<map_type>& sparse_matrix) {
+  typedef typename map_type::mapped_type scalar_type;
+
+  const unsigned int size = static_cast<unsigned int>(sparse_matrix.size());
+  QImage image(size, size, QImage::Format_RGB32);
+  scalar_type max = -std::numeric_limits<scalar_type>::max();
+
+  for (int j = 0; j < size; ++j) {
+    for (int i = 0; i < size; ++i) {
+      image.setPixel(i, j, qRgb(50, 0, 0));
+    }
+  }
+
+  //max
+  for (int j = 0; j < size; ++j) {
+    for (auto& v : sparse_matrix[j]) {
+      max = std::max(max, std::abs(v.second));
+    }
+  }
+
+  for (int j = 0; j < size; ++j) {
+    for (auto& v : sparse_matrix[j]) {
+      assert(v.first < size);
+      scalar_type norm = std::abs(v.second) / max;
+      if (v.second >= 0) {
+        auto color = qRgb(norm * 255, 0, 0);
+        image.setPixel(v.first, j, color);
+      } else {
+        auto color = qRgb(0, norm * 255, 0);
+        image.setPixel(v.first, j, color);
+      }
+    }
+  }
+
+  return image;
+}
+
+}  // namespace utils
+}  // namespace hdi
+
+#endif  // TIMERS_H

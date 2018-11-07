@@ -6,32 +6,28 @@
 class QWidget;
 class QGridLayout;
 
-class DockableWidget : public QDockWidget
-{
+class DockableWidget : public QDockWidget {
   Q_OBJECT
-public:
-  explicit DockableWidget(QWidget *parent = 0);
+ public:
+  explicit DockableWidget(QWidget* parent = 0);
   ~DockableWidget();
 
   QGridLayout* mainLayout();
 
-public slots :
+ public slots:
   void setVisibility(bool visible);
   void toggleVisibility();
 
-protected:
-
-private:
-
-public:
-
-protected:
+ protected:
+ private:
+ public:
+ protected:
   bool _isVisible;
 
   QGridLayout* _mainLayout;
 
-private:
+ private:
   QWidget* _mainWidget;
 };
 
-#endif // UI_DOCKABLE_WIDGET
+#endif  // UI_DOCKABLE_WIDGET

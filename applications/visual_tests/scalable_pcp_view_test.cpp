@@ -34,22 +34,22 @@
 #include "hdi/visualization/scalable_pcp_view_qobj.h"
 
 #include <QApplication>
-#include "hdi/utils/cout_log.h"
-#include "hdi/utils/log_helper_functions.h"
-#include "hdi/utils/assert_by_exception.h"
 #include <iostream>
-#include "hdi/utils/timing_utils.h"
 #include "hdi/data/panel_data.h"
-#include "hdi/utils/dataset_utils.h"
 #include "hdi/dimensionality_reduction/hd_joint_probability_generator.h"
 #include "hdi/dimensionality_reduction/sparse_tsne_user_def_probabilities.h"
-#include "hdi/visualization/scatterplot_canvas_qobj.h"
-#include "hdi/visualization/controller_embedding_selection_qobj.h"
-#include "hdi/visualization/scatterplot_drawer_labels.h"
+#include "hdi/utils/assert_by_exception.h"
+#include "hdi/utils/cout_log.h"
+#include "hdi/utils/dataset_utils.h"
+#include "hdi/utils/log_helper_functions.h"
+#include "hdi/utils/timing_utils.h"
 #include "hdi/utils/visual_utils.h"
+#include "hdi/visualization/controller_embedding_selection_qobj.h"
+#include "hdi/visualization/scatterplot_canvas_qobj.h"
+#include "hdi/visualization/scatterplot_drawer_labels.h"
 
-int main(int argc, char *argv[]){
-  try{
+int main(int argc, char* argv[]) {
+  try {
     QApplication app(argc, argv);
     QIcon icon;
     icon.addFile(":/brick32.png");
@@ -77,12 +77,12 @@ int main(int argc, char *argv[]){
       pcp_view.setMinY(min);
       pcp_view.setNumDims(n_dim);
       pcp_view.setSorting(hdi::viz::ScalablePCPView::sorting_type::NO_SORTING);
-      pcp_view.resize(QSize(600,200));
+      pcp_view.resize(QSize(600, 200));
       pcp_view.onUpdate();
-      pcp_view.resize(QSize(600,200));
+      pcp_view.resize(QSize(600, 200));
 
       QCoreApplication::processEvents();
-      pcp_view.resize(QSize(600,200));
+      pcp_view.resize(QSize(600, 200));
     }
     {
       pcp_view_avg_sorted.setLogger(&log);
@@ -94,12 +94,12 @@ int main(int argc, char *argv[]){
       pcp_view_avg_sorted.setMinY(min);
       pcp_view_avg_sorted.setNumDims(n_dim);
       pcp_view_avg_sorted.setSorting(hdi::viz::ScalablePCPView::sorting_type::AVG_SORTING);
-      pcp_view_avg_sorted.resize(QSize(600,200));
+      pcp_view_avg_sorted.resize(QSize(600, 200));
       pcp_view_avg_sorted.onUpdate();
-      pcp_view_avg_sorted.resize(QSize(600,200));
+      pcp_view_avg_sorted.resize(QSize(600, 200));
 
       QCoreApplication::processEvents();
-      pcp_view_avg_sorted.resize(QSize(600,200));
+      pcp_view_avg_sorted.resize(QSize(600, 200));
     }
     {
       pcp_view_std_dev_sorted.setLogger(&log);
@@ -111,30 +111,31 @@ int main(int argc, char *argv[]){
       pcp_view_std_dev_sorted.setMinY(min);
       pcp_view_std_dev_sorted.setNumDims(n_dim);
       pcp_view_std_dev_sorted.setSorting(hdi::viz::ScalablePCPView::sorting_type::STD_DEV_SORTING);
-      pcp_view_std_dev_sorted.resize(QSize(600,200));
+      pcp_view_std_dev_sorted.resize(QSize(600, 200));
       pcp_view_std_dev_sorted.onUpdate();
-      pcp_view_std_dev_sorted.resize(QSize(600,200));
+      pcp_view_std_dev_sorted.resize(QSize(600, 200));
 
       QCoreApplication::processEvents();
-      pcp_view_std_dev_sorted.resize(QSize(600,200));
+      pcp_view_std_dev_sorted.resize(QSize(600, 200));
     }
 
-
     int n_points = 250;
-    for(int p = 0; p < n_points; ++p){
+    for (int p = 0; p < n_points; ++p) {
       std::vector<scalar_type> point;
-      for(int i = 0; i < n_dim; ++i){
-        point.push_back((rand()%1000)/1000.);
+      for (int i = 0; i < n_dim; ++i) {
+        point.push_back((rand() % 1000) / 1000.);
       }
       pcp_view.addDataPointAndDraw(point);
       pcp_view_std_dev_sorted.addDataPointAndDraw(point);
       pcp_view_avg_sorted.addDataPointAndDraw(point);
     }
 
-
     return app.exec();
+  } catch (std::logic_error& ex) {
+    std::cout << "Logic error: " << ex.what();
+  } catch (std::runtime_error& ex) {
+    std::cout << "Runtime error: " << ex.what();
+  } catch (...) {
+    std::cout << "An unknown error occurred";
   }
-  catch(std::logic_error& ex){ std::cout << "Logic error: " << ex.what();}
-  catch(std::runtime_error& ex){ std::cout << "Runtime error: " << ex.what();}
-  catch(...){ std::cout << "An unknown error occurred";}
 }

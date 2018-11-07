@@ -30,13 +30,12 @@
  *
  */
 
-
 #include "flow_model_inl.h"
 
-namespace hdi{
-  namespace data{
+namespace hdi {
+namespace data {
 
-    template class FlowModel<DefaultFlowModelTrait>;
-    //template class FlowModel<ColoredFlowModelTrait>;
-  }
-}
+template class FlowModel<DefaultFlowModelTrait>;
+//template class FlowModel<ColoredFlowModelTrait>;
+}  // namespace data
+}  // namespace hdi

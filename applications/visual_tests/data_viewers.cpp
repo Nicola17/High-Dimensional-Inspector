@@ -30,21 +30,21 @@
  *
  */
 
-#include "hdi/data/text_data.h"
-#include "hdi/data/panel_data.h"
-#include "hdi/data/pixel_data.h"
-#include "hdi/data/image_data.h"
-#include "hdi/visualization/text_view_qobj.h"
-#include "hdi/visualization/image_view_qobj.h"
-#include "hdi/visualization/pixel_view_qobj.h"
-#include "hdi/data/empty_data.h"
-#include "hdi/visualization/multiple_image_view_qobj.h"
 #include <assert.h>
 #include <QVector3D>
+#include "hdi/data/empty_data.h"
+#include "hdi/data/image_data.h"
+#include "hdi/data/panel_data.h"
+#include "hdi/data/pixel_data.h"
+#include "hdi/data/text_data.h"
+#include "hdi/visualization/image_view_qobj.h"
+#include "hdi/visualization/multiple_image_view_qobj.h"
+#include "hdi/visualization/pixel_view_qobj.h"
+#include "hdi/visualization/text_view_qobj.h"
 
 using namespace hdi;
 
-int main(int argc, char *argv[]){
+int main(int argc, char *argv[]) {
   QApplication app(argc, argv);
   QIcon icon;
   icon.addFile(":/brick32.png");
@@ -63,17 +63,17 @@ int main(int argc, char *argv[]){
   viz::MultipleImageView multiple_image_view;
   data::PanelData<float> panel_data_multiple_image;
 
-  {// Text view
+  {  // Text view
     int n_points = 300;
     int n_dim = 5;
 
-    for(int i = 0; i < n_dim; ++i){
+    for (int i = 0; i < n_dim; ++i) {
       panel_data_text.addDimension(std::make_shared<data::TextData>());
     }
 
     panel_data_text.initialize();
 
-    for(int i = 0; i < n_points; ++i){
+    for (int i = 0; i < n_points; ++i) {
       std::vector<float> data(n_dim);
       panel_data_text.addDataPoint(std::make_shared<data::TextData>(QString("data %1").arg(i).toStdString()), data);
     }
@@ -83,26 +83,26 @@ int main(int argc, char *argv[]){
     text_view.updateView();
   }
 
-  {// Image view
+  {  // Image view
     int n_points = 300;
     int width = 30;
     int height = 30;
 
-    for(int j = 0; j < height; ++j){
-      for(int i = 0; i < width; ++i){
-        panel_data_image.addDimension(std::make_shared<data::PixelData>(width,height,i,j));
+    for (int j = 0; j < height; ++j) {
+      for (int i = 0; i < width; ++i) {
+        panel_data_image.addDimension(std::make_shared<data::PixelData>(width, height, i, j));
       }
     }
 
     panel_data_image.initialize();
 
-    for(int i = 0; i < n_points; ++i){
-      std::vector<float> data(width*height,0);
-      QImage image(width,height,QImage::Format::Format_RGB32);
+    for (int i = 0; i < n_points; ++i) {
+      std::vector<float> data(width * height, 0);
+      QImage image(width, height, QImage::Format::Format_RGB32);
 
-      for(int j = 0; j < height; ++j){
-        for(int i = 0; i < width; ++i){
-          image.setPixel(i, j, qRgb(255,255.*i/width,255.*j/height));
+      for (int j = 0; j < height; ++j) {
+        for (int i = 0; i < width; ++i) {
+          image.setPixel(i, j, qRgb(255, 255. * i / width, 255. * j / height));
         }
       }
 
@@ -118,25 +118,24 @@ int main(int argc, char *argv[]){
     image_view.updateView();
   }
 
-  {// Pixel view
+  {  // Pixel view
     int n_points = 300;
     int num_dim = 10;
     int width = 30;
     int height = 30;
 
-    for(int i = 0; i < num_dim; ++i){
+    for (int i = 0; i < num_dim; ++i) {
       panel_data_pixel.addDimension(std::make_shared<data::EmptyData>());
     }
 
     panel_data_pixel.initialize();
 
-    for(int j = 0; j < height; ++j){
-      for(int i = 0; i < width; ++i){
-        std::vector<float> data(num_dim,0);
-        panel_data_pixel.addDataPoint(std::make_shared<data::PixelData>(i,j,width,height), data);
+    for (int j = 0; j < height; ++j) {
+      for (int i = 0; i < width; ++i) {
+        std::vector<float> data(num_dim, 0);
+        panel_data_pixel.addDataPoint(std::make_shared<data::PixelData>(i, j, width, height), data);
       }
     }
-
 
     panel_data_pixel.getFlagsDataPoints()[0] = data::PanelData<float>::Selected;
 
@@ -147,36 +146,36 @@ int main(int argc, char *argv[]){
     pixel_view.updateView();
   }
 
-  {// Multiple image view
+  {  // Multiple image view
     int n_points = 300;
     int width = 30;
     int height = 30;
 
-    for(int j = 0; j < height; ++j){
-      for(int i = 0; i < width; ++i){
-        panel_data_multiple_image.addDimension(std::make_shared<data::PixelData>(width,height,i,j));
+    for (int j = 0; j < height; ++j) {
+      for (int i = 0; i < width; ++i) {
+        panel_data_multiple_image.addDimension(std::make_shared<data::PixelData>(width, height, i, j));
       }
     }
 
     panel_data_multiple_image.initialize();
 
-    for(int i = 0; i < n_points; ++i){
-      std::vector<float> data(width*height,0);
-      QImage image(width,height,QImage::Format::Format_RGB32);
+    for (int i = 0; i < n_points; ++i) {
+      std::vector<float> data(width * height, 0);
+      QImage image(width, height, QImage::Format::Format_RGB32);
 
-      QVector3D color_1(rand()%256,rand()%256,rand()%256);
-      QVector3D color_2(rand()%256,rand()%256,rand()%256);
-      for(int j = 0; j < height; ++j){
-        for(int i = 0; i < width; ++i){
-          QVector3D pixel_color = (color_1 * float(i)/width + color_2 *float(j)/height)*0.5;
-          image.setPixel(i, j, qRgb(pixel_color.x(),pixel_color.y(),pixel_color.z()));
+      QVector3D color_1(rand() % 256, rand() % 256, rand() % 256);
+      QVector3D color_2(rand() % 256, rand() % 256, rand() % 256);
+      for (int j = 0; j < height; ++j) {
+        for (int i = 0; i < width; ++i) {
+          QVector3D pixel_color = (color_1 * float(i) / width + color_2 * float(j) / height) * 0.5;
+          image.setPixel(i, j, qRgb(pixel_color.x(), pixel_color.y(), pixel_color.z()));
         }
       }
 
       panel_data_multiple_image.addDataPoint(std::make_shared<data::ImageData>(image), data);
     }
 
-    for(int i = 0; i < n_points/3; ++i){
+    for (int i = 0; i < n_points / 3; ++i) {
       panel_data_multiple_image.getFlagsDataPoints()[i] = data::PanelData<float>::Selected;
     }
 

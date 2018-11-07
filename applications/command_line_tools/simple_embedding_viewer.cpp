@@ -30,22 +30,21 @@
  *
  */
 
+#include <stdio.h>
+#include <QApplication>
+#include <QCommandLineOption>
+#include <QCommandLineParser>
+#include <QIcon>
+#include <fstream>
+#include <iostream>
 #include "hdi/dimensionality_reduction/tsne.h"
 #include "hdi/utils/cout_log.h"
 #include "hdi/utils/log_helper_functions.h"
-#include <QApplication>
-#include <QCommandLineParser>
-#include <QCommandLineOption>
-#include <QIcon>
-#include <iostream>
-#include <fstream>
-#include <stdio.h>
 #include "hdi/visualization/scatterplot_canvas_qobj.h"
 #include "hdi/visualization/scatterplot_drawer_fixed_color.h"
 
-int main(int argc, char *argv[])
-{
-  try{
+int main(int argc, char* argv[]) {
+  try {
     QApplication app(argc, argv);
     QIcon icon;
     icon.addFile(":/hdi16.png");
@@ -69,23 +68,23 @@ int main(int argc, char *argv[])
 
     const QStringList args = parser.positionalArguments();
 
-  ////////////////////////////////////////////////
-  ////////////////////////////////////////////////
-  ////////////////////////////////////////////////
+    ////////////////////////////////////////////////
+    ////////////////////////////////////////////////
+    ////////////////////////////////////////////////
 
-    if(args.size()!=1){
+    if (args.size() != 1) {
       std::cout << "Not enough arguments!" << std::endl;
       return -1;
     }
 
-    std::ifstream input_file (args[0].toStdString(), std::ios::in|std::ios::binary|std::ios::ate);
+    std::ifstream input_file(args[0].toStdString(), std::ios::in | std::ios::binary | std::ios::ate);
 
-    const unsigned int num_data_points = input_file.tellg()/sizeof(float)/2;
-    std::vector<float> data(num_data_points*2);
+    const unsigned int num_data_points = input_file.tellg() / sizeof(float) / 2;
+    std::vector<float> data(num_data_points * 2);
     std::vector<uint32_t> flags(num_data_points);
 
-    input_file.seekg (0, std::ios::beg);
-    input_file.read (reinterpret_cast<char*>(data.data()), sizeof(float) * data.size()*2);
+    input_file.seekg(0, std::ios::beg);
+    input_file.read(reinterpret_cast<char*>(data.data()), sizeof(float) * data.size() * 2);
     input_file.close();
 
     float min_x(std::numeric_limits<float>::max());
@@ -93,24 +92,24 @@ int main(int argc, char *argv[])
     float min_y(std::numeric_limits<float>::max());
     float max_y(-std::numeric_limits<float>::max());
 
-    for(int i = 0; i < num_data_points; ++i){
-        min_x = std::min(min_x,data[i*2]);
-        max_x = std::max(max_x,data[i*2]);
-        min_y = std::min(min_y,data[i*2+1]);
-        max_y = std::max(max_y,data[i*2+1]);
+    for (int i = 0; i < num_data_points; ++i) {
+      min_x = std::min(min_x, data[i * 2]);
+      max_x = std::max(max_x, data[i * 2]);
+      min_y = std::min(min_y, data[i * 2 + 1]);
+      max_y = std::max(max_y, data[i * 2 + 1]);
     }
 
-    auto tr = QVector2D(max_x,max_y);
-    auto bl = QVector2D(min_x,min_y);
-    auto offset = (tr-bl)*0.25;
+    auto tr = QVector2D(max_x, max_y);
+    auto bl = QVector2D(min_x, min_y);
+    auto offset = (tr - bl) * 0.25;
 
     hdi::viz::ScatterplotCanvas viewer;
-    viewer.setBackgroundColors(qRgb(240,240,240),qRgb(200,200,200));
-    viewer.setSelectionColor(qRgb(50,50,50));
-    viewer.resize(500,500);
+    viewer.setBackgroundColors(qRgb(240, 240, 240), qRgb(200, 200, 200));
+    viewer.setSelectionColor(qRgb(50, 50, 50));
+    viewer.resize(500, 500);
     viewer.show();
-    viewer.setTopRightCoordinates(tr+offset);
-    viewer.setBottomLeftCoordinates(bl-offset);
+    viewer.setTopRightCoordinates(tr + offset);
+    viewer.setBottomLeftCoordinates(bl - offset);
 
     hdi::viz::ScatterplotDrawerFixedColor drawer;
     drawer.initialize(viewer.context());
@@ -121,8 +120,11 @@ int main(int argc, char *argv[])
 
     return app.exec();
 
+  } catch (std::logic_error& ex) {
+    std::cout << "Logic error: " << ex.what();
+  } catch (std::runtime_error& ex) {
+    std::cout << "Runtime error: " << ex.what();
+  } catch (...) {
+    std::cout << "An unknown error occurred";
   }
-  catch(std::logic_error& ex){ std::cout << "Logic error: " << ex.what();}
-  catch(std::runtime_error& ex){ std::cout << "Runtime error: " << ex.what();}
-  catch(...){ std::cout << "An unknown error occurred";}
 }

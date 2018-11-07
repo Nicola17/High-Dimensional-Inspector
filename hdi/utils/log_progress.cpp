@@ -30,30 +30,33 @@
  *
  */
 
-#include <iostream>
 #include "hdi/utils/log_progress.h"
-#include <cassert>
 #include <omp.h>
+#include <cassert>
+#include <iostream>
 
-namespace hdi{
-  namespace utils{
+namespace hdi {
+namespace utils {
 
-    //! start
-    void LogProgress::start(){
-      if(_log == nullptr){return;}
-      std::stringstream ss;
-      ss << "Start: " << _name;
-      _log->display(ss.str(),true);
-    }
-
-    //! end logging
-    void LogProgress::finish(){
-      if(_log == nullptr){return;}
-      std::stringstream ss;
-      ss << "End: " << _name;
-      _log->display(ss.str(),true);
-    }
-
+//! start
+void LogProgress::start() {
+  if (_log == nullptr) {
+    return;
   }
+  std::stringstream ss;
+  ss << "Start: " << _name;
+  _log->display(ss.str(), true);
 }
 
+//! end logging
+void LogProgress::finish() {
+  if (_log == nullptr) {
+    return;
+  }
+  std::stringstream ss;
+  ss << "End: " << _name;
+  _log->display(ss.str(), true);
+}
+
+}  // namespace utils
+}  // namespace hdi

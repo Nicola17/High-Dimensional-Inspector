@@ -30,39 +30,38 @@
  *
  */
 
-#include <iostream>
 #include "hdi/utils/pte_log.h"
 #include <assert.h>
 #include <chrono>
 #include <ctime>
+#include <iostream>
 
-namespace hdi{
-  namespace utils{
+namespace hdi {
+namespace utils {
 
-    void PTELog::clear(){
-      assert(_pte!=nullptr);
-      _num_written_chars = 0;
-      _pte->document()->setPlainText("");
-    }
-
-    void PTELog::display(const std::string& d, bool time_stamp){
-      assert(_pte!=nullptr);
-      if(time_stamp){
-        std::time_t end_time = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
-        auto time_str = std::string(std::ctime(&end_time));
-        time_str = time_str.substr(0,time_str.size()-1);
-        _pte->appendPlainText("["+QString::fromStdString(time_str)+"]\n"+QString::fromStdString(d));
-      }else{
-        _pte->appendPlainText(QString::fromStdString(d));
-      }
-      _num_written_chars += d.size();
-
-    }
-
-    unsigned int PTELog::num_written_chars()const{
-      assert(_pte!=nullptr);
-      return _num_written_chars;
-    }
-
-  }
+void PTELog::clear() {
+  assert(_pte != nullptr);
+  _num_written_chars = 0;
+  _pte->document()->setPlainText("");
 }
+
+void PTELog::display(const std::string& d, bool time_stamp) {
+  assert(_pte != nullptr);
+  if (time_stamp) {
+    std::time_t end_time = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+    auto time_str = std::string(std::ctime(&end_time));
+    time_str = time_str.substr(0, time_str.size() - 1);
+    _pte->appendPlainText("[" + QString::fromStdString(time_str) + "]\n" + QString::fromStdString(d));
+  } else {
+    _pte->appendPlainText(QString::fromStdString(d));
+  }
+  _num_written_chars += d.size();
+}
+
+unsigned int PTELog::num_written_chars() const {
+  assert(_pte != nullptr);
+  return _num_written_chars;
+}
+
+}  // namespace utils
+}  // namespace hdi

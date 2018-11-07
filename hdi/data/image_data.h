@@ -33,30 +33,30 @@
 #ifndef IMAGE_DATA_H
 #define IMAGE_DATA_H
 
-#include "hdi/data/abstract_data.h"
 #include <QImage>
+#include "hdi/data/abstract_data.h"
 
-namespace hdi{
-  namespace data{
+namespace hdi {
+namespace data {
 
-    //! Image data type
-    /*!
+//! Image data type
+/*!
       Image data type
       \author Nicola Pezzotti
     */
-    class ImageData: public AbstractData{
-    public:
-      ImageData(QImage image = QImage()):_image(image){}
-      virtual ~ImageData(){}
+class ImageData : public AbstractData {
+ public:
+  ImageData(QImage image = QImage()) : _image(image) {}
+  virtual ~ImageData() {}
 
-      void setImage(QImage& image){_image = image;}
-      const QImage& image()const{return _image;}
+  void setImage(QImage& image) { _image = image; }
+  const QImage& image() const { return _image; }
 
-    private:
-      QImage _image;
-    };
+ private:
+  QImage _image;
+};
 
-  }
-}
+}  // namespace data
+}  // namespace hdi
 
 #endif

@@ -35,16 +35,16 @@
 
 #include <QApplication>
 #include <QIcon>
-#include "hdi/utils/cout_log.h"
-#include "hdi/utils/log_helper_functions.h"
-#include "hdi/utils/assert_by_exception.h"
 #include <iostream>
-#include "hdi/utils/timing_utils.h"
 #include "hdi/data/panel_data.h"
+#include "hdi/utils/assert_by_exception.h"
+#include "hdi/utils/cout_log.h"
 #include "hdi/utils/dataset_utils.h"
+#include "hdi/utils/log_helper_functions.h"
+#include "hdi/utils/timing_utils.h"
 
-int main(int argc, char *argv[]){
-  try{
+int main(int argc, char* argv[]) {
+  try {
     QApplication app(argc, argv);
     QIcon icon;
     icon.addFile(":/brick32.png");
@@ -56,19 +56,18 @@ int main(int argc, char *argv[]){
 
     hdi::utils::CoutLog log;
 
-
     std::vector<hdi::viz::DLFilterViz::timed_scalar_type> values;
     std::vector<hdi::viz::DLFilterViz::unsigned_int_type> order;
     std::vector<std::string> names;
 
     int num_filters = 60;
-    for(int i = 0; i < num_filters; ++i){
+    for (int i = 0; i < num_filters; ++i) {
       names.push_back(QString("F%1").arg(i).toStdString());
       order.push_back(i);
 
-      hdi::viz::DLFilterViz::scalar_type v = rand()%1000;
-      hdi::viz::DLFilterViz::unsigned_int_type it = 200 + rand()%400;
-      values.push_back(hdi::viz::DLFilterViz::timed_scalar_type(it,v));
+      hdi::viz::DLFilterViz::scalar_type v = rand() % 1000;
+      hdi::viz::DLFilterViz::unsigned_int_type it = 200 + rand() % 400;
+      values.push_back(hdi::viz::DLFilterViz::timed_scalar_type(it, v));
     }
 
     hdi::viz::DLFilterViz filter_viz;
@@ -78,18 +77,19 @@ int main(int argc, char *argv[]){
     filter_viz.setMaxValue(1000);
     filter_viz.setLogger(&log);
     filter_viz.show();
-    filter_viz.resize(500,500);
+    filter_viz.resize(500, 500);
 
     QCoreApplication::processEvents();
     filter_viz.updateView();
 
-
-
     QCoreApplication::processEvents();
 
     return app.exec();
+  } catch (std::logic_error& ex) {
+    std::cout << "Logic error: " << ex.what();
+  } catch (std::runtime_error& ex) {
+    std::cout << "Runtime error: " << ex.what();
+  } catch (...) {
+    std::cout << "An unknown error occurred";
   }
-  catch(std::logic_error& ex){ std::cout << "Logic error: " << ex.what();}
-  catch(std::runtime_error& ex){ std::cout << "Runtime error: " << ex.what();}
-  catch(...){ std::cout << "An unknown error occurred";}
 }

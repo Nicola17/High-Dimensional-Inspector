@@ -31,23 +31,22 @@
  */
 
 #include "file_utils.h"
-#include "hdi/utils/assert_by_exception.h"
 #include <QTextStream>
+#include "hdi/utils/assert_by_exception.h"
 
-namespace hdi{
-  namespace utils{
+namespace hdi {
+namespace utils {
 
-    QString readTextFromFile(QString filename){
-      QFile file(filename);
-      if (!file.open(QIODevice::ReadOnly | QIODevice::Text)){
-        std::stringstream ss;
-        ss << "Unable to open the file: " << filename.toStdString();
-        throw std::logic_error(ss.str());
-      }
-      QTextStream in(&file);
-      return in.readAll();
-    }
-
+QString readTextFromFile(QString filename) {
+  QFile file(filename);
+  if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+    std::stringstream ss;
+    ss << "Unable to open the file: " << filename.toStdString();
+    throw std::logic_error(ss.str());
   }
+  QTextStream in(&file);
+  return in.readAll();
 }
 
+}  // namespace utils
+}  // namespace hdi

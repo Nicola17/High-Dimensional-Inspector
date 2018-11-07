@@ -34,113 +34,131 @@
 #define MULTISCALE_EMBEDDER_SINGLE_VIEW_H
 
 #include <QObject>
-#include <memory>
-#include <vector>
-#include <unordered_map>
 #include <map>
-#include "hdi/dimensionality_reduction/sparse_tsne_user_def_probabilities.h"
+#include <memory>
+#include <unordered_map>
+#include <vector>
+#include "hdi/data/map_mem_eff.h"
 #include "hdi/data/panel_data.h"
+#include "hdi/dimensionality_reduction/sparse_tsne_user_def_probabilities.h"
+#include "hdi/dimensionality_reduction/wtsne.h"
 #include "hdi/utils/abstract_log.h"
-#include "hdi/visualization/abstract_view.h"
 #include "hdi/visualization/abstract_scatterplot_drawer.h"
+#include "hdi/visualization/abstract_view.h"
 #include "hdi/visualization/controller_embedding_selection_qobj.h"
 #include "hdi/visualization/scatterplot_drawer_user_defined_colors.h"
-#include "hdi/dimensionality_reduction/wtsne.h"
-#include "hdi/data/map_mem_eff.h"
 
-namespace hdi{
-  namespace analytics{
+namespace hdi {
+namespace analytics {
 
-    class MultiscaleEmbedderSingleView: public QObject{
-      Q_OBJECT
-    public:
-      typedef float scalar_type;
-      typedef hdi::data::MapMemEff<uint32_t,scalar_type> map_type;
-      typedef std::vector<map_type> sparse_scalar_matrix_type;
+class MultiscaleEmbedderSingleView : public QObject {
+  Q_OBJECT
+ public:
+  typedef float scalar_type;
+  typedef hdi::data::MapMemEff<uint32_t, scalar_type> map_type;
+  typedef std::vector<map_type> sparse_scalar_matrix_type;
 
-      typedef std::tuple<unsigned int, unsigned int> id_type;
-      typedef hdi::dr::SparseTSNEUserDefProbabilities<scalar_type,sparse_scalar_matrix_type> tsne_type;
-      //typedef hdi::dr::WeightedTSNE<scalar_type> tsne_type;
-      typedef hdi::data::Embedding<scalar_type> embedding_type;
-      typedef hdi::data::PanelData<scalar_type> panel_data_type;
+  typedef std::tuple<unsigned int, unsigned int> id_type;
+  typedef hdi::dr::SparseTSNEUserDefProbabilities<scalar_type, sparse_scalar_matrix_type> tsne_type;
+  //typedef hdi::dr::WeightedTSNE<scalar_type> tsne_type;
+  typedef hdi::data::Embedding<scalar_type> embedding_type;
+  typedef hdi::data::PanelData<scalar_type> panel_data_type;
 
-      enum class VisualizationModes{UserDefined=0, Influence=1, Selection=2};
+  enum class VisualizationModes { UserDefined = 0,
+                                  Influence = 1,
+                                  Selection = 2 };
 
-      MultiscaleEmbedderSingleView();
-      virtual ~MultiscaleEmbedderSingleView(){}
-      void initialize(sparse_scalar_matrix_type& sparse_matrix, id_type my_id, tsne_type::Parameters params = tsne_type::Parameters());
-      void doAnIteration();
+  MultiscaleEmbedderSingleView();
+  virtual ~MultiscaleEmbedderSingleView() {}
+  void initialize(sparse_scalar_matrix_type& sparse_matrix, id_type my_id, tsne_type::Parameters params = tsne_type::Parameters());
+  void doAnIteration();
 
-      //! Return the current log
-      utils::AbstractLog* logger()const{return _logger;}
-      //! Set a pointer to an existing log
-      void setLogger(utils::AbstractLog* logger){_logger = logger; _selection_controller->setLogger(logger);_tSNE.setLogger(logger);}
-
-      embedding_type& getEmbedding(){return _embedding;}
-      const embedding_type& getEmbedding()const{return _embedding;}
-
-      panel_data_type& getPanelData(){return _panel_data;}
-      const panel_data_type& getPanelData()const{return _panel_data;}
-
-      void addView(std::shared_ptr<hdi::viz::AbstractView> view);
-      void addUserDefinedDrawer(std::shared_ptr<hdi::viz::AbstractScatterplotDrawer> drawer);
-      void addAreaOfInfluenceDrawer(std::shared_ptr<hdi::viz::AbstractScatterplotDrawer> drawer);
-      void addSelectionDrawer(std::shared_ptr<hdi::viz::AbstractScatterplotDrawer> drawer);
-
-      void removeAllUserDefinedDrawers(){_drawers.clear(); onUpdateViewer();}
-      void removeAllAoIDrawers(){_influence_drawers.clear(); onUpdateViewer();}
-      void removeAllSelectionDrawers(){_selection_drawers.clear(); onUpdateViewer();}
-
-      const id_type& getId(){return _my_id;}
-
-      QWidget* getCanvas(){return _viewer.get();}
-
-      void saveImageToFile(std::string prefix);
-
-    public slots:
-      void onActivateUserDefinedMode();
-      void onActivateSelectionMode();
-      void onActivateInfluencedMode();
-      void onUpdateViewer();
-
-    private slots:
-      void onSelection(){emit sgnSelection(_my_id); emit sgnSelectionPtr(this);}
-      void onKeyPressedOnCanvas(int key);
-
-    signals:
-      void sgnNewAnalysisTriggered(id_type id);
-      void sgnActivateUserDefinedMode(id_type id);
-      void sgnActivateSelectionMode(id_type id);
-      void sgnActivateInfluenceMode(id_type id);
-      void sgnPropagateSelection(id_type id);
-      void sgnClusterizeSelection(id_type id);
-      void sgnExport(id_type id);
-      void sgnKeyPressedOnCanvas(id_type id, int key);
-      void sgnSelection(id_type id);
-      void sgnSelectionPtr(MultiscaleEmbedderSingleView* ptr);
-
-    private:
-      //unique pointers to members to avoid qt limitation (no copy contructors) bleah
-      bool _initialized;
-      std::string _name;
-      utils::AbstractLog* _logger;
-
-      std::unique_ptr<hdi::viz::ControllerSelectionEmbedding> _selection_controller;
-
-      tsne_type _tSNE;
-      embedding_type _embedding;
-      panel_data_type _panel_data;
-      std::vector<std::shared_ptr<hdi::viz::AbstractView>> _views;
-      std::vector<std::shared_ptr<hdi::viz::AbstractScatterplotDrawer>> _drawers;
-      std::vector<std::shared_ptr<hdi::viz::AbstractScatterplotDrawer>> _influence_drawers;
-      std::vector<std::shared_ptr<hdi::viz::AbstractScatterplotDrawer>> _selection_drawers;
-      std::unique_ptr<hdi::viz::ScatterplotCanvas> _viewer;
-
-      id_type _my_id;
-
-      VisualizationModes _visualization_mode;
-    };
+  //! Return the current log
+  utils::AbstractLog* logger() const { return _logger; }
+  //! Set a pointer to an existing log
+  void setLogger(utils::AbstractLog* logger) {
+    _logger = logger;
+    _selection_controller->setLogger(logger);
+    _tSNE.setLogger(logger);
   }
-}
+
+  embedding_type& getEmbedding() { return _embedding; }
+  const embedding_type& getEmbedding() const { return _embedding; }
+
+  panel_data_type& getPanelData() { return _panel_data; }
+  const panel_data_type& getPanelData() const { return _panel_data; }
+
+  void addView(std::shared_ptr<hdi::viz::AbstractView> view);
+  void addUserDefinedDrawer(std::shared_ptr<hdi::viz::AbstractScatterplotDrawer> drawer);
+  void addAreaOfInfluenceDrawer(std::shared_ptr<hdi::viz::AbstractScatterplotDrawer> drawer);
+  void addSelectionDrawer(std::shared_ptr<hdi::viz::AbstractScatterplotDrawer> drawer);
+
+  void removeAllUserDefinedDrawers() {
+    _drawers.clear();
+    onUpdateViewer();
+  }
+  void removeAllAoIDrawers() {
+    _influence_drawers.clear();
+    onUpdateViewer();
+  }
+  void removeAllSelectionDrawers() {
+    _selection_drawers.clear();
+    onUpdateViewer();
+  }
+
+  const id_type& getId() { return _my_id; }
+
+  QWidget* getCanvas() { return _viewer.get(); }
+
+  void saveImageToFile(std::string prefix);
+
+ public slots:
+  void onActivateUserDefinedMode();
+  void onActivateSelectionMode();
+  void onActivateInfluencedMode();
+  void onUpdateViewer();
+
+ private slots:
+  void onSelection() {
+    emit sgnSelection(_my_id);
+    emit sgnSelectionPtr(this);
+  }
+  void onKeyPressedOnCanvas(int key);
+
+ signals:
+  void sgnNewAnalysisTriggered(id_type id);
+  void sgnActivateUserDefinedMode(id_type id);
+  void sgnActivateSelectionMode(id_type id);
+  void sgnActivateInfluenceMode(id_type id);
+  void sgnPropagateSelection(id_type id);
+  void sgnClusterizeSelection(id_type id);
+  void sgnExport(id_type id);
+  void sgnKeyPressedOnCanvas(id_type id, int key);
+  void sgnSelection(id_type id);
+  void sgnSelectionPtr(MultiscaleEmbedderSingleView* ptr);
+
+ private:
+  //unique pointers to members to avoid qt limitation (no copy contructors) bleah
+  bool _initialized;
+  std::string _name;
+  utils::AbstractLog* _logger;
+
+  std::unique_ptr<hdi::viz::ControllerSelectionEmbedding> _selection_controller;
+
+  tsne_type _tSNE;
+  embedding_type _embedding;
+  panel_data_type _panel_data;
+  std::vector<std::shared_ptr<hdi::viz::AbstractView>> _views;
+  std::vector<std::shared_ptr<hdi::viz::AbstractScatterplotDrawer>> _drawers;
+  std::vector<std::shared_ptr<hdi::viz::AbstractScatterplotDrawer>> _influence_drawers;
+  std::vector<std::shared_ptr<hdi::viz::AbstractScatterplotDrawer>> _selection_drawers;
+  std::unique_ptr<hdi::viz::ScatterplotCanvas> _viewer;
+
+  id_type _my_id;
+
+  VisualizationModes _visualization_mode;
+};
+}  // namespace analytics
+}  // namespace hdi
 
 #endif

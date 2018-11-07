@@ -30,19 +30,19 @@
  *
  */
 
-#include "sparse_tsne_user_def_probabilities_inl.h"
-#include <vector>
 #include <map>
 #include <unordered_map>
+#include <vector>
 #include "hdi/data/map_mem_eff.h"
+#include "sparse_tsne_user_def_probabilities_inl.h"
 
-namespace hdi{
-  namespace dr{
-    template class SparseTSNEUserDefProbabilities<float,std::vector<std::map<uint32_t,float>>>;
-    template class SparseTSNEUserDefProbabilities<double,std::vector<std::map<uint32_t,double>>>;
-    template class SparseTSNEUserDefProbabilities<float,std::vector<std::unordered_map<uint32_t,float>>>;
-    template class SparseTSNEUserDefProbabilities<double,std::vector<std::unordered_map<uint32_t,double>>>;
-    template class SparseTSNEUserDefProbabilities<float,std::vector<hdi::data::MapMemEff<uint32_t,float>>>;
-    template class SparseTSNEUserDefProbabilities<double,std::vector<hdi::data::MapMemEff<uint32_t,double>>>;
-  }
-}
+namespace hdi {
+namespace dr {
+template class SparseTSNEUserDefProbabilities<float, std::vector<std::map<uint32_t, float>>>;
+template class SparseTSNEUserDefProbabilities<double, std::vector<std::map<uint32_t, double>>>;
+template class SparseTSNEUserDefProbabilities<float, std::vector<std::unordered_map<uint32_t, float>>>;
+template class SparseTSNEUserDefProbabilities<double, std::vector<std::unordered_map<uint32_t, double>>>;
+template class SparseTSNEUserDefProbabilities<float, std::vector<hdi::data::MapMemEff<uint32_t, float>>>;
+template class SparseTSNEUserDefProbabilities<double, std::vector<hdi::data::MapMemEff<uint32_t, double>>>;
+}  // namespace dr
+}  // namespace hdi

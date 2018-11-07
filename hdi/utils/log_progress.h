@@ -33,55 +33,57 @@
 #ifndef LOG_PROGRESS_H
 #define LOG_PROGRESS_H
 
-#include "hdi/utils/abstract_log.h"
-#include <string>
 #include <omp.h>
+#include <string>
+#include "hdi/utils/abstract_log.h"
 
-namespace hdi{
-  namespace utils{
+namespace hdi {
+namespace utils {
 
-    //! shows log on the standar output stream
-    class LogProgress{
-    public:
-      LogProgress(AbstractLog* log):_log(log),_current_step(0),_current_tick(0){}
-      //! set the number of steps made by the algorithm
-      void setNumSteps(int num_steps){_num_steps = num_steps;}
-      //! set the number of ticks made by the progress
-      void setNumTicks(int num_ticks){_num_ticks = num_ticks-1;}
-      //! set name
-      void setName(std::string name){_name = name;}
-      //! start
-      void start();
-      //! end logging
-      void finish();
+//! shows log on the standar output stream
+class LogProgress {
+ public:
+  LogProgress(AbstractLog* log) : _log(log), _current_step(0), _current_tick(0) {}
+  //! set the number of steps made by the algorithm
+  void setNumSteps(int num_steps) { _num_steps = num_steps; }
+  //! set the number of ticks made by the progress
+  void setNumTicks(int num_ticks) { _num_ticks = num_ticks - 1; }
+  //! set name
+  void setName(std::string name) { _name = name; }
+  //! start
+  void start();
+  //! end logging
+  void finish();
 
-      //! make a step
-      inline void step(){
-        if(_log == nullptr){return;}
-      #pragma omp atomic
-        ++_current_step;
-        //only the first thread is allowed to generate a tick
-        if(omp_get_thread_num() == 0){
-          double perc = double(_current_step)/_num_steps;
-          int tick = perc*(_num_ticks+1);
-          if(tick > _current_tick){
-            ++_current_tick;
-            std::stringstream ss;
-            ss << perc*100 << "%";
-            _log->display(ss.str(),true);
-          }
-        }
+  //! make a step
+  inline void step() {
+    if (_log == nullptr) {
+      return;
+    }
+#pragma omp atomic
+    ++_current_step;
+    //only the first thread is allowed to generate a tick
+    if (omp_get_thread_num() == 0) {
+      double perc = double(_current_step) / _num_steps;
+      int tick = perc * (_num_ticks + 1);
+      if (tick > _current_tick) {
+        ++_current_tick;
+        std::stringstream ss;
+        ss << perc * 100 << "%";
+        _log->display(ss.str(), true);
       }
-
-    private:
-      AbstractLog* _log;
-      int _num_steps;
-      int _current_step;
-      int _num_ticks;
-      int _current_tick;
-      std::string _name;
-    };
+    }
   }
-}
 
-#endif // COUT_LOG_H
+ private:
+  AbstractLog* _log;
+  int _num_steps;
+  int _current_step;
+  int _num_ticks;
+  int _current_tick;
+  std::string _name;
+};
+}  // namespace utils
+}  // namespace hdi
+
+#endif  // COUT_LOG_H

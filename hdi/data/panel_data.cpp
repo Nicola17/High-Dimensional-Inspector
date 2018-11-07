@@ -32,31 +32,31 @@
 
 #include "panel_data_inl.h"
 
-namespace hdi{
-  namespace data{
-    template class PanelData<float>;
-    template class PanelData<double>;
-    template void newPanelDataFromIndexes(const PanelData<float>& ori_panel_data, PanelData<float>& dst_panel_data, const std::vector<unsigned int>& idxes);
-    template void newPanelDataFromIndexes(const PanelData<double>& ori_panel_data, PanelData<double>& dst_panel_data, const std::vector<unsigned int>& idxes);
-    template void zScoreNormalization(PanelData<float>& panel_data);
-    template void zScoreNormalization(PanelData<double>& panel_data);
-    template void minMaxNormalization(PanelData<float>& panel_data);
-    template void minMaxNormalization(PanelData<double>& panel_data);
-    template void transposePanelData(const PanelData<float>& panel_data, PanelData<float>& transpose_panel_data);
-    template void transposePanelData(const PanelData<double>& panel_data, PanelData<double>& transpose_panel_data);
-    template double computePanelDataSparsity(const PanelData<double>& panel_data);
-    template double computePanelDataSparsity(const PanelData<float>& panel_data);
-    template void getMaxPerDimension(const PanelData<float>& panel_data, std::vector<float>& max);
-    template void getMaxPerDimension(const PanelData<double>& panel_data, std::vector<double>& max);
-    template void getMinPerDimension(const PanelData<float>& panel_data, std::vector<float>& min);
-    template void getMinPerDimension(const PanelData<double>& panel_data, std::vector<double>& min);
-    template void computeMean(const PanelData<float>& panel_data, std::vector<float>& mean);
-    template void computeMean(const PanelData<double>& panel_data, std::vector<double>& mean);
-    template void computeSelectionMean(const PanelData<float>& panel_data, std::vector<float>& mean);
-    template void computeSelectionMean(const PanelData<double>& panel_data, std::vector<double>& mean);
-    template void computeWeightedMean(const PanelData<float>& panel_data, const std::vector<float>& weights, std::vector<float>& mean);
-    template void computeWeightedMean(const PanelData<double>& panel_data, const std::vector<double>& weights, std::vector<double>& mean);
-    template void computeWeightedStddev(const PanelData <float>& panel_data, const std::vector<float>& weights, std::vector<float>& mean, std::vector<float>& std_dev);
-    template void computeWeightedStddev(const PanelData <double>& panel_data, const std::vector<double>& weights, std::vector<double>& mean, std::vector<double>& std_dev);
-  }
-}
+namespace hdi {
+namespace data {
+template class PanelData<float>;
+template class PanelData<double>;
+template void newPanelDataFromIndexes(const PanelData<float>& ori_panel_data, PanelData<float>& dst_panel_data, const std::vector<unsigned int>& idxes);
+template void newPanelDataFromIndexes(const PanelData<double>& ori_panel_data, PanelData<double>& dst_panel_data, const std::vector<unsigned int>& idxes);
+template void zScoreNormalization(PanelData<float>& panel_data);
+template void zScoreNormalization(PanelData<double>& panel_data);
+template void minMaxNormalization(PanelData<float>& panel_data);
+template void minMaxNormalization(PanelData<double>& panel_data);
+template void transposePanelData(const PanelData<float>& panel_data, PanelData<float>& transpose_panel_data);
+template void transposePanelData(const PanelData<double>& panel_data, PanelData<double>& transpose_panel_data);
+template double computePanelDataSparsity(const PanelData<double>& panel_data);
+template double computePanelDataSparsity(const PanelData<float>& panel_data);
+template void getMaxPerDimension(const PanelData<float>& panel_data, std::vector<float>& max);
+template void getMaxPerDimension(const PanelData<double>& panel_data, std::vector<double>& max);
+template void getMinPerDimension(const PanelData<float>& panel_data, std::vector<float>& min);
+template void getMinPerDimension(const PanelData<double>& panel_data, std::vector<double>& min);
+template void computeMean(const PanelData<float>& panel_data, std::vector<float>& mean);
+template void computeMean(const PanelData<double>& panel_data, std::vector<double>& mean);
+template void computeSelectionMean(const PanelData<float>& panel_data, std::vector<float>& mean);
+template void computeSelectionMean(const PanelData<double>& panel_data, std::vector<double>& mean);
+template void computeWeightedMean(const PanelData<float>& panel_data, const std::vector<float>& weights, std::vector<float>& mean);
+template void computeWeightedMean(const PanelData<double>& panel_data, const std::vector<double>& weights, std::vector<double>& mean);
+template void computeWeightedStddev(const PanelData<float>& panel_data, const std::vector<float>& weights, std::vector<float>& mean, std::vector<float>& std_dev);
+template void computeWeightedStddev(const PanelData<double>& panel_data, const std::vector<double>& weights, std::vector<double>& mean, std::vector<double>& std_dev);
+}  // namespace data
+}  // namespace hdi

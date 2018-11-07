@@ -38,39 +38,39 @@
 #include "hdi/utils/timers.h"
 #include "hdi/utils/timing_utils.h"
 
-namespace hdi{
-  namespace utils{
+namespace hdi {
+namespace utils {
 
-    template <class T, class UnitOfMeas = Milliseconds>
-    class ScopedTimer{
-    public:
-      //! start the timer
-      ScopedTimer(T& elapsed_time);
-      //! stop the timer and save the elapsedTime
-      ~ScopedTimer();
+template <class T, class UnitOfMeas = Milliseconds>
+class ScopedTimer {
+ public:
+  //! start the timer
+  ScopedTimer(T& elapsed_time);
+  //! stop the timer and save the elapsedTime
+  ~ScopedTimer();
 
-    private:
-      Timer   _timer;
-      T&     _elapsed_time;
-    };
+ private:
+  Timer _timer;
+  T& _elapsed_time;
+};
 
-    template <class T, class UnitOfMeas = Milliseconds>
-    class ScopedIncrementalTimer{
-    public:
-      //! start the timer
-      ScopedIncrementalTimer(T& elapsed_time);
-      //! stop the timer and save the elapsedTime
-      ~ScopedIncrementalTimer();
+template <class T, class UnitOfMeas = Milliseconds>
+class ScopedIncrementalTimer {
+ public:
+  //! start the timer
+  ScopedIncrementalTimer(T& elapsed_time);
+  //! stop the timer and save the elapsedTime
+  ~ScopedIncrementalTimer();
 
-    private:
-      Timer   _timer;
-      T&     _elapsed_time;
-    };
+ private:
+  Timer _timer;
+  T& _elapsed_time;
+};
 
-  }
-}
+}  // namespace utils
+}  // namespace hdi
 
 //Implementation
 #include "scoped_timers_inl.h"
 
-#endif // SCOPED_TIMERS_H
+#endif  // SCOPED_TIMERS_H

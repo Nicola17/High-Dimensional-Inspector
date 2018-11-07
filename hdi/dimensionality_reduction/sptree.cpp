@@ -61,13 +61,13 @@
  *
  */
 
-#include "sptree_inl.h"
-#include <vector>
 #include <map>
+#include <vector>
+#include "sptree_inl.h"
 
-namespace hdi{
-  namespace dr{
-    template class SPTree<double>;
-    template class SPTree<float>;
-  }
-}
+namespace hdi {
+namespace dr {
+template class SPTree<double>;
+template class SPTree<float>;
+}  // namespace dr
+}  // namespace hdi

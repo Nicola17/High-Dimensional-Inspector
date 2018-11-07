@@ -33,67 +33,62 @@
 #ifndef EMBEDDING_SIMILARITY_BUNDLED_LINES_DRAWER_H
 #define EMBEDDING_SIMILARITY_BUNDLED_LINES_DRAWER_H
 
-#include <QGLShaderProgram>
-#include <QGLShader>
-#include <QColor>
 #include <stdint.h>
+#include <QColor>
+#include <QGLShader>
+#include <QGLShaderProgram>
 #include <memory>
-#include "hdi/visualization/abstract_scatterplot_drawer.h"
-#include "hdi/data/embedding.h"
 #include <unordered_map>
-namespace hdi{
-  namespace viz{
+#include "hdi/data/embedding.h"
+#include "hdi/visualization/abstract_scatterplot_drawer.h"
+namespace hdi {
+namespace viz {
 
-    class EmbeddingSimilarityBundledLinesDrawer: public AbstractScatterplotDrawer{
-    public:
-      EmbeddingSimilarityBundledLinesDrawer();
-      //! Draw on canvas
-      virtual void draw(const point_type& bl, const point_type& tr);
-      //! Set the data to be drawn
-      void setData(const scalar_type* embedding_src, const scalar_type* embedding_dst);
-      //! Set lines between the embeddings
-      void setLines(const std::vector<std::pair<uint32_t,uint32_t>>& lines);
-      void setLines(const std::vector<std::pair<uint32_t,uint32_t>>& lines, const std::vector<float>& alpha_per_line);
+class EmbeddingSimilarityBundledLinesDrawer : public AbstractScatterplotDrawer {
+ public:
+  EmbeddingSimilarityBundledLinesDrawer();
+  //! Draw on canvas
+  virtual void draw(const point_type& bl, const point_type& tr);
+  //! Set the data to be drawn
+  void setData(const scalar_type* embedding_src, const scalar_type* embedding_dst);
+  //! Set lines between the embeddings
+  void setLines(const std::vector<std::pair<uint32_t, uint32_t>>& lines);
+  void setLines(const std::vector<std::pair<uint32_t, uint32_t>>& lines, const std::vector<float>& alpha_per_line);
 
+  const std::vector<std::pair<uint32_t, uint32_t>>& lines() { return _lines; }
 
-      const std::vector<std::pair<uint32_t,uint32_t>>& lines(){return _lines;}
+  virtual void initialize(QGLContext* context);
 
+  void setAlpha(scalar_type alpha) { _alpha = alpha; }
+  void setColor(color_type color) { _color = color; }
 
-      virtual void initialize(QGLContext* context);
+ private:
+  void movePoints();
+  void movePointsSGD();
 
-      void setAlpha(scalar_type alpha){_alpha = alpha;}
-      void setColor(color_type color){_color = color;}
+ private:
+  const scalar_type* _embedding_src;
+  const scalar_type* _embedding_dst;
+  std::vector<std::pair<uint32_t, uint32_t>> _lines;
+  std::vector<float> _alpha_per_line;
 
-    private:
-      void movePoints();
-      void movePointsSGD();
-      
-    private:
-      const scalar_type* _embedding_src;
-      const scalar_type* _embedding_dst;
-      std::vector<std::pair<uint32_t,uint32_t>> _lines;
-      std::vector<float> _alpha_per_line;
+  color_type _color;
+  scalar_type _alpha;
+  scalar_type _z_coord;
+  uint32_t _pnts_per_line;
 
-      color_type _color;
-      scalar_type _alpha;
-      scalar_type _z_coord;
-      uint32_t _pnts_per_line;
+  std::vector<scalar_type> _cntr_pnts;
+  std::vector<scalar_type> _velocity;
 
-      std::vector<scalar_type> _cntr_pnts;
-      std::vector<scalar_type> _velocity;
+  bool _initialized;
 
+  //TODO should be template and should have getters & setters
+ public:
+  const std::vector<std::unordered_map<uint32_t, float>>* _fmc_src;
+  const std::vector<std::unordered_map<uint32_t, float>>* _fmc_dst;
+};
 
-      bool _initialized;
-
-
-      //TODO should be template and should have getters & setters
-    public:
-      const std::vector<std::unordered_map<uint32_t,float>>* _fmc_src;
-      const std::vector<std::unordered_map<uint32_t,float>>* _fmc_dst;
-
-    };
-
-  }
-}
+}  // namespace viz
+}  // namespace hdi
 
 #endif

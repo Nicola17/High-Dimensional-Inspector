@@ -36,41 +36,41 @@
 #include <string>
 #include "hdi/data/abstract_panel_data.h"
 
-
 class QWidget;
 
-namespace hdi{
-  namespace viz{
+namespace hdi {
+namespace viz {
 
-    //! Abstract class that represents a view for a PanelData
-    /*!
+//! Abstract class that represents a view for a PanelData
+/*!
       Abstract class that represents a view for a PanelData
       \author Nicola Pezzotti
     */
-    
-    class AbstractView{
-    public:
-      typedef data::AbstractPanelData panel_data_type;
 
-    public:
-      AbstractView():_panel_data(nullptr){}
-      virtual ~AbstractView(){}
+class AbstractView {
+ public:
+  typedef data::AbstractPanelData panel_data_type;
 
-      void setPanelData(panel_data_type* panel_data){ _panel_data = panel_data; }
-      panel_data_type* panelData(){ return _panel_data; }
-      const panel_data_type* panelData()const{ return _panel_data; }
-
-      virtual QWidget* widgetPtr() = 0;
-      virtual const QWidget* widgetPtr()const = 0;
-
-      //!Update view based on the current state of the panel data
-      virtual void updateView() = 0;
-
-    protected:
-      panel_data_type* _panel_data;
-
-    };
+ public:
+  AbstractView()
+      : _panel_data(nullptr) {
   }
-}
+  virtual ~AbstractView() {}
+
+  void setPanelData(panel_data_type* panel_data) { _panel_data = panel_data; }
+  panel_data_type* panelData() { return _panel_data; }
+  const panel_data_type* panelData() const { return _panel_data; }
+
+  virtual QWidget* widgetPtr() = 0;
+  virtual const QWidget* widgetPtr() const = 0;
+
+  //!Update view based on the current state of the panel data
+  virtual void updateView() = 0;
+
+ protected:
+  panel_data_type* _panel_data;
+};
+}  // namespace viz
+}  // namespace hdi
 
 #endif

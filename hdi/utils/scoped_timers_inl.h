@@ -38,35 +38,30 @@
 #include "hdi/utils/timers.h"
 #include "hdi/utils/timing_utils.h"
 
-namespace hdi{
-  namespace utils{
-    template <class T, class UnitOfMeas>
-    ScopedTimer<T, UnitOfMeas>::ScopedTimer(T& elapsed_time) :
-      _elapsed_time(elapsed_time)
-    {
-      _timer.start();
-    }
-
-    template <class T, class UnitOfMeas>
-    ScopedTimer<T, UnitOfMeas>::~ScopedTimer(){
-      _timer.stop();
-      _elapsed_time = static_cast<T>(_timer.elapsedTime<UnitOfMeas>());
-    }
-
-
-    template <class T, class UnitOfMeas>
-    ScopedIncrementalTimer<T, UnitOfMeas>::ScopedIncrementalTimer(T& elapsed_time) :
-      _elapsed_time(elapsed_time)
-    {
-      _timer.start();
-    }
-
-    template <class T, class UnitOfMeas>
-    ScopedIncrementalTimer<T, UnitOfMeas>::~ScopedIncrementalTimer(){
-      _timer.stop();
-      _elapsed_time += static_cast<T>(_timer.elapsedTime<UnitOfMeas>());
-    }
-  }
+namespace hdi {
+namespace utils {
+template <class T, class UnitOfMeas>
+ScopedTimer<T, UnitOfMeas>::ScopedTimer(T& elapsed_time) : _elapsed_time(elapsed_time) {
+  _timer.start();
 }
 
-#endif // SCOPED_TIMERS_INL
+template <class T, class UnitOfMeas>
+ScopedTimer<T, UnitOfMeas>::~ScopedTimer() {
+  _timer.stop();
+  _elapsed_time = static_cast<T>(_timer.elapsedTime<UnitOfMeas>());
+}
+
+template <class T, class UnitOfMeas>
+ScopedIncrementalTimer<T, UnitOfMeas>::ScopedIncrementalTimer(T& elapsed_time) : _elapsed_time(elapsed_time) {
+  _timer.start();
+}
+
+template <class T, class UnitOfMeas>
+ScopedIncrementalTimer<T, UnitOfMeas>::~ScopedIncrementalTimer() {
+  _timer.stop();
+  _elapsed_time += static_cast<T>(_timer.elapsedTime<UnitOfMeas>());
+}
+}  // namespace utils
+}  // namespace hdi
+
+#endif  // SCOPED_TIMERS_INL

@@ -33,130 +33,127 @@
 #ifndef SCATTERPLOT_CANVAS_H
 #define SCATTERPLOT_CANVAS_H
 
-#include <QtGui>
 #include <QGLWidget>
+#include <QtGui>
 #include <memory>
 #include "hdi/utils/abstract_log.h"
 #include "hdi/visualization/abstract_scatterplot_drawer.h"
 
+namespace hdi {
+namespace viz {
 
-namespace hdi{
-  namespace viz{
-
-    //! Canvas for the visualization of a scatterplot
-    /*!
+//! Canvas for the visualization of a scatterplot
+/*!
       Canvas for the visualization of a scatterplot
       \note Provides a QGLWidget with the interaction on a scatterplot
       \author Nicola Pezzotti
     */
-    class ScatterplotCanvas: public QGLWidget
-    {
-       Q_OBJECT
-    public:
-      typedef float    scalar_type;
-      typedef QVector2D  point_type;
-      typedef QColor    color_type;
+class ScatterplotCanvas : public QGLWidget {
+  Q_OBJECT
+ public:
+  typedef float scalar_type;
+  typedef QVector2D point_type;
+  typedef QColor color_type;
 
-    public:
-      ScatterplotCanvas(QWidget *parent = 0, QGLWidget *shareWidget = 0);
-      ~ScatterplotCanvas();
-      
-      //! Return the current log
-      utils::AbstractLog* logger()const{return _logger;}
-      //! Set a pointer to an existing log
-      void setLogger(utils::AbstractLog* logger){_logger = logger;}
-      //! Is verbose?
-      bool isVerbose()const{return _verbose;}
-      //! Set a pointer to an existing log
-      void setVerbose(bool verbose){_verbose = verbose;}
-      
-      //! Set coordinates of the top right corner
-      void setTopRightCoordinates(const point_type& tr){_embedding_top_right_corner = tr;}
-      //! Set coordinates of the top right corner
-      const point_type& topRightCoordinates()const {return _embedding_top_right_corner;}
-      //! Set coordinates of the bottom left corner
-      void setBottomLeftCoordinates(const point_type& bl){_embedding_bottom_left_corner = bl;}
-      //! Set coordinates of the bottom left corner
-      const point_type& bottomLeftCoordinates()const {return _embedding_bottom_left_corner;}
+ public:
+  ScatterplotCanvas(QWidget* parent = 0, QGLWidget* shareWidget = 0);
+  ~ScatterplotCanvas();
 
-      //! Return the size of the embedding visualized on the screen
-      point_type embeddingSize()const{return (_embedding_top_right_corner - _embedding_bottom_left_corner);}
-      
-      //! Set background colors
-      void setBackgroundColors(const QColor &top, const QColor &bottom);
-      //! Get background colors
-      void getBackgroundColors(QColor &top, QColor &bottom)const;
+  //! Return the current log
+  utils::AbstractLog* logger() const { return _logger; }
+  //! Set a pointer to an existing log
+  void setLogger(utils::AbstractLog* logger) { _logger = logger; }
+  //! Is verbose?
+  bool isVerbose() const { return _verbose; }
+  //! Set a pointer to an existing log
+  void setVerbose(bool verbose) { _verbose = verbose; }
 
-      //! Set selection color
-      void setSelectionColor(const QColor selection_color){_selection_color = selection_color;}
-      //! Get selection color
-      const QColor& selectionColor()const {return _selection_color;}
-        
-      //! Set drawers for this canvas
-      void setDrawers(const std::vector<AbstractScatterplotDrawer*>& drawers){_drawers = drawers;}
-      //! Add a single drawer for this canvas
-      void addDrawer(AbstractScatterplotDrawer* drawer){_drawers.push_back(drawer);}
-      //! Add a single drawer for this canvas
-      void removeAllDrawers(){_drawers.clear();}
+  //! Set coordinates of the top right corner
+  void setTopRightCoordinates(const point_type& tr) { _embedding_top_right_corner = tr; }
+  //! Set coordinates of the top right corner
+  const point_type& topRightCoordinates() const { return _embedding_top_right_corner; }
+  //! Set coordinates of the bottom left corner
+  void setBottomLeftCoordinates(const point_type& bl) { _embedding_bottom_left_corner = bl; }
+  //! Set coordinates of the bottom left corner
+  const point_type& bottomLeftCoordinates() const { return _embedding_bottom_left_corner; }
 
-      //! Take a screenshot and save it to a file
-      void saveToFile(std::string filename);
+  //! Return the size of the embedding visualized on the screen
+  point_type embeddingSize() const { return (_embedding_top_right_corner - _embedding_bottom_left_corner); }
 
-    signals:
-      //! Mouse clicked on the widget
-      void clicked();
-      //! A selection occurred in the widget
-      void sgnSelection(point_type bl, point_type tr);
-      void sgnRightButtonPressed(point_type pnt);
-      void sgnLeftButtonPressed(point_type pnt);
-      void sgnRightButtonReleased(point_type pnt);
-      void sgnLeftButtonReleased(point_type pnt);
-      void sgnMouseMove(point_type pnt);
-      void sgnLeftDoubleClick(point_type pnt);
-      void sgnRightDoubleClick(point_type pnt);
-      void sgnKeyPressed(int key);
+  //! Set background colors
+  void setBackgroundColors(const QColor& top, const QColor& bottom);
+  //! Get background colors
+  void getBackgroundColors(QColor& top, QColor& bottom) const;
 
-    private slots:
+  //! Set selection color
+  void setSelectionColor(const QColor selection_color) { _selection_color = selection_color; }
+  //! Get selection color
+  const QColor& selectionColor() const { return _selection_color; }
 
-    protected:
-      //! Initialize OpenGL
-      void initializeGL();
-      //! Update the embedding
-      void paintGL();
-      //! Resize the widget
-      void resizeGL(int width, int height);
-      void mousePressEvent(QMouseEvent *event);
-      void mouseMoveEvent(QMouseEvent *event);
-      void mouseReleaseEvent(QMouseEvent *event);
-      void wheelEvent (QWheelEvent* event);
-      void mouseDoubleClickEvent(QMouseEvent* e);
-      void keyPressEvent(QKeyEvent* e);
+  //! Set drawers for this canvas
+  void setDrawers(const std::vector<AbstractScatterplotDrawer*>& drawers) { _drawers = drawers; }
+  //! Add a single drawer for this canvas
+  void addDrawer(AbstractScatterplotDrawer* drawer) { _drawers.push_back(drawer); }
+  //! Add a single drawer for this canvas
+  void removeAllDrawers() { _drawers.clear(); }
 
- 
-     private: 
-       point_type getMousePositionInSpace(QPoint pnt)const;
+  //! Take a screenshot and save it to a file
+  void saveToFile(std::string filename);
 
-    private:
-      color_type _bg_top_color;
-      color_type _bg_bottom_color;
-      color_type _selection_color;
+ signals:
+  //! Mouse clicked on the widget
+  void clicked();
+  //! A selection occurred in the widget
+  void sgnSelection(point_type bl, point_type tr);
+  void sgnRightButtonPressed(point_type pnt);
+  void sgnLeftButtonPressed(point_type pnt);
+  void sgnRightButtonReleased(point_type pnt);
+  void sgnLeftButtonReleased(point_type pnt);
+  void sgnMouseMove(point_type pnt);
+  void sgnLeftDoubleClick(point_type pnt);
+  void sgnRightDoubleClick(point_type pnt);
+  void sgnKeyPressed(int key);
 
-      point_type _embedding_top_right_corner;
-      point_type _embedding_bottom_left_corner;
-      scalar_type _near_val;
-      scalar_type _far_val;
+ private slots:
 
-      QPoint  _selection_first_point;
-      QPoint  _selection_second_point;
-      bool  _selection_in_progress;
+ protected:
+  //! Initialize OpenGL
+  void initializeGL();
+  //! Update the embedding
+  void paintGL();
+  //! Resize the widget
+  void resizeGL(int width, int height);
+  void mousePressEvent(QMouseEvent* event);
+  void mouseMoveEvent(QMouseEvent* event);
+  void mouseReleaseEvent(QMouseEvent* event);
+  void wheelEvent(QWheelEvent* event);
+  void mouseDoubleClickEvent(QMouseEvent* e);
+  void keyPressEvent(QKeyEvent* e);
 
-      std::vector<AbstractScatterplotDrawer*> _drawers;
+ private:
+  point_type getMousePositionInSpace(QPoint pnt) const;
 
-    private:
-      utils::AbstractLog* _logger;
-      bool _verbose;
-    };
-  }
-}
+ private:
+  color_type _bg_top_color;
+  color_type _bg_bottom_color;
+  color_type _selection_color;
 
- #endif
+  point_type _embedding_top_right_corner;
+  point_type _embedding_bottom_left_corner;
+  scalar_type _near_val;
+  scalar_type _far_val;
+
+  QPoint _selection_first_point;
+  QPoint _selection_second_point;
+  bool _selection_in_progress;
+
+  std::vector<AbstractScatterplotDrawer*> _drawers;
+
+ private:
+  utils::AbstractLog* _logger;
+  bool _verbose;
+};
+}  // namespace viz
+}  // namespace hdi
+
+#endif

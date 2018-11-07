@@ -37,19 +37,19 @@
 #include <ctime>
 #include <thread>
 
-namespace hdi{
-  namespace utils{
-    typedef std::chrono::milliseconds   Milliseconds;
-    typedef std::chrono::seconds     Seconds;
-    typedef std::chrono::minutes     Minutes;
-    typedef std::chrono::hours       Hours;
+namespace hdi {
+namespace utils {
+typedef std::chrono::milliseconds Milliseconds;
+typedef std::chrono::seconds Seconds;
+typedef std::chrono::minutes Minutes;
+typedef std::chrono::hours Hours;
 
-    //! Wrapper for the C++ sleep_for function
-    template <class UnitOfMeas>
-    inline void sleepFor(unsigned int t){
-      std::this_thread::sleep_for(UnitOfMeas(t));
-    }
-  }
+//! Wrapper for the C++ sleep_for function
+template <class UnitOfMeas>
+inline void sleepFor(unsigned int t) {
+  std::this_thread::sleep_for(UnitOfMeas(t));
 }
+}  // namespace utils
+}  // namespace hdi
 
-#endif // TIMING_UTILS_H
+#endif  // TIMING_UTILS_H

@@ -30,13 +30,12 @@
  *
  */
 
-
 #include <catch.hpp>
-#include "hdi/utils/timing_utils.h"
-#include "hdi/utils/timers.h"
 #include "hdi/utils/scoped_timers.h"
+#include "hdi/utils/timers.h"
+#include "hdi/utils/timing_utils.h"
 
-TEST_CASE( "Timers throws exceptions when misused", "[timers]" ) {
+TEST_CASE("Timers throws exceptions when misused", "[timers]") {
   hdi::utils::Timer timer;
 
   REQUIRE_THROWS(timer.stop());
@@ -53,29 +52,28 @@ TEST_CASE( "Timers throws exceptions when misused", "[timers]" ) {
   REQUIRE(timer.isElapsedTimeAvailable() == true);
 }
 
-TEST_CASE( "Timer is returning a valid result", "[timers]" ) {
+TEST_CASE("Timer is returning a valid result", "[timers]") {
   hdi::utils::Timer timer;
 
   timer.start();
   hdi::utils::sleepFor<hdi::utils::Milliseconds>(2500);
   timer.stop();
   double elapsed_time = timer.elapsedTime<hdi::utils::Milliseconds>();
-  REQUIRE(std::abs(elapsed_time-2500) < 50);
+  REQUIRE(std::abs(elapsed_time - 2500) < 50);
   elapsed_time = timer.elapsedTime<hdi::utils::Seconds>();
-  REQUIRE(std::abs(elapsed_time-2.5) < .05);
+  REQUIRE(std::abs(elapsed_time - 2.5) < .05);
 }
 
-
-TEST_CASE( "ScopedTimer is returning a valid result", "[timers]" ) {
+TEST_CASE("ScopedTimer is returning a valid result", "[timers]") {
   double elapsed_time(0);
   {
     hdi::utils::ScopedTimer<double, hdi::utils::Milliseconds> timer(elapsed_time);
     hdi::utils::sleepFor<hdi::utils::Milliseconds>(500);
   }
-  REQUIRE(std::abs(elapsed_time-500) < 50);
+  REQUIRE(std::abs(elapsed_time - 500) < 50);
 }
 
-TEST_CASE( "ScopedIncrementalTimer is returning a valid result", "[timers]" ) {
+TEST_CASE("ScopedIncrementalTimer is returning a valid result", "[timers]") {
   double elapsed_time(0);
   {
     hdi::utils::ScopedIncrementalTimer<double, hdi::utils::Milliseconds> timer(elapsed_time);
@@ -85,5 +83,5 @@ TEST_CASE( "ScopedIncrementalTimer is returning a valid result", "[timers]" ) {
     hdi::utils::ScopedIncrementalTimer<double, hdi::utils::Milliseconds> timer(elapsed_time);
     hdi::utils::sleepFor<hdi::utils::Milliseconds>(500);
   }
-  REQUIRE(std::abs(elapsed_time-1000) < 50);
+  REQUIRE(std::abs(elapsed_time - 1000) < 50);
 }

@@ -32,61 +32,58 @@
 
 #include "hdi/visualization/embedding_lines_drawer.h"
 #include <QOpenGLFunctions>
-#include "opengl_helpers.h"
 #include "hdi/utils/assert_by_exception.h"
+#include "opengl_helpers.h"
 
-#define GLSL(version, shader)  "#version " #version "\n" #shader
+#define GLSL(version, shader) "#version " #version "\n" #shader
 
-namespace hdi{
-  namespace viz{
+namespace hdi {
+namespace viz {
 
-    EmbeddingLinesDrawer::EmbeddingLinesDrawer():
-      _color(qRgb(0,0,0)),
-      _initialized(false),
-      _alpha(0.5),
-      _z_coord(0)
-    {
-      //initialize();
+EmbeddingLinesDrawer::EmbeddingLinesDrawer() : _color(qRgb(0, 0, 0)),
+                                               _initialized(false),
+                                               _alpha(0.5),
+                                               _z_coord(0) {
+  //initialize();
+}
 
-    }
+void EmbeddingLinesDrawer::initialize(QGLContext* context) {
+  _initialized = true;
+}
 
-    void EmbeddingLinesDrawer::initialize(QGLContext* context){
-      _initialized = true;
-    }
+void EmbeddingLinesDrawer::draw(const point_type& bl, const point_type& tr) {
+  checkAndThrowLogic(_initialized, "Shader must be initilized");
+  ScopedCapabilityEnabler blend_helper(GL_BLEND);
+  ScopedCapabilityEnabler depth_test_helper(GL_DEPTH_TEST);
+  ScopedCapabilityEnabler point_smooth_helper(GL_POINT_SMOOTH);
+  ScopedCapabilityEnabler multisample_helper(GL_MULTISAMPLE);
+  ScopedCapabilityEnabler point_size_helper(GL_PROGRAM_POINT_SIZE);
+  glDepthMask(GL_FALSE);
 
-    void EmbeddingLinesDrawer::draw(const point_type& bl, const point_type& tr){
-      checkAndThrowLogic(_initialized,"Shader must be initilized");
-      ScopedCapabilityEnabler blend_helper(GL_BLEND);
-      ScopedCapabilityEnabler depth_test_helper(GL_DEPTH_TEST);
-      ScopedCapabilityEnabler point_smooth_helper(GL_POINT_SMOOTH);
-      ScopedCapabilityEnabler multisample_helper(GL_MULTISAMPLE);
-      ScopedCapabilityEnabler point_size_helper(GL_PROGRAM_POINT_SIZE);
-      glDepthMask(GL_FALSE);
-
-      for(int i = 0; i < _lines.size(); ++i){
-        auto& line = _lines[i];
-        glBegin(GL_LINES);
-          glColor4f  (_color.redF(),_color.greenF(),_color.blueF(),_alpha_per_line.size()?_alpha_per_line[i]:_alpha);
-          glVertex3f  (_embedding_src[line.first*2], _embedding_src[line.first*2+1], _z_coord); //vertex 1
-          glVertex3f  (_embedding_dst[line.second*2], _embedding_dst[line.second*2+1], _z_coord); //vertex 2
-        glEnd();
-      }
-    }
-
-    void EmbeddingLinesDrawer::setData(const scalar_type* embedding_src, const scalar_type* embedding_dst){
-      _embedding_src = embedding_src;
-      _embedding_dst = embedding_dst;
-    }
-
-    void EmbeddingLinesDrawer::setLines(const std::vector<std::pair<uint32_t,uint32_t>>& lines){
-      _lines = lines;
-      _alpha_per_line.clear();
-    }
-    void EmbeddingLinesDrawer::setLines(const std::vector<std::pair<uint32_t,uint32_t>>& lines, const std::vector<float>& alpha_per_line){
-      assert(lines.size() == alpha_per_line.size());
-      _lines = lines;
-      _alpha_per_line = alpha_per_line;
-    }
-
+  for (int i = 0; i < _lines.size(); ++i) {
+    auto& line = _lines[i];
+    glBegin(GL_LINES);
+    glColor4f(_color.redF(), _color.greenF(), _color.blueF(), _alpha_per_line.size() ? _alpha_per_line[i] : _alpha);
+    glVertex3f(_embedding_src[line.first * 2], _embedding_src[line.first * 2 + 1], _z_coord);    //vertex 1
+    glVertex3f(_embedding_dst[line.second * 2], _embedding_dst[line.second * 2 + 1], _z_coord);  //vertex 2
+    glEnd();
   }
 }
+
+void EmbeddingLinesDrawer::setData(const scalar_type* embedding_src, const scalar_type* embedding_dst) {
+  _embedding_src = embedding_src;
+  _embedding_dst = embedding_dst;
+}
+
+void EmbeddingLinesDrawer::setLines(const std::vector<std::pair<uint32_t, uint32_t>>& lines) {
+  _lines = lines;
+  _alpha_per_line.clear();
+}
+void EmbeddingLinesDrawer::setLines(const std::vector<std::pair<uint32_t, uint32_t>>& lines, const std::vector<float>& alpha_per_line) {
+  assert(lines.size() == alpha_per_line.size());
+  _lines = lines;
+  _alpha_per_line = alpha_per_line;
+}
+
+}  // namespace viz
+}  // namespace hdi

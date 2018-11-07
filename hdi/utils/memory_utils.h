@@ -33,9 +33,8 @@
 #ifndef MEMORY_UTILS_H
 #define MEMORY_UTILS_H
 
-namespace hdi{
-  namespace utils{
-
-  }
+namespace hdi {
+namespace utils {
 }
+}  // namespace hdi
 #endif

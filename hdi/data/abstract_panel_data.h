@@ -37,41 +37,44 @@
 #include <vector>
 #include "hdi/data/abstract_data.h"
 
-namespace hdi{
-  namespace data{
+namespace hdi {
+namespace data {
 
-    //! Abstract class that represents a generic panel data
-    /*!
+//! Abstract class that represents a generic panel data
+/*!
       Abstract class that represents a generic panel data.
       \author Nicola Pezzotti
     */
 
-    class AbstractPanelData{
-    public:
-      typedef uint32_t          handle_type;
-      typedef uint32_t          flag_type;
-      typedef std::vector<flag_type>    flag_vector_type;
-      typedef std::vector<std::shared_ptr<AbstractData> > data_ptr_vector_type;
+class AbstractPanelData {
+ public:
+  typedef uint32_t handle_type;
+  typedef uint32_t flag_type;
+  typedef std::vector<flag_type> flag_vector_type;
+  typedef std::vector<std::shared_ptr<AbstractData> > data_ptr_vector_type;
 
-      enum Flags { None = 0, Selected = 1, Fixed = 2, Disabled = 4};
+  enum Flags { None = 0,
+               Selected = 1,
+               Fixed = 2,
+               Disabled = 4 };
 
-    public:
-      AbstractPanelData(){}
-      virtual ~AbstractPanelData(){}
+ public:
+  AbstractPanelData() {}
+  virtual ~AbstractPanelData() {}
 
-      virtual int numDataPoints()const = 0;
-      virtual int numDimensions()const = 0;
-      virtual const data_ptr_vector_type&  getDataPoints()const = 0;
-      virtual const data_ptr_vector_type& getDimensions()const = 0;
+  virtual int numDataPoints() const = 0;
+  virtual int numDimensions() const = 0;
+  virtual const data_ptr_vector_type& getDataPoints() const = 0;
+  virtual const data_ptr_vector_type& getDimensions() const = 0;
 
-      virtual const flag_vector_type&  getFlagsDataPoints()const = 0;
-      virtual const flag_vector_type& getFlagsDimensions()const = 0;
-      virtual flag_vector_type& getFlagsDataPoints() = 0;
-      virtual flag_vector_type& getFlagsDimensions() = 0;
+  virtual const flag_vector_type& getFlagsDataPoints() const = 0;
+  virtual const flag_vector_type& getFlagsDimensions() const = 0;
+  virtual flag_vector_type& getFlagsDataPoints() = 0;
+  virtual flag_vector_type& getFlagsDimensions() = 0;
 
-      virtual double dataAt(unsigned int data_point, unsigned int dimension)const=0;
-    };
+  virtual double dataAt(unsigned int data_point, unsigned int dimension) const = 0;
+};
 
-  }
-}
+}  // namespace data
+}  // namespace hdi
 #endif

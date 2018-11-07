@@ -32,84 +32,80 @@
 
 #include "hdi/visualization/scatterplot_text_drawer.h"
 #include <QOpenGLFunctions>
-#include "opengl_helpers.h"
 #include "hdi/utils/assert_by_exception.h"
+#include "opengl_helpers.h"
 
-#define GLSL(version, shader)  "#version " #version "\n" #shader
+#define GLSL(version, shader) "#version " #version "\n" #shader
 
-namespace hdi{
-  namespace viz{
+namespace hdi {
+namespace viz {
 
-    ScatterplotTextDrawer::ScatterplotTextDrawer()
-    {
+ScatterplotTextDrawer::ScatterplotTextDrawer() {
+}
 
-    }
+void ScatterplotTextDrawer::initialize(QGLContext* context) {
+  _initialized = true;
+}
 
-    void ScatterplotTextDrawer::initialize(QGLContext* context){
-      _initialized = true;
-    }
+void ScatterplotTextDrawer::setText(const std::string& text, QColor color, std::string font) {
+  _text = text;
+  glGenTextures(1, &_textureID);             // Obtain an id for the texture
+  glBindTexture(GL_TEXTURE_2D, _textureID);  // Set as the current texture
 
-    void ScatterplotTextDrawer::setText(const std::string& text, QColor color, std::string font){
-      _text = text;
-      glGenTextures(1, &_textureID); // Obtain an id for the texture
-      glBindTexture(GL_TEXTURE_2D, _textureID); // Set as the current texture
+  glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+  glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
 
-      glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-      glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
+  QImage im(text.size() * 12, 20, QImage::Format_ARGB32);
+  for (int j = 0; j < im.height(); ++j)
+    for (int i = 0; i < im.width(); ++i)
+      im.setPixel(i, j, qRgba(255 * i / im.width(), 255 * j / im.height(), 250, 0));
 
-      QImage im(text.size()*12,20,QImage::Format_ARGB32);
-      for(int j = 0; j < im.height();++j)
-         for(int i = 0; i < im.width();++i)
-          im.setPixel(i,j,qRgba(255*i/im.width(),255*j/im.height(),250,0));
+  if (text.size()) {
+    QPainter p(&im);
+    p.setPen(QPen(color));
+    QFont qfont(font.c_str(), 15);
+    qfont.setBold(true);
+    p.setFont(qfont);
+    p.drawText(im.rect(), Qt::AlignLeft | Qt::AlignVCenter, text.c_str());
 
-      if(text.size()){
-        QPainter p(&im);
-        p.setPen(QPen(color));
-        QFont qfont(font.c_str(), 15);
-        qfont.setBold(true);
-        p.setFont(qfont);
-        p.drawText(im.rect(), Qt::AlignLeft|Qt::AlignVCenter, text.c_str());
+    _image = QGLWidget::convertToGLFormat(im);
 
-        _image = QGLWidget::convertToGLFormat(im);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, _image.width(), _image.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, _image.bits());
 
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, _image.width(), _image.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, _image.bits());
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
-        glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
-
-        glDisable(GL_TEXTURE_2D);
-      }
-    }
-
-    void ScatterplotTextDrawer::draw(const point_type& bl, const point_type& tr){
-      ScopedCapabilityDisabler depth_test_helper(GL_DEPTH_TEST);
-      ScopedCapabilityEnabler texture_helper(GL_TEXTURE_2D);
-      ScopedCapabilityEnabler blend_helper(GL_BLEND);
-      glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-      const scalar_type background_z_coord(-0.7);
-      glBindTexture(GL_TEXTURE_2D, _textureID);
-
-
-      point_type img_bl = _coords;
-
-      point_type img_tr = img_bl;
-      img_tr.setY(img_tr.y()+_height);
-      img_tr.setX(img_tr.x()+_height/_image.height()*_image.width());
-
-      glBegin(GL_TRIANGLE_STRIP);
-        glColor4f(1, 1, 1,_alpha);
-        glTexCoord2f(0,0);
-        glVertex3f  (img_bl.x(), img_bl.y(), background_z_coord); //vertex 1
-        glTexCoord2f(0,1);
-        glVertex3f  (img_bl.x(), img_tr.y(), background_z_coord); //vertex 2
-        glTexCoord2f(1,0);
-        glVertex3f  (img_tr.x(), img_bl.y(), background_z_coord); //vertex 3
-        glTexCoord2f(1,1);
-        glVertex3f  (img_tr.x(), img_tr.y(), background_z_coord); //vertex 4
-      glEnd();
-    }
-
-
+    glDisable(GL_TEXTURE_2D);
   }
 }
+
+void ScatterplotTextDrawer::draw(const point_type& bl, const point_type& tr) {
+  ScopedCapabilityDisabler depth_test_helper(GL_DEPTH_TEST);
+  ScopedCapabilityEnabler texture_helper(GL_TEXTURE_2D);
+  ScopedCapabilityEnabler blend_helper(GL_BLEND);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+  const scalar_type background_z_coord(-0.7);
+  glBindTexture(GL_TEXTURE_2D, _textureID);
+
+  point_type img_bl = _coords;
+
+  point_type img_tr = img_bl;
+  img_tr.setY(img_tr.y() + _height);
+  img_tr.setX(img_tr.x() + _height / _image.height() * _image.width());
+
+  glBegin(GL_TRIANGLE_STRIP);
+  glColor4f(1, 1, 1, _alpha);
+  glTexCoord2f(0, 0);
+  glVertex3f(img_bl.x(), img_bl.y(), background_z_coord);  //vertex 1
+  glTexCoord2f(0, 1);
+  glVertex3f(img_bl.x(), img_tr.y(), background_z_coord);  //vertex 2
+  glTexCoord2f(1, 0);
+  glVertex3f(img_tr.x(), img_bl.y(), background_z_coord);  //vertex 3
+  glTexCoord2f(1, 1);
+  glVertex3f(img_tr.x(), img_tr.y(), background_z_coord);  //vertex 4
+  glEnd();
+}
+
+}  // namespace viz
+}  // namespace hdi

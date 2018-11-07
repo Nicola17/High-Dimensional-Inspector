@@ -33,76 +33,71 @@
 #ifndef EMBEDDING_BUNDLED_LINES_DRAWER_H
 #define EMBEDDING_BUNDLED_LINES_DRAWER_H
 
-#include <QGLShaderProgram>
-#include <QGLShader>
-#include <QColor>
 #include <stdint.h>
+#include <QColor>
+#include <QGLShader>
+#include <QGLShaderProgram>
 #include <memory>
-#include "hdi/visualization/abstract_scatterplot_drawer.h"
 #include "hdi/data/embedding.h"
+#include "hdi/visualization/abstract_scatterplot_drawer.h"
 
-namespace hdi{
-  namespace viz{
+namespace hdi {
+namespace viz {
 
-    class EmbeddingBundledLinesDrawer: public AbstractScatterplotDrawer{
-    public:
-      EmbeddingBundledLinesDrawer();
-      //! Draw on canvas
-      virtual void draw(const point_type& bl, const point_type& tr);
-      //! Set the data to be drawn
-      void setData(const scalar_type* embedding_src, const scalar_type* embedding_dst);
-      //! Set lines between the embeddings
-      void setLines(const std::vector<std::pair<uint32_t,uint32_t>>& lines);
-      void setLines(const std::vector<std::pair<uint32_t,uint32_t>>& lines, const std::vector<float>& alpha_per_line);
+class EmbeddingBundledLinesDrawer : public AbstractScatterplotDrawer {
+ public:
+  EmbeddingBundledLinesDrawer();
+  //! Draw on canvas
+  virtual void draw(const point_type& bl, const point_type& tr);
+  //! Set the data to be drawn
+  void setData(const scalar_type* embedding_src, const scalar_type* embedding_dst);
+  //! Set lines between the embeddings
+  void setLines(const std::vector<std::pair<uint32_t, uint32_t>>& lines);
+  void setLines(const std::vector<std::pair<uint32_t, uint32_t>>& lines, const std::vector<float>& alpha_per_line);
 
-      void setControlPoints();
+  void setControlPoints();
 
-      const std::vector<std::pair<uint32_t,uint32_t>>& lines(){return _lines;}
+  const std::vector<std::pair<uint32_t, uint32_t>>& lines() { return _lines; }
 
+  bool& enabled() { return _enabled; }
+  uint32_t& sgd_samples() { return _sgd_samples; }
+  double& sgd_strength() { return _sgd_strength; }
 
-      bool&     enabled(){return _enabled;}
-      uint32_t&   sgd_samples(){return _sgd_samples;}
-      double&   sgd_strength(){return _sgd_strength;}
+  const bool& enabled() const { return _enabled; }
+  const uint32_t& sgd_samples() const { return _sgd_samples; }
+  const double& sgd_strength() const { return _sgd_strength; }
 
-      const bool&     enabled()const{return _enabled;}
-      const uint32_t&   sgd_samples()const{return _sgd_samples;}
-      const double&   sgd_strength()const{return _sgd_strength;}
+  virtual void initialize(QGLContext* context);
 
+  void setAlpha(scalar_type alpha) { _alpha = alpha; }
+  void setColor(color_type color) { _color = color; }
 
+ private:
+  void movePoints();
+  void movePointsSGD();
 
-      virtual void initialize(QGLContext* context);
+ private:
+  const scalar_type* _embedding_src;
+  const scalar_type* _embedding_dst;
+  std::vector<std::pair<uint32_t, uint32_t>> _lines;
+  std::vector<float> _alpha_per_line;
 
-      void setAlpha(scalar_type alpha){_alpha = alpha;}
-      void setColor(color_type color){_color = color;}
+  color_type _color;
+  scalar_type _alpha;
+  scalar_type _z_coord;
+  uint32_t _pnts_per_line;
 
-    private:
-      void movePoints();
-      void movePointsSGD();
-      
-    private:
-      const scalar_type* _embedding_src;
-      const scalar_type* _embedding_dst;
-      std::vector<std::pair<uint32_t,uint32_t>> _lines;
-      std::vector<float> _alpha_per_line;
+  std::vector<scalar_type> _cntr_pnts;
+  std::vector<scalar_type> _velocity;
 
-      color_type _color;
-      scalar_type _alpha;
-      scalar_type _z_coord;
-      uint32_t _pnts_per_line;
+  bool _initialized;
+  bool _enabled;
 
-      std::vector<scalar_type> _cntr_pnts;
-      std::vector<scalar_type> _velocity;
+  uint32_t _sgd_samples;
+  double _sgd_strength;
+};
 
-      bool _initialized;
-      bool _enabled;
-
-      uint32_t _sgd_samples;
-      double   _sgd_strength;
-
-
-    };
-
-  }
-}
+}  // namespace viz
+}  // namespace hdi
 
 #endif

@@ -35,12 +35,11 @@
 
 #include <QFile>
 
-namespace hdi{
-  namespace utils{
+namespace hdi {
+namespace utils {
 
-    QString readTextFromFile(QString filename);
-
-  }
+QString readTextFromFile(QString filename);
 }
+}  // namespace hdi
 
-#endif // TIMERS_H
+#endif  // TIMERS_H

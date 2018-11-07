@@ -35,64 +35,63 @@
 
 #include <QObject>
 #include <QVector2D>
-#include "hdi/utils/abstract_log.h"
 #include "hdi/data/abstract_panel_data.h"
 #include "hdi/data/embedding.h"
-#include "hdi/visualization/scatterplot_canvas_qobj.h"
+#include "hdi/utils/abstract_log.h"
 #include "hdi/visualization/abstract_view.h"
+#include "hdi/visualization/scatterplot_canvas_qobj.h"
 
-namespace hdi{
-  namespace viz{
+namespace hdi {
+namespace viz {
 
-    /*!
+/*!
       Controller that takes care of doing selection in the data::PanelData based on the interaction with the viz::ScatterplotCanvas
       \author Nicola Pezzotti
     */
-    class ControllerSelectionEmbedding: public QObject{
-      Q_OBJECT
-    public:
-      typedef float scalar_type;
-      typedef QVector2D point_type;
+class ControllerSelectionEmbedding : public QObject {
+  Q_OBJECT
+ public:
+  typedef float scalar_type;
+  typedef QVector2D point_type;
 
-    public:
-      ControllerSelectionEmbedding();
-      virtual ~ControllerSelectionEmbedding(){}
-      bool isInitialized(){return _initialized;}
-      void initialize();
-      void reset();
+ public:
+  ControllerSelectionEmbedding();
+  virtual ~ControllerSelectionEmbedding() {}
+  bool isInitialized() { return _initialized; }
+  void initialize();
+  void reset();
 
-      //! Return the current log
-      utils::AbstractLog* logger()const{return _logger;}
-      //! Set a pointer to an existing log
-      void setLogger(utils::AbstractLog* logger){_logger = logger;}
-      //! Set the actors controller by this controller
-      void setActors(data::AbstractPanelData* panel_data, data::Embedding<scalar_type>* embedding, ScatterplotCanvas* canvas);
-      //! Add a view linked to the panel data
-      void addView(AbstractView* view);
-      //! Remove a view linked to the panel data
-      void removeView(AbstractView* view);
+  //! Return the current log
+  utils::AbstractLog* logger() const { return _logger; }
+  //! Set a pointer to an existing log
+  void setLogger(utils::AbstractLog* logger) { _logger = logger; }
+  //! Set the actors controller by this controller
+  void setActors(data::AbstractPanelData* panel_data, data::Embedding<scalar_type>* embedding, ScatterplotCanvas* canvas);
+  //! Add a view linked to the panel data
+  void addView(AbstractView* view);
+  //! Remove a view linked to the panel data
+  void removeView(AbstractView* view);
 
+ private slots:
+  void onDoSelection(point_type bl, point_type tr);
+  void onLeftDoubleClickOnCanvas(point_type bl);
+  void onUnselectAll();
 
-    private slots:
-      void onDoSelection(point_type bl, point_type tr);
-      void onLeftDoubleClickOnCanvas(point_type bl);
-      void onUnselectAll();
+ signals:
+  void sgnSelection();
+  void sgnUnselection();
 
-    signals:
-      void sgnSelection();
-      void sgnUnselection();
+ private:
+  data::AbstractPanelData* _panel_data;
+  data::Embedding<scalar_type>* _embedding;
+  ScatterplotCanvas* _canvas;
+  std::vector<AbstractView*> _linked_views;
 
-    private:
-      data::AbstractPanelData* _panel_data;
-      data::Embedding<scalar_type>* _embedding;
-      ScatterplotCanvas* _canvas;
-      std::vector<AbstractView*> _linked_views;
+  bool _initialized;
+  utils::AbstractLog* _logger;
+};
 
-      bool _initialized;
-      utils::AbstractLog* _logger;
-    };
-
-  }
-}
+}  // namespace viz
+}  // namespace hdi
 
 #endif

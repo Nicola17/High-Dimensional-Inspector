@@ -33,57 +33,56 @@
 #ifndef HISTOGRAM_H
 #define HISTOGRAM_H
 
-#include <vector>
 #include <assert.h>
+#include <vector>
 
-namespace hdi{
-  namespace data{
+namespace hdi {
+namespace data {
 
-    //! Histogram data structure
-    /*!
+//! Histogram data structure
+/*!
       Histogram data structure
       \author Nicola Pezzotti
     */
-    template <typename scalar_type>
-    class Histogram{
-    public:
-      typedef std::vector<scalar_type> scalar_vector_type;
+template <typename scalar_type>
+class Histogram {
+ public:
+  typedef std::vector<scalar_type> scalar_vector_type;
 
-    public:
-      Histogram();
-      Histogram(scalar_type min, scalar_type max, unsigned int num_buckets);
-      //! Clear the container
-      void clear();
-      //! Resize the container
-      void resize(scalar_type min, scalar_type max, unsigned int num_buckets);
-      //! add a value in the histogram
-      void add(scalar_type v);
+ public:
+  Histogram();
+  Histogram(scalar_type min, scalar_type max, unsigned int num_buckets);
+  //! Clear the container
+  void clear();
+  //! Resize the container
+  void resize(scalar_type min, scalar_type max, unsigned int num_buckets);
+  //! add a value in the histogram
+  void add(scalar_type v);
 
-      //! return the data
-      const scalar_vector_type& data()const{return _histogram;}
-      //! return the data
-      scalar_vector_type& data(){return _histogram;}
-      //! return number of buckets
-      unsigned int num_buckets()const{return _num_buckets;}
-      //! return max val
-      scalar_type min()const{return _min;}
-      //! return min val
-      scalar_type max()const{return _max;}
-      //! return min val
-      scalar_type sum()const;
+  //! return the data
+  const scalar_vector_type& data() const { return _histogram; }
+  //! return the data
+  scalar_vector_type& data() { return _histogram; }
+  //! return number of buckets
+  unsigned int num_buckets() const { return _num_buckets; }
+  //! return max val
+  scalar_type min() const { return _min; }
+  //! return min val
+  scalar_type max() const { return _max; }
+  //! return min val
+  scalar_type sum() const;
 
-      //! return the limits for a given bucket id
-      std::pair<scalar_type,scalar_type> getBucketLimits(unsigned int id)const;
+  //! return the limits for a given bucket id
+  std::pair<scalar_type, scalar_type> getBucketLimits(unsigned int id) const;
 
-    private:
-      scalar_type _min;
-      scalar_type _max;
-      unsigned int _num_buckets;
-      scalar_vector_type _histogram;
-    };
+ private:
+  scalar_type _min;
+  scalar_type _max;
+  unsigned int _num_buckets;
+  scalar_vector_type _histogram;
+};
 
-
-  }
-}
+}  // namespace data
+}  // namespace hdi
 
 #endif

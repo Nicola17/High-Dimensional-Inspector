@@ -30,68 +30,62 @@
  *
  */
 
-#include <iostream>
 #include <fstream>
-#include <string>
-#include <sstream>
+#include <iostream>
 #include <map>
+#include <sstream>
+#include <string>
 
 #include "hdi/utils/cout_log.h"
 #include "hdi/utils/log_helper_functions.h"
 
-int main(int argc, char *argv[]){
-
+int main(int argc, char *argv[]) {
   hdi::utils::CoutLog log;
 
-  const unsigned int num_files(argc-2);
-  std::ofstream out_file(argv[1], std::ios::out|std::ios::binary);
+  const unsigned int num_files(argc - 2);
+  std::ofstream out_file(argv[1], std::ios::out | std::ios::binary);
 
   std::vector<std::vector<float> > data(num_files);
 
-
-
   {
-    for(int i = 0; i < num_files; ++i){
-      std::ifstream in_file(argv[2+i], std::ios::in);
+    for (int i = 0; i < num_files; ++i) {
+      std::ifstream in_file(argv[2 + i], std::ios::in);
       std::string line;
-      std::getline(in_file,line);
-      std::stringstream      line_stream(line);
-      std::string        cell;
+      std::getline(in_file, line);
+      std::stringstream line_stream(line);
+      std::string cell;
 
-      while(std::getline(line_stream,cell,',')){
+      while (std::getline(line_stream, cell, ',')) {
         float v = std::atof(cell.c_str());
         data[i].push_back(v);
       }
     }
   }
 
-  for(int d = 0; d < data.size(); ++d){
+  for (int d = 0; d < data.size(); ++d) {
     float avg = 0;
     float avg_sq = 0;
-    for(int i = 0; i < data[d].size(); ++i){
+    for (int i = 0; i < data[d].size(); ++i) {
       avg += data[d][i];
-      avg_sq += data[d][i]*data[d][i];
+      avg_sq += data[d][i] * data[d][i];
     }
-    avg/=data[d].size();
-    avg_sq/=data[d].size();
-    float std_dev = std::sqrt(avg_sq-avg*avg+0.000001);
-    for(int i = 0; i < data[d].size(); ++i){
-      data[d][i] = (data[d][i]-avg)/std_dev;
+    avg /= data[d].size();
+    avg_sq /= data[d].size();
+    float std_dev = std::sqrt(avg_sq - avg * avg + 0.000001);
+    for (int i = 0; i < data[d].size(); ++i) {
+      data[d][i] = (data[d][i] - avg) / std_dev;
     }
   }
-
 
   hdi::utils::secureLogValue(&log, "\t#columns", data.size());
   hdi::utils::secureLogValue(&log, "\t#rows", data[0].size());
 
-  for(int i = 0; i < data[0].size(); ++i){
-    for(int d = 0; d < data.size(); ++d){
-      if(i >= data[d].size()){
+  for (int i = 0; i < data[0].size(); ++i) {
+    for (int d = 0; d < data.size(); ++d) {
+      if (i >= data[d].size()) {
         hdi::utils::secureLogValue(&log, "WRONG SIZE OF FILE", d);
       }
-      out_file.write((char*)(&(data[d][i])),sizeof(float));
+      out_file.write((char *)(&(data[d][i])), sizeof(float));
     }
   }
-
-
 }

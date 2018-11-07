@@ -30,35 +30,35 @@
  *
  */
 
+#include <map>
 #include "catch.hpp"
+#include "hdi/data/map_helpers.h"
+#include "hdi/data/map_mem_eff.h"
 #include "hdi/utils/cout_log.h"
 #include "hdi/utils/log_helper_functions.h"
-#include "hdi/data/map_mem_eff.h"
-#include "hdi/data/map_helpers.h"
-#include "hdi/utils/timers.h"
 #include "hdi/utils/scoped_timers.h"
-#include <map>
+#include "hdi/utils/timers.h"
 
 /***********************************************/
 /***********************************************/
 /***********************************************/
 
-TEST_CASE( "Low level memory test", "[MapMemEff]" ) {
+TEST_CASE("Low level memory test", "[MapMemEff]") {
   hdi::utils::CoutLog log;
-  std::pair<int,float> pair;
+  std::pair<int, float> pair;
 
-  hdi::data::MapMemEff<int,float> map;
-  SECTION("Pair is the right choice"){
-    hdi::utils::secureLogValue(&log,"pair size: ", sizeof(pair));
-    REQUIRE( sizeof(pair) == 8 );
+  hdi::data::MapMemEff<int, float> map;
+  SECTION("Pair is the right choice") {
+    hdi::utils::secureLogValue(&log, "pair size: ", sizeof(pair));
+    REQUIRE(sizeof(pair) == 8);
   }
 
-  SECTION("Right initialization"){
-    REQUIRE( map.size() == 0 );
-    REQUIRE( map.capacity() == 0 );
+  SECTION("Right initialization") {
+    REQUIRE(map.size() == 0);
+    REQUIRE(map.capacity() == 0);
   }
 
-  SECTION("operator[] is working properly"){
+  SECTION("operator[] is working properly") {
     REQUIRE_NOTHROW(map[0] += 1);
     REQUIRE_NOTHROW(map[1] += 1);
     REQUIRE_NOTHROW(map[2] += 1);
@@ -78,111 +78,106 @@ TEST_CASE( "Low level memory test", "[MapMemEff]" ) {
     REQUIRE(map.capacity() == 4);
   }
 
-  SECTION("operator[] is working properly"){
-    std::map<int,float> map_stl;
+  SECTION("operator[] is working properly") {
+    std::map<int, float> map_stl;
     int n_test = 30000;
-    for(int i = 0; i < n_test; ++i){
-      int f = rand()%1000;
+    for (int i = 0; i < n_test; ++i) {
+      int f = rand() % 1000;
       ++map[f];
       ++map_stl[f];
     }
     int sum = 0;
-    for(auto &p: map){
+    for (auto &p : map) {
       sum += p.second;
     }
     REQUIRE(sum == n_test);
 
-    for(auto &p: map){
+    for (auto &p : map) {
       REQUIRE(p.second == map_stl[p.first]);
     }
     map.shrink_to_fit();
     REQUIRE(map.capacity() == map.size());
   }
 
-  SECTION("initialize is working properly"){
-    std::map<int,float> map_stl;
+  SECTION("initialize is working properly") {
+    std::map<int, float> map_stl;
     int n_test = 30000;
-    for(int i = 0; i < n_test; ++i){
-      int f = rand()%1000;
+    for (int i = 0; i < n_test; ++i) {
+      int f = rand() % 1000;
       ++map_stl[f];
     }
-    REQUIRE_NOTHROW(map.initialize(map_stl.begin(),map_stl.end()));
+    REQUIRE_NOTHROW(map.initialize(map_stl.begin(), map_stl.end()));
 
     int sum = 0;
-    for(auto &p: map){
+    for (auto &p : map) {
       sum += p.second;
     }
     REQUIRE(sum == n_test);
 
-    for(auto &p: map){
+    for (auto &p : map) {
       REQUIRE(p.second == map_stl[p.first]);
     }
     REQUIRE(map.capacity() == map.size());
   }
-
 }
 
-
 template <typename Map>
-void testMapInitialize(){
-  typedef hdi::data::MapHelpers<typename Map::key_type,typename Map::mapped_type, Map> map_helpers_type;
+void testMapInitialize() {
+  typedef hdi::data::MapHelpers<typename Map::key_type, typename Map::mapped_type, Map> map_helpers_type;
   Map map;
-  std::map<typename Map::key_type,typename Map::mapped_type> map_stl;
+  std::map<typename Map::key_type, typename Map::mapped_type> map_stl;
   int n_test = 30000;
-  for(int i = 0; i < n_test; ++i){
-    int f = rand()%1000;
+  for (int i = 0; i < n_test; ++i) {
+    int f = rand() % 1000;
     ++map_stl[f];
   }
 
-  REQUIRE_NOTHROW(map_helpers_type::initialize(map,map_stl.begin(),map_stl.end()));
+  REQUIRE_NOTHROW(map_helpers_type::initialize(map, map_stl.begin(), map_stl.end()));
 
   int sum = 0;
-  for(auto &p: map){
+  for (auto &p : map) {
     sum += p.second;
   }
   REQUIRE(sum == n_test);
 
-  for(auto &p: map){
+  for (auto &p : map) {
     REQUIRE(p.second == map_stl[p.first]);
   }
 }
 
-TEST_CASE( "MapHelpers::initialize", "[MapHelpers]" ) {
-  SECTION("MapMemEff"){
-    testMapInitialize<hdi::data::MapMemEff<int,float>>();
-    testMapInitialize<hdi::data::MapMemEff<int,double>>();
-    testMapInitialize<hdi::data::MapMemEff<unsigned int,float>>();
-    testMapInitialize<hdi::data::MapMemEff<unsigned int,double>>();
+TEST_CASE("MapHelpers::initialize", "[MapHelpers]") {
+  SECTION("MapMemEff") {
+    testMapInitialize<hdi::data::MapMemEff<int, float>>();
+    testMapInitialize<hdi::data::MapMemEff<int, double>>();
+    testMapInitialize<hdi::data::MapMemEff<unsigned int, float>>();
+    testMapInitialize<hdi::data::MapMemEff<unsigned int, double>>();
   }
-  SECTION("std::map"){
-    testMapInitialize<std::map<int,float>>();
-    testMapInitialize<std::map<int,double>>();
-    testMapInitialize<std::map<unsigned int,float>>();
-    testMapInitialize<std::map<unsigned int,double>>();
+  SECTION("std::map") {
+    testMapInitialize<std::map<int, float>>();
+    testMapInitialize<std::map<int, double>>();
+    testMapInitialize<std::map<unsigned int, float>>();
+    testMapInitialize<std::map<unsigned int, double>>();
   }
-  SECTION("std::unordered_map"){
-    testMapInitialize<std::unordered_map<int,float>>();
-    testMapInitialize<std::unordered_map<int,double>>();
-    testMapInitialize<std::unordered_map<unsigned int,float>>();
-    testMapInitialize<std::unordered_map<unsigned int,double>>();
+  SECTION("std::unordered_map") {
+    testMapInitialize<std::unordered_map<int, float>>();
+    testMapInitialize<std::unordered_map<int, double>>();
+    testMapInitialize<std::unordered_map<unsigned int, float>>();
+    testMapInitialize<std::unordered_map<unsigned int, double>>();
   }
 }
 
-
-
-
 template <typename Map>
-void testMapInvert(){
-  typedef hdi::data::MapHelpers<typename Map::key_type,typename Map::mapped_type, Map> map_helpers_type;
+void testMapInvert() {
+  typedef hdi::data::MapHelpers<typename Map::key_type, typename Map::mapped_type, Map> map_helpers_type;
   typedef std::vector<Map> sparse_matrix_type;
 
   hdi::utils::CoutLog log;
   int n = 1500;
   sparse_matrix_type matrix(n);
-  for(int j = 0; j < matrix.size(); ++j){
-    for(int t = 0; t < matrix.size()/10; ++t){
-      auto i = rand()%n;
-      matrix[j][i] = rand()%1000;
+  for (int j = 0; j < matrix.size(); ++j) {
+    for (int t = 0; t < matrix.size() / 10; ++t) {
+      auto i = rand() % n;
+      matrix[j][i] = rand() % 1000;
     }
   }
   sparse_matrix_type inverse;
@@ -190,38 +185,37 @@ void testMapInvert(){
 
   {
     hdi::utils::ScopedTimer<double> timer(time);
-    map_helpers_type::invert(matrix,inverse);
+    map_helpers_type::invert(matrix, inverse);
   }
-  hdi::utils::secureLogValue(&log,"Invert (s)", time);
-  for(int j = 0; j < matrix.size(); ++j){
-    for(auto& e: matrix[j]){
+  hdi::utils::secureLogValue(&log, "Invert (s)", time);
+  for (int j = 0; j < matrix.size(); ++j) {
+    for (auto &e : matrix[j]) {
       REQUIRE(e.second == inverse[e.first][j]);
     }
   }
-
 }
 
-TEST_CASE( "MapHelpers::invert", "[MapHelpers]" ) {
+TEST_CASE("MapHelpers::invert", "[MapHelpers]") {
   hdi::utils::CoutLog log;
-  SECTION("MapMemEff"){
+  SECTION("MapMemEff") {
     log.display("MapMemEff");
-    testMapInvert<hdi::data::MapMemEff<int,float>>();
-    testMapInvert<hdi::data::MapMemEff<int,double>>();
-    testMapInvert<hdi::data::MapMemEff<unsigned int,float>>();
-    testMapInvert<hdi::data::MapMemEff<unsigned int,double>>();
+    testMapInvert<hdi::data::MapMemEff<int, float>>();
+    testMapInvert<hdi::data::MapMemEff<int, double>>();
+    testMapInvert<hdi::data::MapMemEff<unsigned int, float>>();
+    testMapInvert<hdi::data::MapMemEff<unsigned int, double>>();
   }
-  SECTION("std::map"){
+  SECTION("std::map") {
     log.display("std::map");
-    testMapInvert<std::map<int,float>>();
-    testMapInvert<std::map<int,double>>();
-    testMapInvert<std::map<unsigned int,float>>();
-    testMapInvert<std::map<unsigned int,double>>();
+    testMapInvert<std::map<int, float>>();
+    testMapInvert<std::map<int, double>>();
+    testMapInvert<std::map<unsigned int, float>>();
+    testMapInvert<std::map<unsigned int, double>>();
   }
-  SECTION("std::unordered_map"){
+  SECTION("std::unordered_map") {
     log.display("std::unordered_map");
-    testMapInvert<std::unordered_map<int,float>>();
-    testMapInvert<std::unordered_map<int,double>>();
-    testMapInvert<std::unordered_map<unsigned int,float>>();
-    testMapInvert<std::unordered_map<unsigned int,double>>();
+    testMapInvert<std::unordered_map<int, float>>();
+    testMapInvert<std::unordered_map<int, double>>();
+    testMapInvert<std::unordered_map<unsigned int, float>>();
+    testMapInvert<std::unordered_map<unsigned int, double>>();
   }
 }

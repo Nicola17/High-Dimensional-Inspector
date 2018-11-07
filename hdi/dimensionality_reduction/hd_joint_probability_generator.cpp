@@ -32,8 +32,8 @@
 
 #include "hd_joint_probability_generator_inl.h"
 
-namespace hdi{
-  namespace dr{
-    template class HDJointProbabilityGenerator<float>;
-  }
+namespace hdi {
+namespace dr {
+template class HDJointProbabilityGenerator<float>;
 }
+}  // namespace hdi

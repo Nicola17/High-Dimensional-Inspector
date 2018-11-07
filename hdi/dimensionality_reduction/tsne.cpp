@@ -32,9 +32,9 @@
 
 #include "tsne_inl.h"
 
-namespace hdi{
-  namespace dr{
-    template class TSNE<float>;
-    template class TSNE<double>;
-  }
-}
+namespace hdi {
+namespace dr {
+template class TSNE<float>;
+template class TSNE<double>;
+}  // namespace dr
+}  // namespace hdi

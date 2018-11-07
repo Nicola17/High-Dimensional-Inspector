@@ -39,28 +39,31 @@
 #include <QColor>
 #include <QGLContext>
 
+namespace hdi
+{
+namespace viz
+{
 
-namespace hdi{
-  namespace viz{
-
-    //! Abstract class that represents a scatterplot drawer
-    /*!
+//! Abstract class that represents a scatterplot drawer
+/*!
       Abstract class that represents a scatterplot drawer
       \author Nicola Pezzotti
-    */
-    class AbstractScatterplotDrawer{
-    public: 
-      typedef float    scalar_type;
-      typedef uint32_t  flag_type;
-      typedef QVector2D  point_type;
-      typedef QColor    color_type;
-    public:
-      AbstractScatterplotDrawer(){}
-      virtual ~AbstractScatterplotDrawer(){}
-      virtual void initialize(QGLContext* context) = 0;
-      virtual void draw(const point_type& bl, const point_type& tr) = 0;
-    };
-  }
-}
+*/
+class AbstractScatterplotDrawer
+{
+public:
+  typedef float scalar_type;
+  typedef uint32_t flag_type;
+  typedef QVector2D point_type;
+  typedef QColor color_type;
+
+public:
+  AbstractScatterplotDrawer() {}
+  virtual ~AbstractScatterplotDrawer() {}
+  virtual void initialize(QGLContext *context) = 0;
+  virtual void draw(const point_type &bl, const point_type &tr) = 0;
+};
+} // namespace viz
+} // namespace hdi
 
 #endif

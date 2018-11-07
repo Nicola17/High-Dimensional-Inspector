@@ -30,40 +30,40 @@
  *
  */
 
-#include "hierarchical_sne_inl.h"
-#include <iostream>
 #include <fstream>
+#include <iostream>
 #include <map>
 #include <unordered_map>
 #include <vector>
 #include "hdi/data/map_mem_eff.h"
+#include "hierarchical_sne_inl.h"
 
-namespace hdi{
-  namespace dr{
-    template class HierarchicalSNE<float,std::vector<std::map<uint32_t,float>>>;
-    template class HierarchicalSNE<double,std::vector<std::map<uint32_t,double>>>;
+namespace hdi {
+namespace dr {
+template class HierarchicalSNE<float, std::vector<std::map<uint32_t, float>>>;
+template class HierarchicalSNE<double, std::vector<std::map<uint32_t, double>>>;
 
-    template class HierarchicalSNE<float,std::vector<std::unordered_map<uint32_t,float>>>;
-    template class HierarchicalSNE<double,std::vector<std::unordered_map<uint32_t,double>>>;
+template class HierarchicalSNE<float, std::vector<std::unordered_map<uint32_t, float>>>;
+template class HierarchicalSNE<double, std::vector<std::unordered_map<uint32_t, double>>>;
 
-    template class HierarchicalSNE<float,std::vector<hdi::data::MapMemEff<uint32_t,float>>>;
-    template class HierarchicalSNE<double,std::vector<hdi::data::MapMemEff<uint32_t,double>>>;
+template class HierarchicalSNE<float, std::vector<hdi::data::MapMemEff<uint32_t, float>>>;
+template class HierarchicalSNE<double, std::vector<hdi::data::MapMemEff<uint32_t, double>>>;
 
-    namespace IO{
-      template void saveHSNE<HierarchicalSNE<double,std::vector<std::map<uint32_t,double>>>,std::ofstream>(const HierarchicalSNE<double,std::vector<std::map<uint32_t,double>>>& hsne, std::ofstream& stream, utils::AbstractLog* log);
-      template void saveHSNE<HierarchicalSNE<float,std::vector<std::map<uint32_t,float>>>,std::ofstream>(const HierarchicalSNE<float,std::vector<std::map<uint32_t,float>>>& hsne, std::ofstream& stream, utils::AbstractLog* log);
-      template void loadHSNE<HierarchicalSNE<double,std::vector<std::map<uint32_t,double>>>,std::ifstream>(HierarchicalSNE<double,std::vector<std::map<uint32_t,double>>>& hsne, std::ifstream& stream, utils::AbstractLog* log);
-      template void loadHSNE<HierarchicalSNE<float,std::vector<std::map<uint32_t,float>>>,std::ifstream>(HierarchicalSNE<float,std::vector<std::map<uint32_t,float>>>& hsne, std::ifstream& stream, utils::AbstractLog* log);
+namespace IO {
+template void saveHSNE<HierarchicalSNE<double, std::vector<std::map<uint32_t, double>>>, std::ofstream>(const HierarchicalSNE<double, std::vector<std::map<uint32_t, double>>>& hsne, std::ofstream& stream, utils::AbstractLog* log);
+template void saveHSNE<HierarchicalSNE<float, std::vector<std::map<uint32_t, float>>>, std::ofstream>(const HierarchicalSNE<float, std::vector<std::map<uint32_t, float>>>& hsne, std::ofstream& stream, utils::AbstractLog* log);
+template void loadHSNE<HierarchicalSNE<double, std::vector<std::map<uint32_t, double>>>, std::ifstream>(HierarchicalSNE<double, std::vector<std::map<uint32_t, double>>>& hsne, std::ifstream& stream, utils::AbstractLog* log);
+template void loadHSNE<HierarchicalSNE<float, std::vector<std::map<uint32_t, float>>>, std::ifstream>(HierarchicalSNE<float, std::vector<std::map<uint32_t, float>>>& hsne, std::ifstream& stream, utils::AbstractLog* log);
 
-      template void saveHSNE<HierarchicalSNE<double,std::vector<std::unordered_map<uint32_t,double>>>,std::ofstream>(const HierarchicalSNE<double,std::vector<std::unordered_map<uint32_t,double>>>& hsne, std::ofstream& stream, utils::AbstractLog* log);
-      template void saveHSNE<HierarchicalSNE<float,std::vector<std::unordered_map<uint32_t,float>>>,std::ofstream>(const HierarchicalSNE<float,std::vector<std::unordered_map<uint32_t,float>>>& hsne, std::ofstream& stream, utils::AbstractLog* log);
-      template void loadHSNE<HierarchicalSNE<double,std::vector<std::unordered_map<uint32_t,double>>>,std::ifstream>(HierarchicalSNE<double,std::vector<std::unordered_map<uint32_t,double>>>& hsne, std::ifstream& stream, utils::AbstractLog* log);
-      template void loadHSNE<HierarchicalSNE<float,std::vector<std::unordered_map<uint32_t,float>>>,std::ifstream>(HierarchicalSNE<float,std::vector<std::unordered_map<uint32_t,float>>>& hsne, std::ifstream& stream, utils::AbstractLog* log);
+template void saveHSNE<HierarchicalSNE<double, std::vector<std::unordered_map<uint32_t, double>>>, std::ofstream>(const HierarchicalSNE<double, std::vector<std::unordered_map<uint32_t, double>>>& hsne, std::ofstream& stream, utils::AbstractLog* log);
+template void saveHSNE<HierarchicalSNE<float, std::vector<std::unordered_map<uint32_t, float>>>, std::ofstream>(const HierarchicalSNE<float, std::vector<std::unordered_map<uint32_t, float>>>& hsne, std::ofstream& stream, utils::AbstractLog* log);
+template void loadHSNE<HierarchicalSNE<double, std::vector<std::unordered_map<uint32_t, double>>>, std::ifstream>(HierarchicalSNE<double, std::vector<std::unordered_map<uint32_t, double>>>& hsne, std::ifstream& stream, utils::AbstractLog* log);
+template void loadHSNE<HierarchicalSNE<float, std::vector<std::unordered_map<uint32_t, float>>>, std::ifstream>(HierarchicalSNE<float, std::vector<std::unordered_map<uint32_t, float>>>& hsne, std::ifstream& stream, utils::AbstractLog* log);
 
-      template void saveHSNE<HierarchicalSNE<double,std::vector<hdi::data::MapMemEff<uint32_t,double>>>,std::ofstream>(const HierarchicalSNE<double,std::vector<hdi::data::MapMemEff<uint32_t,double>>>& hsne, std::ofstream& stream, utils::AbstractLog* log);
-      template void saveHSNE<HierarchicalSNE<float,std::vector<hdi::data::MapMemEff<uint32_t,float>>>,std::ofstream>(const HierarchicalSNE<float,std::vector<hdi::data::MapMemEff<uint32_t,float>>>& hsne, std::ofstream& stream, utils::AbstractLog* log);
-      template void loadHSNE<HierarchicalSNE<double,std::vector<hdi::data::MapMemEff<uint32_t,double>>>,std::ifstream>(HierarchicalSNE<double,std::vector<hdi::data::MapMemEff<uint32_t,double>>>& hsne, std::ifstream& stream, utils::AbstractLog* log);
-      template void loadHSNE<HierarchicalSNE<float,std::vector<hdi::data::MapMemEff<uint32_t,float>>>,std::ifstream>(HierarchicalSNE<float,std::vector<hdi::data::MapMemEff<uint32_t,float>>>& hsne, std::ifstream& stream, utils::AbstractLog* log);
-    }
-  }
-}
+template void saveHSNE<HierarchicalSNE<double, std::vector<hdi::data::MapMemEff<uint32_t, double>>>, std::ofstream>(const HierarchicalSNE<double, std::vector<hdi::data::MapMemEff<uint32_t, double>>>& hsne, std::ofstream& stream, utils::AbstractLog* log);
+template void saveHSNE<HierarchicalSNE<float, std::vector<hdi::data::MapMemEff<uint32_t, float>>>, std::ofstream>(const HierarchicalSNE<float, std::vector<hdi::data::MapMemEff<uint32_t, float>>>& hsne, std::ofstream& stream, utils::AbstractLog* log);
+template void loadHSNE<HierarchicalSNE<double, std::vector<hdi::data::MapMemEff<uint32_t, double>>>, std::ifstream>(HierarchicalSNE<double, std::vector<hdi::data::MapMemEff<uint32_t, double>>>& hsne, std::ifstream& stream, utils::AbstractLog* log);
+template void loadHSNE<HierarchicalSNE<float, std::vector<hdi::data::MapMemEff<uint32_t, float>>>, std::ifstream>(HierarchicalSNE<float, std::vector<hdi::data::MapMemEff<uint32_t, float>>>& hsne, std::ifstream& stream, utils::AbstractLog* log);
+}  // namespace IO
+}  // namespace dr
+}  // namespace hdi

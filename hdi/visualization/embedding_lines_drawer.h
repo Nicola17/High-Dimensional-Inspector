@@ -33,49 +33,48 @@
 #ifndef EMBEDDING_LINES_DRAWER_H
 #define EMBEDDING_LINES_DRAWER_H
 
-#include <QGLShaderProgram>
-#include <QGLShader>
-#include <QColor>
 #include <stdint.h>
+#include <QColor>
+#include <QGLShader>
+#include <QGLShaderProgram>
 #include <memory>
-#include "hdi/visualization/abstract_scatterplot_drawer.h"
 #include "hdi/data/embedding.h"
+#include "hdi/visualization/abstract_scatterplot_drawer.h"
 
-namespace hdi{
-  namespace viz{
+namespace hdi {
+namespace viz {
 
-    class EmbeddingLinesDrawer: public AbstractScatterplotDrawer{
-    public:
-      EmbeddingLinesDrawer();
-      //! Draw on canvas
-      virtual void draw(const point_type& bl, const point_type& tr);
-      //! Set the data to be drawn
-      void setData(const scalar_type* embedding_src, const scalar_type* embedding_dst);
-      //! Set lines between the embeddings
-      void setLines(const std::vector<std::pair<uint32_t,uint32_t>>& lines);
-      void setLines(const std::vector<std::pair<uint32_t,uint32_t>>& lines, const std::vector<float>& alpha_per_line);
-      const std::vector<std::pair<uint32_t,uint32_t>>& lines()const {return _lines;}
+class EmbeddingLinesDrawer : public AbstractScatterplotDrawer {
+ public:
+  EmbeddingLinesDrawer();
+  //! Draw on canvas
+  virtual void draw(const point_type& bl, const point_type& tr);
+  //! Set the data to be drawn
+  void setData(const scalar_type* embedding_src, const scalar_type* embedding_dst);
+  //! Set lines between the embeddings
+  void setLines(const std::vector<std::pair<uint32_t, uint32_t>>& lines);
+  void setLines(const std::vector<std::pair<uint32_t, uint32_t>>& lines, const std::vector<float>& alpha_per_line);
+  const std::vector<std::pair<uint32_t, uint32_t>>& lines() const { return _lines; }
 
-      virtual void initialize(QGLContext* context);
+  virtual void initialize(QGLContext* context);
 
-      void setAlpha(scalar_type alpha){_alpha = alpha;}
-      void setColor(color_type color){_color = color;}
-      
-    private:
-      const scalar_type* _embedding_src;
-      const scalar_type* _embedding_dst;
-      std::vector<std::pair<uint32_t,uint32_t>> _lines;
-      std::vector<float> _alpha_per_line;
+  void setAlpha(scalar_type alpha) { _alpha = alpha; }
+  void setColor(color_type color) { _color = color; }
 
-      color_type _color;
-      scalar_type _alpha;
-      scalar_type _z_coord;
+ private:
+  const scalar_type* _embedding_src;
+  const scalar_type* _embedding_dst;
+  std::vector<std::pair<uint32_t, uint32_t>> _lines;
+  std::vector<float> _alpha_per_line;
 
-      bool _initialized;
+  color_type _color;
+  scalar_type _alpha;
+  scalar_type _z_coord;
 
-    };
+  bool _initialized;
+};
 
-  }
-}
+}  // namespace viz
+}  // namespace hdi
 
 #endif

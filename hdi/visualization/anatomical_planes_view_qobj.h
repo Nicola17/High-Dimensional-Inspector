@@ -35,76 +35,74 @@
 
 #include "ui_anatomical_planes_view_qobj.h"
 
-#include <qdialog.h>
 #include <qcolor.h>
+#include <qdialog.h>
 #include <memory>
 #include "hdi/data/abstract_data.h"
 #include "hdi/visualization/abstract_view.h"
 
+namespace hdi {
+namespace viz {
 
-
-namespace hdi{
-  namespace viz{
-
-    //! View for data::VoxelData
-    /*!
+//! View for data::VoxelData
+/*!
       View for data::VoxelData
       \author Nicola Pezzotti
       \note quick hack
     */
-    class AnatomicalPlanesView : public QWidget, public AbstractView{
-      Q_OBJECT
-    public:
-      typedef float scalar_type;
+class AnatomicalPlanesView : public QWidget, public AbstractView {
+  Q_OBJECT
+ public:
+  typedef float scalar_type;
 
-    public:
-      AnatomicalPlanesView(QWidget* parent = nullptr);
-      virtual ~AnatomicalPlanesView(){}
+ public:
+  AnatomicalPlanesView(QWidget* parent = nullptr);
+  virtual ~AnatomicalPlanesView() {}
 
-      virtual QWidget* widgetPtr(){ return this; }
-      virtual const QWidget* widgetPtr()const{ return this; }
+  virtual QWidget* widgetPtr() { return this; }
+  virtual const QWidget* widgetPtr() const { return this; }
 
-      virtual void updateView();
+  virtual void updateView();
 
-      void setResMultiplier(scalar_type v){_ui._res_mult_dspbx->setValue(v);}
-      void setSelection(const std::vector<scalar_type>& selection){_selection = selection;}
+  void setResMultiplier(scalar_type v) { _ui._res_mult_dspbx->setValue(v); }
+  void setSelection(const std::vector<scalar_type>& selection) { _selection = selection; }
 
-      const QImage& xyImage()const{return _xy;}
-      const QImage& xzImage()const{return _xz;}
-      const QImage& yzImage()const{return _yz;}
-      const std::vector<scalar_type>& selection()const{return _selection;}
+  const QImage& xyImage() const { return _xy; }
+  const QImage& xzImage() const { return _xz; }
+  const QImage& yzImage() const { return _yz; }
+  const std::vector<scalar_type>& selection() const { return _selection; }
 
-      void setSingleImageMode(bool);
+  void setSingleImageMode(bool);
 
-    public slots:
-      virtual void onSelectionChanged();
+ public slots:
+  virtual void onSelectionChanged();
 
-      //! Update limits in the sliders and spin boxes
-      void updateLimits();
+  //! Update limits in the sliders and spin boxes
+  void updateLimits();
 
-      void updateViewWithSelection();
+  void updateViewWithSelection();
 
-    private slots:
-      void onPlaneMoved(int v){updateViewWithSelection();}
+ private slots:
+  void onPlaneMoved(int v) { updateViewWithSelection(); }
 
-    private:
-      void computeMaxVoxelValues(int& x, int& y, int& z)const;
+ private:
+  void computeMaxVoxelValues(int& x, int& y, int& z) const;
 
-    signals:
-      void sgnSelectionChanged();
+ signals:
+  void sgnSelectionChanged();
 
-    public:
-      Ui::AnatomicalPlanesView _ui;
-    private:
-      std::vector<scalar_type> _selection;
-      QImage _xy;
-      QImage _xz;
-      QImage _yz;
-      bool _single_image_mode;
+ public:
+  Ui::AnatomicalPlanesView _ui;
 
-    };
+ private:
+  std::vector<scalar_type> _selection;
+  QImage _xy;
+  QImage _xz;
+  QImage _yz;
+  bool _single_image_mode;
+};
 
-  }
-}
+}  // namespace viz
+}  // namespace hdi
 
 #endif

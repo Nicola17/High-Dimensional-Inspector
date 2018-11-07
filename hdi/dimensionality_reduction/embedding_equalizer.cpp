@@ -32,9 +32,9 @@
 
 #include "embedding_equalizer_inl.h"
 
-namespace hdi{
-  namespace dr{
-    template class EmbeddingEqualizer<float>;
-    template class EmbeddingEqualizer<double>;
-  }
-}
+namespace hdi {
+namespace dr {
+template class EmbeddingEqualizer<float>;
+template class EmbeddingEqualizer<double>;
+}  // namespace dr
+}  // namespace hdi

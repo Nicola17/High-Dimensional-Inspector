@@ -33,77 +33,77 @@
 #ifndef SCATTERPLOT_DRAWER_USER_DEFINED_COLORS_H
 #define SCATTERPLOT_DRAWER_USER_DEFINED_COLORS_H
 
-#include <QGLShaderProgram>
-#include <QGLShader>
-#include <QColor>
 #include <stdint.h>
+#include <QColor>
+#include <QGLShader>
+#include <QGLShaderProgram>
 #include <memory>
 #include "hdi/visualization/abstract_scatterplot_drawer.h"
 
-namespace hdi{
-  namespace viz{
+namespace hdi {
+namespace viz {
 
-    class ScatterplotDrawerUsedDefinedColors: public AbstractScatterplotDrawer{
-    public:
-      ScatterplotDrawerUsedDefinedColors();
-      //! Draw on canvas
-      virtual void draw(const point_type& bl, const point_type& tr);
-      //! Set the data to be drawn
-      void setData(const scalar_type* embedding, const scalar_type* colors, const flag_type* flags, int num_points);
+class ScatterplotDrawerUsedDefinedColors : public AbstractScatterplotDrawer {
+ public:
+  ScatterplotDrawerUsedDefinedColors();
+  //! Draw on canvas
+  virtual void draw(const point_type& bl, const point_type& tr);
+  //! Set the data to be drawn
+  void setData(const scalar_type* embedding, const scalar_type* colors, const flag_type* flags, int num_points);
 
-      virtual void initialize(QGLContext* context);
+  virtual void initialize(QGLContext* context);
 
-      void setPointSize(scalar_type point_size){_point_size = point_size;}
-      void setAlpha(scalar_type alpha){_alpha = alpha;}
-      void setZCoord(scalar_type z_coord){_z_coord = z_coord;}
-      void setZCoordSelection(scalar_type z_coord_selection){_z_coord_selection = z_coord_selection;}
-      void setSelectionColor(color_type selection_color){_selection_color = selection_color;}
-      
-      scalar_type pointSize()const{ return _point_size;}
-      scalar_type zCoord()const{return _z_coord;}
-      scalar_type alpha()const{return _alpha;}
-      scalar_type zCoordSelection()const{return _z_coord_selection;}
+  void setPointSize(scalar_type point_size) { _point_size = point_size; }
+  void setAlpha(scalar_type alpha) { _alpha = alpha; }
+  void setZCoord(scalar_type z_coord) { _z_coord = z_coord; }
+  void setZCoordSelection(scalar_type z_coord_selection) { _z_coord_selection = z_coord_selection; }
+  void setSelectionColor(color_type selection_color) { _selection_color = selection_color; }
 
-    private:
-      std::unique_ptr<QGLShaderProgram> _program;
-      std::unique_ptr<QGLShader> _vshader;
-      std::unique_ptr<QGLShader> _fshader;
+  scalar_type pointSize() const { return _point_size; }
+  scalar_type zCoord() const { return _z_coord; }
+  scalar_type alpha() const { return _alpha; }
+  scalar_type zCoordSelection() const { return _z_coord_selection; }
 
-      std::unique_ptr<QGLShaderProgram> _program_selection;
-      std::unique_ptr<QGLShader> _vshader_selection;
-      std::unique_ptr<QGLShader> _fshader_selection;
-      
-      GLuint _coords_attribute;
-      GLuint _flags_attribute;
-      GLuint _colors_attribute;
+ private:
+  std::unique_ptr<QGLShaderProgram> _program;
+  std::unique_ptr<QGLShader> _vshader;
+  std::unique_ptr<QGLShader> _fshader;
 
-      GLuint _coords_attribute_selection;
-      GLuint _flags_attribute_selection;
+  std::unique_ptr<QGLShaderProgram> _program_selection;
+  std::unique_ptr<QGLShader> _vshader_selection;
+  std::unique_ptr<QGLShader> _fshader_selection;
 
-      GLuint _matrix_uniform;
-      GLuint _z_coord_uniform;
-      GLuint _alpha_uniform;
+  GLuint _coords_attribute;
+  GLuint _flags_attribute;
+  GLuint _colors_attribute;
 
-      GLuint _z_coord_uniform_selection;
-      GLuint _alpha_uniform_selection;
-      GLuint _matrix_uniform_selection;
-      GLuint _color_uniform_selection;
+  GLuint _coords_attribute_selection;
+  GLuint _flags_attribute_selection;
 
-      const scalar_type* _embedding;
-      const scalar_type* _colors;
-      const flag_type* _flags;
+  GLuint _matrix_uniform;
+  GLuint _z_coord_uniform;
+  GLuint _alpha_uniform;
 
-      int _num_points;
-      bool _initialized;
+  GLuint _z_coord_uniform_selection;
+  GLuint _alpha_uniform_selection;
+  GLuint _matrix_uniform_selection;
+  GLuint _color_uniform_selection;
 
-      color_type _selection_color;
-      scalar_type _point_size;
-      scalar_type _alpha;
-      scalar_type _z_coord;
-      scalar_type _z_coord_selection;
-    };
+  const scalar_type* _embedding;
+  const scalar_type* _colors;
+  const flag_type* _flags;
 
-  }
-}
+  int _num_points;
+  bool _initialized;
+
+  color_type _selection_color;
+  scalar_type _point_size;
+  scalar_type _alpha;
+  scalar_type _z_coord;
+  scalar_type _z_coord_selection;
+};
+
+}  // namespace viz
+}  // namespace hdi
 
 #endif

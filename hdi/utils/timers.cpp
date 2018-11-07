@@ -30,35 +30,32 @@
  *
  */
 
-#include "hdi/utils/assert_by_exception.h"
 #include "hdi/utils/timers.h"
+#include "hdi/utils/assert_by_exception.h"
 
-namespace hdi{
-  namespace utils{
+namespace hdi {
+namespace utils {
 
-    Timer::Timer():
-      _started(false),
-      _elapsed_time_available(false)
-    {}
-    
-    void Timer::start(){
-      checkAndThrowLogic(!_started,"Timer is already started...");
-      _start = std::chrono::system_clock::now();
-      _started = true;
-    }
-    void Timer::stop(){
-      checkAndThrowLogic(_started,"Timer is not running...");
-      _stop = std::chrono::system_clock::now();
-      _elapsed_time_available = true;
-      _started = false;
-    }
-    bool Timer::isStarted()const{
-      return _started;
-    }
-    bool Timer::isElapsedTimeAvailable()const{
-      return _elapsed_time_available;
-    }
+Timer::Timer() : _started(false),
+                 _elapsed_time_available(false) {}
 
-  }
+void Timer::start() {
+  checkAndThrowLogic(!_started, "Timer is already started...");
+  _start = std::chrono::system_clock::now();
+  _started = true;
+}
+void Timer::stop() {
+  checkAndThrowLogic(_started, "Timer is not running...");
+  _stop = std::chrono::system_clock::now();
+  _elapsed_time_available = true;
+  _started = false;
+}
+bool Timer::isStarted() const {
+  return _started;
+}
+bool Timer::isElapsedTimeAvailable() const {
+  return _elapsed_time_available;
 }
 
+}  // namespace utils
+}  // namespace hdi

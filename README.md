@@ -49,7 +49,7 @@ Reference to cite when you use HDI in a research paper:
 On Ubuntu 16.04 you can build and install HDI by running the following commands
 
 ```bash
-apt-get install qtbase5-dev libqt5webkit5-dev libflann-dev
+./scripts/install-dependencies.sh
 mkdir build
 cd build
 cmake  -DCMAKE_BUILD_TYPE=Release ..

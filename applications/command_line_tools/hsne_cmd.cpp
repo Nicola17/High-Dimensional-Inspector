@@ -259,7 +259,7 @@ int main(int argc, char *argv[])
         num_scales = std::atoi(parser.value(scale_option).toStdString().c_str());
     }
     if(parser.isSet(name_option)){
-        name = parser.value(scale_option).toStdString();
+        name = parser.value(name_option).toStdString();
     }
 
     std::cout << "Scales: " << num_scales << std::endl;

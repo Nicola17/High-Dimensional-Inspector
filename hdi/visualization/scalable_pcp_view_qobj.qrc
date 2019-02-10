@@ -1,6 +1,0 @@
-<RCC>
-  <qresource prefix="/myWidget">
-    <file alias="d3.v3.min.js">web/d3.v3.min.js</file>
-    <file alias="scalable_pcp.html">web/scalable_pcp/scalable_pcp.html</file>
-  </qresource>
-</RCC>

@@ -1,0 +1,118 @@
+MACRO(ADD_PROJECT Name Sources MocSources)
+        #MESSAGE( STATUS "${MocSources}")
+	add_executable (${Name} ${Sources} ${MocSources})  
+
+	target_link_libraries (${Name} hdianalytics)
+	target_link_libraries (${Name} hdideeplearning)
+	target_link_libraries (${Name} hdidimensionalityreduction)
+	target_link_libraries (${Name} hdiclustering)
+	target_link_libraries (${Name} hdidata)
+	target_link_libraries (${Name} hdivisualization)
+	target_link_libraries (${Name} hdiutils)
+	target_link_libraries (${Name} Qt5::Widgets)
+	target_link_libraries (${Name} Qt5::OpenGL)
+	target_link_libraries (${Name} Qt5::WebKit)
+	target_link_libraries (${Name} Qt5::WebKitWidgets)
+	target_link_libraries (${Name} ${Caffe_LIBRARIES})
+
+	qt5_use_modules(${Name} WebKitWidgets)
+	IF(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+		target_link_libraries (${Name} Opengl32.lib)
+		target_link_libraries (${Name} "$ENV{FLANN_DIR}/lib/flann_cpp_s.lib")
+	ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+	IF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+		target_link_libraries(${Name} ${OPENGL_LIBRARIES})
+	ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+
+	MESSAGE( STATUS "Visual Test project: " ${Name} )
+        #MESSAGE( STATUS "            Source Files: " ${Sources} )
+        #MESSAGE( STATUS "            Moc Source Files: " ${MocSources} )
+
+	set_target_properties(${Name} PROPERTIES FOLDER "Applications/Hierarchical SNE/Development")
+ENDMACRO()
+
+MACRO(ADD_CUDA_PROJECT Name Sources MocSources)
+	CUDA_ADD_EXECUTABLE (${Name} ${Sources} ${MocSources})  
+
+	target_link_libraries (${Name} hdianalytics)
+	target_link_libraries (${Name} hdideeplearning)
+	target_link_libraries (${Name} hdidimensionalityreduction)
+	target_link_libraries (${Name} hdidata)
+	target_link_libraries (${Name} hdivisualization)
+	target_link_libraries (${Name} hdiutils)
+	target_link_libraries (${Name} Qt5::Widgets)
+	target_link_libraries (${Name} Qt5::OpenGL)
+	target_link_libraries (${Name} Qt5::WebKit)
+	target_link_libraries (${Name} Qt5::WebKitWidgets)
+	target_link_libraries (${Name} ${Caffe_LIBRARIES})
+
+	IF(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+		target_link_libraries (${Name} Opengl32.lib)
+		target_link_libraries (${Name} "$ENV{FLANN_DIR}/lib/flann_cpp_s.lib")
+	ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+	IF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+		target_link_libraries(${Name} ${OPENGL_LIBRARIES})
+	ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+
+	MESSAGE( STATUS "Visual Test project: " ${Name} )
+        #MESSAGE( STATUS "            Source Files: " ${Sources} )
+        #MESSAGE( STATUS "            Moc Source Files: " ${MocSources} )
+
+	set_target_properties(${Name} PROPERTIES FOLDER "Applications/Hierarchical SNE/Development")
+ENDMACRO()
+
+############################################################################################
+
+set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+
+MESSAGE( STATUS "======================== CAFFE ===================================")
+MESSAGE( STATUS ${Caffe_INCLUDE_DIRS})
+MESSAGE( STATUS "==================================================================")
+MESSAGE( STATUS ${Caffe_DEFINITIONS})
+MESSAGE( STATUS "==================================================================")
+MESSAGE( STATUS ${Caffe_LIBRARIES})
+MESSAGE( STATUS "==================================================================")
+
+include_directories ("${CMAKE_SOURCE_DIR}")
+include_directories ("${CMAKE_CURRENT_BINARY_DIR}/../../hdi/visualization")
+
+
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+find_package(Qt5Widgets REQUIRED)
+find_package(Qt5OpenGL REQUIRED)
+find_package(Qt5WebKit REQUIRED)
+IF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+	find_package(OpenGL REQUIRED)
+ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+
+if(APPLE)
+else(APPLE)
+    find_package(OpenMP REQUIRED)
+    if (OPENMP_FOUND)
+        message (STATUS "OpenMP found")
+        set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
+        set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+    endif()
+endif(APPLE)
+
+
+file(GLOB VisualizationQObjHeaderFiles ${CMAKE_SOURCE_DIR}/hdi/visualization/*qobj.h)
+file(GLOB AnalyticsQObjHeaderFiles ${CMAKE_SOURCE_DIR}/hdi/analytics/*qobj.h)
+qt5_wrap_cpp(MocSources ${AnalyticsQObjHeaderFiles} ${VisualizationQObjHeaderFiles})
+
+ADD_PROJECT(neurons_tsne neurons_tsne.cpp "${MocSources}")
+ADD_PROJECT(neurons_wtsne neurons_wtsne.cpp "${MocSources}")
+ADD_PROJECT(world_trade world_trade.cpp "${MocSources}")
+ADD_PROJECT(neurons_wtsne_vs_tsne neurons_wtsne_vs_tsne.cpp "${MocSources}")
+ADD_PROJECT(mitotic_figures_0 mitotic_figures_0.cpp "${MocSources}")
+ADD_PROJECT(mitotic_figures_1_dual mitotic_figures_1_dual.cpp "${MocSources}")
+ADD_PROJECT(mitotic_figures_1_dual_hdvol mitotic_figures_1_dual_hdvol.cpp "${MocSources}")
+ADD_PROJECT(alexnet_dual alexnet_dual.cpp "${MocSources}")
+ADD_PROJECT(test_buckets test_buckets.cpp "${MocSources}")
+ADD_PROJECT(caffe_classification caffe_classification.cpp "${MocSources}")
+ADD_PROJECT(filter_convolution filter_convolution.cpp "${MocSources}")
+ADD_PROJECT(patch_lsh patch_lsh.cpp "${MocSources}")
+ADD_PROJECT(training_mnist training_mnist.cpp "${MocSources}")
+
+

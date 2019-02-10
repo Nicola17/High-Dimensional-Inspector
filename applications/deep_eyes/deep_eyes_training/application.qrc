@@ -1,0 +1,11 @@
+<RCC>
+    <qresource prefix="/">
+        <file alias="application.stylesheet">application.stylesheet</file>
+        <file>images/checkbox.png</file>
+        <file>images/down_arrow.png</file>
+        <file>images/handle.png</file>
+        <file alias="icon32.png">images/icon32.png</file>
+        <file alias="icon128.png">images/icon128.png</file>
+        <file>images/running_process.png</file>
+    </qresource>
+</RCC>

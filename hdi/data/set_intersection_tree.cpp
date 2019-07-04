@@ -30,6 +30,7 @@
  *
  */
 
+#ifdef PREPROC_USE_ROARING
 
 #include "hdi/data/set_intersection_tree.h"
 #include <numeric>
@@ -302,3 +303,5 @@ namespace hdi{
 
   }
 }
+
+#endif

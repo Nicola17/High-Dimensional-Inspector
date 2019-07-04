@@ -40,6 +40,7 @@ namespace hdi{
       template void loadMNIST(data::PanelData<double>& panel_data, std::vector<unsigned int>& labels, std::string filename_data, std::string filename_labels, unsigned int num_images, int label_to_be_selected);
       template void loadMNIST(data::PanelData<float>& panel_data, std::vector<unsigned int>& labels, std::string filename_data, std::string filename_labels, unsigned int num_images, int label_to_be_selected);
 
+#ifdef PREPROC_USE_ROARING
       void loadTwitterFollowers(const std::string& folder, std::vector<Roaring>& follower_to_target, std::vector<Roaring>& target_to_follower,
                     std::unordered_map<std::string,uint32_t>& follower_id, std::unordered_map<std::string,uint32_t>& target_id)
       {
@@ -79,7 +80,7 @@ namespace hdi{
           ++file_id;
         }
       }
-
+#endif
     }
   }
 }

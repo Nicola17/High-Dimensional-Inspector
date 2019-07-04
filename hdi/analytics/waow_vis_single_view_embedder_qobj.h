@@ -33,6 +33,8 @@
 #ifndef WAOW_VIS_SINGLE_VIEW_EMBEDDER_H
 #define WAOW_VIS_SINGLE_VIEW_EMBEDDER_H
 
+#ifdef PREPROC_USE_ROARING
+
 #include <QObject>
 #include <memory>
 #include <vector>
@@ -238,5 +240,7 @@ namespace hdi{
     };
   }
 }
+
+#endif
 
 #endif

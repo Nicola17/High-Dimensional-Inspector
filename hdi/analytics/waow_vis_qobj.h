@@ -33,6 +33,8 @@
 #ifndef WAOW_VIS_H
 #define WAOW_VIS_H
 
+#ifdef PREPROC_USE_ROARING
+
 #include <QObject>
 #include "hdi/analytics/waow_vis_single_view_embedder_qobj.h"
 #include "hdi/dimensionality_reduction/hierarchical_sne.h"
@@ -228,5 +230,7 @@ namespace hdi{
 
   }
 }
+
+#endif
 
 #endif

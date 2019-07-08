@@ -67,23 +67,6 @@
 
 namespace hdi{
   namespace dr{
-  /////////////////////////////////////////////////////////////////////////
-
-    template <typename scalar, typename sparse_scalar_matrix>
-    SparseTSNEUserDefProbabilities<scalar, sparse_scalar_matrix>::Parameters::Parameters():
-      _seed(-1),
-      _embedding_dimensionality(2),
-      _minimum_gain(0.1),
-      _eta(200),
-      _momentum(0.2),
-      _final_momentum(0.5),
-      _mom_switching_iter(250),
-      _exaggeration_factor(4),
-      _remove_exaggeration_iter(250),
-      _exponential_decay_iter(150)
-    {}
-
-  /////////////////////////////////////////////////////////////////////////
 
     template <typename scalar, typename sparse_scalar_matrix>
     SparseTSNEUserDefProbabilities<scalar, sparse_scalar_matrix>::SparseTSNEUserDefProbabilities():
@@ -122,7 +105,7 @@ namespace hdi{
 
 
     template <typename scalar, typename sparse_scalar_matrix>
-    void SparseTSNEUserDefProbabilities<scalar, sparse_scalar_matrix>::initialize(const sparse_scalar_matrix& probabilities, data::Embedding<scalar_type>* embedding, Parameters params){
+    void SparseTSNEUserDefProbabilities<scalar, sparse_scalar_matrix>::initialize(const sparse_scalar_matrix& probabilities, data::Embedding<scalar_type>* embedding, TsneParameters params){
       utils::secureLog(_logger,"Initializing tSNE...");
       {//Aux data
         _params = params;
@@ -151,7 +134,7 @@ namespace hdi{
     }
 
     template <typename scalar, typename sparse_scalar_matrix>
-    void SparseTSNEUserDefProbabilities<scalar, sparse_scalar_matrix>::initializeWithJointProbabilityDistribution(const sparse_scalar_matrix& distribution, data::Embedding<scalar_type>* embedding, Parameters params){
+    void SparseTSNEUserDefProbabilities<scalar, sparse_scalar_matrix>::initializeWithJointProbabilityDistribution(const sparse_scalar_matrix& distribution, data::Embedding<scalar_type>* embedding, TsneParameters params){
       utils::secureLog(_logger,"Initializing tSNE with a user-defined joint-probability distribution...");
       {//Aux data
         _params = params;

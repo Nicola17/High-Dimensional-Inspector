@@ -34,6 +34,7 @@
 #include "hdi/utils/log_helper_functions.h"
 #include "hdi/dimensionality_reduction/hierarchical_sne.h"
 #include "hdi/dimensionality_reduction/sparse_tsne_user_def_probabilities.h"
+#include "hdi/dimensionality_reduction/tsne_parameters.h"
 #include <qimage.h>
 #include <QApplication>
 #include "hdi/visualization/scatterplot_canvas_qobj.h"
@@ -182,7 +183,7 @@ int main(int argc, char *argv[]){
 
     hdi::data::Embedding<scalar_type> embedding;
     hdi::dr::SparseTSNEUserDefProbabilities<scalar_type> tSNE;
-    hdi::dr::SparseTSNEUserDefProbabilities<scalar_type>::Parameters tSNE_params;
+    hdi::dr::TsneParameters tSNE_params;
     tSNE.setLogger(&log);
     tSNE_params._seed = 1;
     tSNE.setTheta(0.5);

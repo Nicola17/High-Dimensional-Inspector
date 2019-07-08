@@ -38,6 +38,7 @@
 #include "hdi/data/io.h"
 #include "hdi/dimensionality_reduction/hd_joint_probability_generator.h"
 #include "hdi/dimensionality_reduction/sparse_tsne_user_def_probabilities.h"
+#include "hdi/dimensionality_reduction/tsne_parameters.h"
 #include "hdi/utils/visual_utils.h"
 #include "hdi/utils/scoped_timers.h"
 
@@ -209,7 +210,7 @@ int main(int argc, char *argv[])
     hdi::dr::HDJointProbabilityGenerator<scalar_type>::sparse_scalar_matrix_type distributions;
     hdi::dr::HDJointProbabilityGenerator<scalar_type>::Parameters prob_gen_param;
     hdi::dr::SparseTSNEUserDefProbabilities<scalar_type> tSNE;
-    hdi::dr::SparseTSNEUserDefProbabilities<scalar_type>::Parameters tSNE_param;
+    hdi::dr::TsneParameters tSNE_param;
     hdi::data::Embedding<scalar_type> embedding;
 
     {

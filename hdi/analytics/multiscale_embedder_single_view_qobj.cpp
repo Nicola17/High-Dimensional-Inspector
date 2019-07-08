@@ -32,6 +32,7 @@
 
 #include "hdi/analytics/multiscale_embedder_single_view_qobj.h"
 #include "hdi/utils/log_helper_functions.h"
+#include "hdi/dimensionality_reduction/tsne_parameters.h"
 
 namespace hdi{
   namespace analytics{
@@ -48,7 +49,7 @@ namespace hdi{
       _viewer->resize(800,800);
     }
 
-    void MultiscaleEmbedderSingleView::initialize(sparse_scalar_matrix_type& sparse_matrix, id_type my_id, tsne_type::Parameters params){
+    void MultiscaleEmbedderSingleView::initialize(sparse_scalar_matrix_type& sparse_matrix, id_type my_id, hdi::dr::TsneParameters params){
       checkAndThrowLogic(!_initialized, "Aggregator must be initialized ");
       checkAndThrowLogic(sparse_matrix.size() == _panel_data.numDataPoints(), "Panel data and sparse matrix size must agree");
       utils::secureLogValue(_logger,"Sparse matrix size",sparse_matrix.size());

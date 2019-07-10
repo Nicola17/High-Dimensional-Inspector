@@ -78,14 +78,18 @@ const char* compute_forces_source = GLSL(430,
   layout(std430, binding = 5) buffer Grad { vec2 Gradients[]; };
   layout(local_size_x = 64, local_size_y = 1, local_size_z = 1) in;
 
+  const uint group_size = 64;
+  shared vec2 sum_positive_red[group_size];
+
   //layout(rg32f) uniform image2D point_tex;
   uniform uint num_points;
   uniform float exaggeration;
   uniform float sum_Q;
 
   void main() {
-    uint i = gl_GlobalInvocationID.x;
+    uint i = gl_WorkGroupID.x;
     uint groupSize = gl_WorkGroupSize.x;
+    uint lid = gl_LocalInvocationID.x;
 
     float inv_num_points = 1.0 / float(num_points);
     float inv_sum_Q = 1.0 / sum_Q;
@@ -102,7 +106,8 @@ const char* compute_forces_source = GLSL(430,
     int index = Indices[i * 2 + 0];
     int size = Indices[i * 2 + 1];
 
-    for (int j = 0; j < size; j++) {
+    vec2 positive_force = vec2(0);
+    for (uint j = lid; j < size; j += group_size) {
       // Get other point coordinates
       vec2 point_j = Positions[Neighbours[index + j]];
 
@@ -113,13 +118,33 @@ const char* compute_forces_source = GLSL(430,
       float qij = 1 / (1 + dist.x*dist.x + dist.y*dist.y);
 
       // Calculate the attractive force
-      sum_positive += Probabilities[index + j] * qij * dist * inv_num_points;
+      positive_force += Probabilities[index + j] * qij * dist * inv_num_points;
     }
 
-    // Computing repulsive forces
-    vec2 sum_negative = Fields[i].yz * inv_sum_Q;
+    // Reduce add sum_positive_red to a single value
+    if (lid >= 32) {
+      sum_positive_red[lid - 32] = positive_force;
+    }
+    barrier();
+    if (lid < 32) {
+      sum_positive_red[lid] += positive_force;
+    }
+    for (uint reduceSize = group_size/4; reduceSize > 1; reduceSize /= 2)
+    {
+      barrier();
+      if (lid < reduceSize) {
+        sum_positive_red[lid] += sum_positive_red[lid + reduceSize];
+      }
+    }
+    barrier();
+    if (lid < 1) {
+      sum_positive = sum_positive_red[0] + sum_positive_red[1];
 
-    Gradients[i] = 4 * (exaggeration * sum_positive - sum_negative);
+      // Computing repulsive forces
+      vec2 sum_negative = Fields[i].yz * inv_sum_Q;
+
+      Gradients[i] = 4 * (exaggeration * sum_positive - sum_negative);
+    }
   }
 );
 

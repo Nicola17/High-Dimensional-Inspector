@@ -234,7 +234,7 @@ namespace hdi {
       uint32_t height = _adaptive_resolution ? std::max((unsigned int)(range.y * _resolutionScaling), MINIMUM_FIELDS_SIZE) : FIXED_FIELDS_SIZE;
 
       // Compute the fields texture
-      fieldComputation.compute(width, height, _function_support, _compute_buffers[POSITION], _compute_buffers[BOUNDS]);
+      fieldComputation.compute(width, height, _function_support, embedding->numDataPoints(), _compute_buffers[POSITION], _compute_buffers[BOUNDS], _bounds.min.x, _bounds.min.y, _bounds.max.x, _bounds.max.y);
 
       // Calculate the normalization sum and sample the field values for every point
       float sum_Q = 0;
@@ -255,8 +255,6 @@ namespace hdi {
 
       glBindBuffer(GL_SHADER_STORAGE_BUFFER, _compute_buffers[POSITION]);
       glGetBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, embedding->numDataPoints() * sizeof(Point2D), points);
-
-      //std::cout << "Bounds: " << boundsTime << " Fields: " << fieldsTime << " Gradients: " << gradientTime << " Update: " << updateTime << std::endl;
     }
 
     void GpgpuSneCompute::computeEmbeddingBounds1(unsigned int num_points, const float* points, float padding, bool square)
@@ -318,7 +316,7 @@ namespace hdi {
       glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 5, _compute_buffers[GRADIENTS]);
 
       // Compute the gradients of the KL function
-      glDispatchCompute((num_points / 64) + 1, 1, 1);
+      glDispatchCompute(num_points, 1, 1);
 
       glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
     }

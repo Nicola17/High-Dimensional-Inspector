@@ -5,6 +5,30 @@
 
 #define GLSL(version, shader)  "#version " #version "\n" #shader
 
+const char* point_vert = GLSL(330,
+  layout(location = 0) in vec2 point;
+
+  uniform vec4 bounds;
+
+  void main()
+  {
+    vec2 min_bounds = bounds.xy;
+    vec2 max_bounds = bounds.zw;
+    vec2 range = max_bounds - min_bounds;
+
+    gl_Position = vec4(((point - min_bounds) / range) * 2 - 1, 0, 1);
+  }
+);
+
+const char* point_frag = GLSL(330,
+  out float fragColor;
+
+  void main()
+  {
+    fragColor = 1;
+  }
+);
+
 const char* raster_vsrc = GLSL(330,
   layout(location = 0) in vec2 vertex;
   layout(location = 1) in vec2 tex_coord;
@@ -43,11 +67,14 @@ const char* raster_fsrc = GLSL(330,
 const char* gpgpu_compute_fields_source = GLSL(430,
   layout(std430, binding = 0) buffer Pos{ vec2 Positions[]; };
   layout(std430, binding = 1) buffer BoundsInterface { vec2 Bounds[]; };
-  layout(local_size_x = 128, local_size_y = 1, local_size_z = 1) in;
+  layout(local_size_x = 256, local_size_y = 1, local_size_z = 1) in;
 
-  layout(rgba32f) writeonly uniform image2D Fields;
+  layout(rgba32f, binding = 0) writeonly uniform image2D Fields;
+  layout(r8, binding = 1) readonly uniform image2D Stencil;
 
-  shared vec3 reduction_array[64];
+  const uint groupSize = gl_WorkGroupSize.x;
+  const uint hgSize = groupSize / 2;
+  shared vec3 reduction_array[hgSize];
 
   uniform uint num_points;
   uniform uvec2 size;
@@ -56,8 +83,11 @@ const char* gpgpu_compute_fields_source = GLSL(430,
   void main() {
     uint x = gl_WorkGroupID.x;
     uint y = gl_WorkGroupID.y;
+    
+    float mask = imageLoad(Stencil, ivec2(x, y)).x;
+    if (mask == 0) return;
+
     uint lid = gl_LocalInvocationIndex.x;
-    uint groupSize = gl_WorkGroupSize.x;
 
     vec2 min_bounds = Bounds[0];
     vec2 max_bounds = Bounds[1];
@@ -76,38 +106,26 @@ const char* gpgpu_compute_fields_source = GLSL(430,
       //if (abs(t.x) > support || abs(t.y) > support)
       //  continue;
 
-      float eucl_sqrd = t.x*t.x + t.y*t.y;
+      float eucl_sqrd = dot(t, t);
 
       float tstud = 1.0 / (1.0 + eucl_sqrd);
-      value.xyz += vec3(tstud, tstud*tstud*t.x, tstud*tstud*t.y);
-    }
+      float tstud2 = tstud*tstud;
 
-    if (lid >= 64) {
-      reduction_array[lid - 64] = value.xyz;
+      value.xyz += vec3(tstud, tstud2*t.x, tstud2*t.y);
+    }
+    if (lid >= hgSize) {
+      reduction_array[lid - hgSize] = value.xyz;
     }
     barrier();
-    if (lid < 64) {
+    if (lid < hgSize) {
       reduction_array[lid] += value.xyz;
     }
-    barrier();
-    if (lid < 32) {
-      reduction_array[lid] += reduction_array[lid + 32];
-    }
-    barrier();
-    if (lid < 16) {
-      reduction_array[lid] += reduction_array[lid + 16];
-    }
-    barrier();
-    if (lid < 8) {
-      reduction_array[lid] += reduction_array[lid + 8];
-    }
-    barrier();
-    if (lid < 4) {
-      reduction_array[lid] += reduction_array[lid + 4];
-    }
-    barrier();
-    if (lid < 2) {
-      reduction_array[lid] += reduction_array[lid + 2];
+    for (uint reduceSize = hgSize/2; reduceSize > 1; reduceSize /= 2)
+    {
+      barrier();
+      if (lid < reduceSize) {
+        reduction_array[lid] += reduction_array[lid + reduceSize];
+      }
     }
     barrier();
     if (lid < 1) {
@@ -263,6 +281,10 @@ void ComputeFieldComputation::init(unsigned int num_points)
     _compute_program.create();
     _compute_program.addShader(COMPUTE, gpgpu_compute_fields_source);
     _compute_program.build();
+    _stencil_program.create();
+    _stencil_program.addShader(VERTEX, point_vert);
+    _stencil_program.addShader(FRAGMENT, point_frag);
+    _stencil_program.build();
   }
   catch (const ShaderLoadingException& e) {
     std::cout << e.what() << std::endl;
@@ -280,14 +302,25 @@ void ComputeFieldComputation::init(unsigned int num_points)
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
+  // Generate stencil texture
+  glGenTextures(1, &_stencil_texture);
+  glBindTexture(GL_TEXTURE_2D, _stencil_texture);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+  // Extend field borders to not break bilinear sampling
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
   // Generate framebuffer
   glGenFramebuffers(1, &_field_fbo);
   glBindFramebuffer(GL_FRAMEBUFFER, _field_fbo);
   GLenum attachment = GL_COLOR_ATTACHMENT0;
-  glFramebufferTexture(GL_FRAMEBUFFER, attachment, _field_texture, 0);
+  glFramebufferTexture(GL_FRAMEBUFFER, attachment, _stencil_texture, 0);
   GLenum attachments[1] = { attachment };
   glDrawBuffers((GLsizei)1, attachments);
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+  glGenVertexArrays(1, &_point_vao);
 }
 
 void ComputeFieldComputation::clean()
@@ -299,8 +332,27 @@ void ComputeFieldComputation::clean()
   _compute_program.destroy();
 }
 
-void ComputeFieldComputation::compute(unsigned int width, unsigned int height, float function_support, GLuint position_buffer, GLuint bounds_buffer)
+void ComputeFieldComputation::compute(unsigned int width, unsigned int height, float function_support, unsigned int num_points, GLuint position_buffer, GLuint bounds_buffer, float minx, float miny, float maxx, float maxy)
 {
+  glActiveTexture(GL_TEXTURE0);
+  glBindTexture(GL_TEXTURE_2D, _stencil_texture);
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, width, height, 0, GL_RED, GL_UNSIGNED_BYTE, nullptr);
+
+  glViewport(0, 0, width, height);
+  glBindFramebuffer(GL_FRAMEBUFFER, _field_fbo);
+  _stencil_program.bind();
+  _stencil_program.uniform4f("bounds", minx, miny, maxx, maxy);
+  glBindVertexArray(_point_vao);
+  glBindBuffer(GL_ARRAY_BUFFER, position_buffer);
+  glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, 0);
+  glEnableVertexAttribArray(0);
+
+  glPointSize(3);
+  glDrawArrays(GL_POINTS, 0, num_points);
+
+  glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+  // Field computation
   glActiveTexture(GL_TEXTURE0);
   glBindTexture(GL_TEXTURE_2D, _field_texture);
   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, width, height, 0, GL_RGBA, GL_FLOAT, nullptr);
@@ -316,6 +368,7 @@ void ComputeFieldComputation::compute(unsigned int width, unsigned int height, f
 
   // Bind the fields texture for writing
   glBindImageTexture(0, _field_texture, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
+  glBindImageTexture(1, _stencil_texture, 0, GL_FALSE, 0, GL_READ_ONLY, GL_R8);
 
   // Compute the fields texture
   glDispatchCompute(width, height, 1);

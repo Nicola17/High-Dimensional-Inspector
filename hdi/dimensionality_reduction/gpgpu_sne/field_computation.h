@@ -48,7 +48,7 @@ public:
 
   void clean();
 
-  void compute(unsigned int width, unsigned int height, float function_support, GLuint position_buffer, GLuint bounds_buffer);
+  void compute(unsigned int width, unsigned int height, float function_support, unsigned int num_points, GLuint position_buffer, GLuint bounds_buffer, float minx, float miny, float maxx, float maxy);
 
   GLuint getFieldTexture()
   {
@@ -57,8 +57,12 @@ public:
 
 private:
   ShaderProgram _compute_program;
+  ShaderProgram _stencil_program;
+
+  GLuint _point_vao;
 
   GLuint _field_texture;
+  GLuint _stencil_texture;
 
   GLuint _field_fbo;
 };

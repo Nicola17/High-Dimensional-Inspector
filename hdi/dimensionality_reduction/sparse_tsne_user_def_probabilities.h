@@ -109,7 +109,7 @@ namespace hdi{
       //! Compute High-dimensional distribution
       void computeHighDimensionalDistribution(const sparse_scalar_matrix_type& probabilities);
       //! Initialize the point in the embedding
-      void initializeEmbeddingPosition(int seed, double multiplier = .0001);
+      void initializeEmbeddingPosition(int seed, double multiplier = .1);
       //! Do an iteration of the gradient descent
       void doAnIterationExact(double mult = 1);
       //! Do an iteration of the gradient descent

@@ -253,11 +253,8 @@ namespace hdi {
       computeEmbeddingBounds1(embedding->numDataPoints(), points);
       updateEmbedding(embedding, exaggeration, iteration, mult);
 
-      if (iteration > 998.5)
-      {
-        glBindBuffer(GL_SHADER_STORAGE_BUFFER, _compute_buffers[POSITION]);
-        glGetBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, embedding->numDataPoints() * sizeof(Point2D), points);
-      }
+      glBindBuffer(GL_SHADER_STORAGE_BUFFER, _compute_buffers[POSITION]);
+      glGetBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, embedding->numDataPoints() * sizeof(Point2D), points);
 
       //std::cout << "Bounds: " << boundsTime << " Fields: " << fieldsTime << " Gradients: " << gradientTime << " Update: " << updateTime << std::endl;
     }

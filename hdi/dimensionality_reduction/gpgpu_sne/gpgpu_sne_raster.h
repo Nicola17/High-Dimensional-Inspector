@@ -36,7 +36,6 @@
 #include "hdi/data/shader.h"
 #include "hdi/data/embedding.h"
 #include "hdi/data/map_mem_eff.h"
-#include "hdi/data/scalar_fields_2d.h"
 #include "hdi/dimensionality_reduction/tsne_parameters.h"
 #include "field_computation.h"
 
@@ -117,8 +116,6 @@ namespace hdi {
       std::vector<double> _previous_gradient;
       std::vector<double> _gain;
 
-      //std::vector<float> _fields;
-      hdi::data::ScalarFields2D<float> _fields;
       std::vector<float> _interpolated_fields;
       sparse_scalar_matrix_type _P;
 

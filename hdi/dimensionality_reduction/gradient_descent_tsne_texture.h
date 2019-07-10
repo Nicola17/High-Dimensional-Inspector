@@ -41,7 +41,6 @@
 #include <unordered_map>
 #include "hdi/data/embedding.h"
 #include "hdi/data/map_mem_eff.h"
-#include "hdi/data/scalar_fields_2d.h"
 #include "gpgpu_sne/gpgpu_sne_compute.h"
 #include "gpgpu_sne/gpgpu_sne_raster.h"
 #include "tsne_parameters.h"

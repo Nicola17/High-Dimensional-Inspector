@@ -33,7 +33,9 @@ qt5_add_resources(Resources ${ResourceFiles})
 add_library(hdiutils ${HeaderFiles} ${SourceFiles} ${UiHeaders} ${MocSources} ${Resources} )
 
 target_link_libraries (hdiutils Qt5::Core Qt5::Widgets)
-
+if (UNIX)
+    target_link_libraries (hdiutils ${CMAKE_DL_LIBS}) # glad.cpp requires -ldl
+endif (UNIX)
 
 ########### INSTALL ##############
 install (TARGETS hdiutils DESTINATION bin/hdi)

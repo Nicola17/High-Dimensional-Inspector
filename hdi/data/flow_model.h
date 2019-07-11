@@ -36,12 +36,36 @@
 #include <cstdint>
 #include <set>
 #include <string>
-#include <QString>
-#include <QColor>
+#include <sstream>
+#include <iomanip>
 
 namespace hdi{
   namespace data{
+    class Color
+    {
+    public:
+      Color() :
+        r(0), g(0), b(0), a(255)
+      {}
 
+      Color(int r, int g, int b, int a = 255) :
+        r(r), g(g), b(b), a(a)
+      {
+
+      }
+
+      std::string name() const
+      {
+        std::stringstream ss;
+        ss << "#";
+        ss << std::hex << std::setw(2) << std::setfill('0') << r;
+        ss << std::hex << std::setw(2) << std::setfill('0') << g;
+        ss << std::hex << std::setw(2) << std::setfill('0') << b;
+        return ss.str();
+      }
+    private:
+      int r, g, b, a;
+    };
 
     class FlowNode{
     public:
@@ -59,8 +83,8 @@ namespace hdi{
       id_type& id(){return _id;}
       const id_type& id()const {return _id;}
 
-      static QString getCSVHeader(){return QString("id,text");}
-      QString getCSVValues(){return QString("%1,%2").arg(_id).arg(QString::fromStdString(_text));}
+      static std::string getCSVHeader(){return std::string("id,text");}
+      std::string getCSVValues(){return std::to_string(_id) + "," + _text;}
 
     private:
       id_type _id;
@@ -71,10 +95,10 @@ namespace hdi{
     public:
       typedef float scalar_type;
       typedef uint32_t id_type;
-      typedef QColor color_type;
+      typedef Color color_type;
 
     public:
-      FlowColoredNode(id_type id = 0, std::string text = "", color_type color = qRgb(50,50,50)){_id=id;_text=text;_color = color;}
+      FlowColoredNode(id_type id = 0, std::string text = "", color_type color = color_type(50,50,50)){_id=id;_text=text;_color = color;}
       bool operator==(const FlowColoredNode& a)const{return id() == a.id();}
       bool operator!=(const FlowColoredNode& a)const{return id() != a.id();}
       bool operator<=(const FlowColoredNode& a)const{return id() <= a.id();}
@@ -85,8 +109,8 @@ namespace hdi{
       id_type& id(){return _id;}
       const id_type& id()const {return _id;}
 
-      static QString getCSVHeader(){return QString("id,text,color");}
-      QString getCSVValues(){return QString("%1,%2,%3").arg(_id).arg(QString::fromStdString(_text)).arg(_color.name());}
+      static std::string getCSVHeader(){return std::string("id,text,color");}
+      std::string getCSVValues() { return std::to_string(_id) + "," + _text + "," + _color.name(); }
 
     private:
       id_type _id;
@@ -121,8 +145,8 @@ namespace hdi{
       scalar_type& flow(){return _flow;}
       const scalar_type& flow()const {return _flow;}
 
-      static QString getCSVHeader(){return QString("id,source,target,value");}
-      QString getCSVValues(){return QString("%1,%2,%3,%4").arg(_id).arg(_start_node_id).arg(_end_node_id).arg(_flow);}
+      static std::string getCSVHeader(){return std::string("id,source,target,value");}
+      std::string getCSVValues() { return std::to_string(_id) + "," + std::to_string(_start_node_id) + "," + std::to_string(_end_node_id) + "," + std::to_string(_flow); }
     private:
       id_type _id;
       id_type _start_node_id;
@@ -134,10 +158,10 @@ namespace hdi{
     public:
       typedef float scalar_type;
       typedef uint32_t id_type;
-      typedef QColor color_type;
+      typedef Color color_type;
 
     public:
-      FlowColoredLink(id_type id = 0, id_type start_node_id = 0, id_type end_node_id = 0, scalar_type flow = 0, color_type color = qRgb(0,150,255)){
+      FlowColoredLink(id_type id = 0, id_type start_node_id = 0, id_type end_node_id = 0, scalar_type flow = 0, color_type color = Color(0,150,255)){
         _id=id;
         _start_node_id = start_node_id;
         _end_node_id = end_node_id;
@@ -160,8 +184,8 @@ namespace hdi{
       scalar_type& flow(){return _flow;}
       const scalar_type& flow()const {return _flow;}
 
-      static QString getCSVHeader(){return QString("id,source,target,value,color");}
-      QString getCSVValues(){return QString("%1,%2,%3,%4,%5").arg(_id).arg(_start_node_id).arg(_end_node_id).arg(_flow).arg(_color.name());}
+      static std::string getCSVHeader(){return std::string("id,source,target,value,color");}
+      std::string getCSVValues(){return std::to_string(_id) + "," + std::to_string(_start_node_id) + "," + std::to_string(_end_node_id) + "," + std::to_string(_flow) + "," + _color.name();}
     private:
       id_type _id;
       id_type _start_node_id;

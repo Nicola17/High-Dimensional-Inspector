@@ -47,6 +47,7 @@
 #include "hdi/visualization/scatterplot_drawer_user_defined_colors.h"
 #include "hdi/dimensionality_reduction/wtsne.h"
 #include "hdi/data/map_mem_eff.h"
+#include "hdi/dimensionality_reduction/tsne_parameters.h"
 
 namespace hdi{
   namespace analytics{
@@ -68,7 +69,7 @@ namespace hdi{
 
       MultiscaleEmbedderSingleView();
       virtual ~MultiscaleEmbedderSingleView(){}
-      void initialize(sparse_scalar_matrix_type& sparse_matrix, id_type my_id, tsne_type::Parameters params = tsne_type::Parameters());
+      void initialize(sparse_scalar_matrix_type& sparse_matrix, id_type my_id, hdi::dr::TsneParameters params = hdi::dr::TsneParameters());
       void doAnIteration();
 
       //! Return the current log

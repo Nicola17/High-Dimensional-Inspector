@@ -38,6 +38,8 @@
 #include <QColor>
 #include <stdint.h>
 #include <memory>
+#include <array>
+
 #include "hdi/visualization/abstract_scatterplot_drawer.h"
 
 namespace hdi{

@@ -43,6 +43,7 @@
 #include "hdi/utils/dataset_utils.h"
 #include "hdi/dimensionality_reduction/hd_joint_probability_generator.h"
 #include "hdi/dimensionality_reduction/sparse_tsne_user_def_probabilities.h"
+#include "hdi/dimensionality_reduction/tsne_parameters.h"
 #include "hdi/visualization/scatterplot_canvas_qobj.h"
 #include "hdi/visualization/controller_embedding_selection_qobj.h"
 #include "hdi/visualization/scatterplot_drawer_labels.h"
@@ -72,7 +73,7 @@ int main(int argc, char *argv[]){
 
     hdi::data::Embedding<scalar_type> embedding;
     hdi::dr::SparseTSNEUserDefProbabilities<scalar_type> tSNE;
-    hdi::dr::SparseTSNEUserDefProbabilities<scalar_type>::Parameters tSNE_params;
+    hdi::dr::TsneParameters tSNE_params;
     tSNE.setLogger(&log);
     tSNE_params._seed = 1;
     tSNE_params._exaggeration_factor = 4;

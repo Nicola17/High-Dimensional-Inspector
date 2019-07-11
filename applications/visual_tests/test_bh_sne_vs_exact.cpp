@@ -54,6 +54,7 @@
 #include "hdi/utils/math_utils.h"
 #include "hdi/visualization/multiple_image_view_qobj.h"
 #include "hdi/dimensionality_reduction/hd_joint_probability_generator.h"
+#include "hdi/dimensionality_reduction/tsne_parameters.h"
 
 
 int main(int argc, char *argv[]){
@@ -184,7 +185,7 @@ int main(int argc, char *argv[]){
 
     hdi::data::Embedding<scalar_type> embedding;
     hdi::dr::SparseTSNEUserDefProbabilities<scalar_type> tSNE;
-    hdi::dr::SparseTSNEUserDefProbabilities<scalar_type>::Parameters tSNE_params;
+    hdi::dr::TsneParameters tSNE_params;
     tSNE.setLogger(&log);
     tSNE_params._seed = 1;
     tSNE.setTheta(theta);

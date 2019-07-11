@@ -30,6 +30,8 @@
  *
  */
 
+#ifdef PREPROC_USE_ROARING
+
 #include "hdi/analytics/waow_vis_single_view_embedder_qobj.h"
 #include "hdi/utils/log_helper_functions.h"
 #include "hdi/data/text_data.h"
@@ -394,3 +396,5 @@ namespace hdi{
 
   }
 }
+
+#endif

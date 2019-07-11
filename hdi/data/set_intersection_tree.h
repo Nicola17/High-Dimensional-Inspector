@@ -33,6 +33,8 @@
 #ifndef SET_INTERSECTION_TREE_H
 #define SET_INTERSECTION_TREE_H
 
+#ifdef PREPROC_USE_ROARING
+
 #include "roaring/roaring.hh"
 #include <queue>
 
@@ -112,5 +114,7 @@ namespace hdi{
 
   }
 }
+
+#endif
 
 #endif

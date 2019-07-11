@@ -30,6 +30,8 @@
  *
  */
 
+#ifdef PREPROC_USE_ROARING
+
 #include "hdi/analytics/waow_vis_qobj.h"
 #include "hdi/utils/log_helper_functions.h"
 #include "hdi/utils/graph_algorithms.h"
@@ -1120,3 +1122,5 @@ namespace hdi{
 
   }
 }
+
+#endif

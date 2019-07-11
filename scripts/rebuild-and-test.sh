@@ -5,6 +5,6 @@ export CPLUS_INCLUDE_PATH=/usr/local/include
 rm -drf build
 mkdir build
 cd build
-cmake -DCMAKE_BUILD_TYPE=Release ..
+cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=/opt/qt55/lib/cmake ..
 make -j 8
 ./applications/tdd/tdd

@@ -2,6 +2,9 @@
 #include "raster_shaders.glsl"
 
 #include <vector>
+#include <cmath>
+#include <cstring>
+#include <limits>
 #include <iostream>
 
 namespace hdi {

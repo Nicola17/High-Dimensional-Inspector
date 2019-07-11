@@ -34,6 +34,7 @@
 
 #include "hdi/analytics/waow_vis_single_view_embedder_qobj.h"
 #include "hdi/utils/log_helper_functions.h"
+#include "hdi/dimensionality_reduction/tsne_parameters.h"
 #include "hdi/data/text_data.h"
 #include <iostream>
 #include "hdi/visualization/embedding_lines_drawer.h"
@@ -80,7 +81,7 @@ namespace hdi{
       //Initializing A
       utils::secureLog(_logger,"Initializing embedder for sets A");
       {
-        tsne_type::Parameters params;
+        hdi::dr::TsneParameters params;
 
         double theta = 0;
         if(fmc_A.size() < 1000){
@@ -110,7 +111,7 @@ namespace hdi{
       //Initializing B
       utils::secureLog(_logger,"Initializing embedder for sets B");
       {
-        tsne_type::Parameters params;
+        hdi::dr::TsneParameters params;
         params._eta = 50;
 
         double theta = 0;

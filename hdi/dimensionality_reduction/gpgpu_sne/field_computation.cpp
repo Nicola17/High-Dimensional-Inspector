@@ -1,5 +1,6 @@
 #include "field_computation.h"
 
+#include <cmath>
 #include <vector>
 #include <iostream>
 

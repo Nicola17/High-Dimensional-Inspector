@@ -2,6 +2,7 @@
 #include "compute_shaders.glsl"
 
 #include <vector>
+#include <limits>
 #include <iostream>
 
 namespace hdi {

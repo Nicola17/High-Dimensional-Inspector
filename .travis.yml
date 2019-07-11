@@ -13,7 +13,7 @@ before_script:
   - ./scripts/install-dependencies.sh
   - mkdir build
   - cd build
-  - cmake ..
+  - cmake .. -DCMAKE_PREFIX_PATH=/opt/qt55
 
 script:
   - make -j 2

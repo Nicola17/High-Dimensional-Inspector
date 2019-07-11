@@ -77,15 +77,15 @@ namespace hdi {
       }
 
       std::stringstream ss_links;
-      ss_links << Traits::flow_type::getCSVHeader().toStdString() << "\n";
+      ss_links << Traits::flow_type::getCSVHeader() << "\n";
       for(auto link: model.flows()){
-        ss_links << link.getCSVValues().toStdString() << "\n";
+        ss_links << link.getCSVValues() << "\n";
       }
 
       std::stringstream ss_nodes;
-      ss_nodes << Traits::node_type::getCSVHeader().toStdString() << "\n";
+      ss_nodes << Traits::node_type::getCSVHeader() << "\n";
       for(auto node: model.nodes()){
-        ss_nodes<< node.getCSVValues().toStdString() << "\n";
+        ss_nodes<< node.getCSVValues() << "\n";
       }
 
       sgnClearCanvas();

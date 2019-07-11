@@ -77,21 +77,21 @@ int main(int argc, char *argv[]){
 
 
       hdi::data::FlowModel<hdi::data::ColoredFlowModelTrait> model;
-      model.addNode(node_type(0,"D0",qRgb(rand()%156,rand()%156,rand()%156)));
-      model.addNode(node_type(1,"D1",qRgb(rand()%156,rand()%156,rand()%156)));
-      model.addNode(node_type(2,"D2",qRgb(rand()%156,rand()%156,rand()%156)));
-      model.addNode(node_type(3,"D3",qRgb(rand()%156,rand()%156,rand()%156)));
-      model.addNode(node_type(4,"D4",qRgb(rand()%156,rand()%156,rand()%156)));
-      model.addNode(node_type(5,"D5",qRgb(rand()%156,rand()%156,rand()%156)));
+      model.addNode(node_type(0,"D0", hdi::data::Color(rand()%156,rand()%156,rand()%156)));
+      model.addNode(node_type(1,"D1", hdi::data::Color(rand()%156,rand()%156,rand()%156)));
+      model.addNode(node_type(2,"D2", hdi::data::Color(rand()%156,rand()%156,rand()%156)));
+      model.addNode(node_type(3,"D3", hdi::data::Color(rand()%156,rand()%156,rand()%156)));
+      model.addNode(node_type(4,"D4", hdi::data::Color(rand()%156,rand()%156,rand()%156)));
+      model.addNode(node_type(5,"D5", hdi::data::Color(rand()%156,rand()%156,rand()%156)));
 
-      model.addNode(node_type(6,"L0",qRgb(rand()%156,rand()%156,rand()%156)));
-      model.addNode(node_type(7,"L1",qRgb(rand()%156,rand()%156,rand()%156)));
-      model.addNode(node_type(8,"L2",qRgb(rand()%156,rand()%156,rand()%156)));
-      model.addNode(node_type(9,"L3",qRgb(rand()%156,rand()%156,rand()%156)));
+      model.addNode(node_type(6,"L0", hdi::data::Color(rand()%156,rand()%156,rand()%156)));
+      model.addNode(node_type(7,"L1", hdi::data::Color(rand()%156,rand()%156,rand()%156)));
+      model.addNode(node_type(8,"L2", hdi::data::Color(rand()%156,rand()%156,rand()%156)));
+      model.addNode(node_type(9,"L3", hdi::data::Color(rand()%156,rand()%156,rand()%156)));
 
       const unsigned int num_flows(30);
       for(int i = 0; i < num_flows; ++i){
-        model.addFlow(flow_type(i,rand()%6,6+rand()%4,(rand()%100)/100.,qRgb(rand()%156,rand()%156,rand()%156)));
+        model.addFlow(flow_type(i,rand()%6,6+rand()%4,(rand()%100)/100., hdi::data::Color(rand()%156,rand()%156,rand()%156)));
       }
 
       diagram.visualizeFlow(model);

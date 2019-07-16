@@ -68,6 +68,8 @@ namespace hdi{
       void zeroCentered();
       //! If the embedding is contained in a squared region smaller than diameter, rescale it so that it will be contained in squared region of size diameter centered in zero
       void scaleIfSmallerThan(scalar_type diameter);
+      //! If the embedding is contained in a squared region larger than diameter, rescale it so that it will be contained in squared region of size diameter centered in zero
+      void scaleIfBiggerThan(scalar_type diameter);
 
       scalar_vector_type& getContainer(){return _embedding;}
       const scalar_vector_type& getContainer()const{return _embedding;}

@@ -149,6 +149,30 @@ namespace hdi{
         }
       }
     }
+      
+    template <typename scalar_type>
+    void Embedding<scalar_type>::scaleIfBiggerThan(scalar_type diameter){
+      scalar_vector_type limits;
+      computeEmbeddingBBox(limits);
+      
+      if ((limits[1] - limits[0]) <= diameter){ // beacuse the limits are squared
+        return;
+      }
+      
+      double scale_factor = diameter / (limits[1] - limits[0]);
+      scalar_vector_type shifts(_num_dimensions, 0);
+      for (int d = 0; d < _num_dimensions; ++d){
+        shifts[d] = -0.5*(limits[d * 2 + 1] + limits[d * 2]);
+      }
+      
+      for (int i = 0; i < _num_data_points; ++i){
+        for (int d = 0; d < _num_dimensions; ++d){
+          int idx = i*_num_dimensions + d;
+          _embedding[idx] += shifts[d];
+          _embedding[idx] *= scale_factor;
+        }
+      }
+    }
 
 
 /////////////////////////////////////////////////////////////

@@ -36,10 +36,8 @@ else()
   endif()
 endif()
 
-#include_directories("$ENV{FLANN_DIR}/include")
-#message (STATUS "$ENV{FLANN_DIR}/include")
-include_directories ("${CMAKE_SOURCE_DIR}/../../Libraries/Flann/flann/src/cpp")
-message (STATUS "${CMAKE_SOURCE_DIR}/../../Libraries/Flann/flann/src/cpp")
+include_directories("$ENV{FLANN_DIR}/include")
+message (STATUS "$ENV{FLANN_DIR}/include")
 
 # Gather list of all .h files in "/"
 file(GLOB HeaderFiles *.h gpgpu_sne/*.h)

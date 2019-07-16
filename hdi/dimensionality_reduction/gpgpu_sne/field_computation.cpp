@@ -3,6 +3,7 @@
 #include <cmath>
 #include <vector>
 #include <iostream>
+#include <cstdint>
 
 #define GLSL(version, shader)  "#version " #version "\n" #shader
 

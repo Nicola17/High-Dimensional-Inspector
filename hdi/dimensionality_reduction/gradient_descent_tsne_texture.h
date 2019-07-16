@@ -134,7 +134,9 @@ namespace hdi {
 
     private:
       data::Embedding<scalar_type>* _embedding; //! embedding
-      typename data::Embedding<scalar_type>::scalar_vector_type* _embedding_container;
+	  data::Embedding<scalar_type>::scalar_vector_type* _embedding_container;
+	  // TH: the below does not work in VS2013
+	  // typename data::Embedding<scalar_type>::scalar_vector_type* _embedding_container;
       bool _initialized; //! Initialization flag
 
       double _exaggeration_baseline;

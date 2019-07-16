@@ -40,6 +40,7 @@
 #include "field_computation.h"
 
 #include <array>
+#include <cstdint>
 
 namespace hdi {
   namespace dr {

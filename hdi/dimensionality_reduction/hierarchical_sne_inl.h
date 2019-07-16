@@ -85,6 +85,8 @@ namespace hdi{
       _mcmcs_num_walks(10),
       _mcmcs_landmark_thresh(1.5),
       _mcmcs_walk_length(10),
+      _hard_cut_off(false),
+      _hard_cut_off_percentage(0.1f),
       _rs_reduction_factor_per_layer(.1),
       _rs_outliers_removal_jumps(10),
       _num_walks_per_landmark(100),
@@ -466,6 +468,16 @@ namespace hdi{
 //#ifdef __USE_GCD__
 //        );
 //#endif
+          
+        // cheap hack to get the hard cutoff in, still computes the data driven part which should probably be replaced...
+        if (_params._hard_cut_off)
+        {
+          std::vector<unsigned_int_type> importance_sampling_sort = importance_sampling;
+          std::sort(importance_sampling_sort.begin(), importance_sampling_sort.end());
+          unsigned_int_type cutoff = importance_sampling_sort[(importance_sampling_sort.size()-1) * (1.0f - _params._hard_cut_off_percentage)];
+          thresh = cutoff;
+        }
+          
         _statistics._landmarks_selection_num_walks = previous_scale_dp*_params._mcmcs_num_walks;
 
         for(int i = 0; i < previous_scale_dp; ++i){
@@ -804,6 +816,38 @@ namespace hdi{
         if(probability > 0){
           neighbors[d] = probability;
         }
+      }
+    }
+      
+    template <typename scalar_type, typename sparse_scalar_matrix_type>
+    void HierarchicalSNE<scalar_type, sparse_scalar_matrix_type>::getInfluencingLandmarksInNextScale(unsigned_int_type scale_id, std::vector<unsigned_int_type>& idxes, std::map<unsigned_int_type, scalar_type>& neighbors)const{
+      
+      neighbors.clear();
+      
+      int next_scale_id = scale_id + 1;
+      if (next_scale_id + 1 > _hierarchy.size()) return;
+      
+      std::map<unsigned_int_type, scalar_type> completeSet;
+      
+      for (int i = 0; i < idxes.size(); i++)
+      {
+        for (auto& v : _hierarchy[next_scale_id]._area_of_influence[idxes[i]]){
+              
+          neighbors[v.first] += v.second;
+        }
+      }
+      
+      for (int i = 0; i < _hierarchy[next_scale_id]._area_of_influence.size(); i++)
+      {
+        for (auto& v : _hierarchy[next_scale_id]._area_of_influence[i]){
+              
+          completeSet[v.first] += v.second;
+        }
+      }
+      
+      for (auto& v : neighbors)
+      {
+        neighbors[v.first] /= completeSet[v.first];
       }
     }
 

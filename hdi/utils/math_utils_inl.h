@@ -39,7 +39,7 @@
 #include <stdexcept>
 #include <limits>
 
-#ifdef __APPLE__
+#ifdef __USE_GCD__
 #include <dispatch/dispatch.h>
 #endif
 
@@ -127,19 +127,19 @@ namespace hdi{
     void computeHeterogeneity(const sparse_matrix_type& matrix, vector_type& res){
       auto n = matrix.size();
       res.resize(n);
-#ifdef __APPLE__
+#ifdef __USE_GCD__
       std::cout << "GCD dispatch, mat_utils_onl 131.\n";
       dispatch_apply(matrix.size(), dispatch_get_global_queue(0, 0), ^(size_t i) {
 #else
       #pragma omp parallel for
       for(int i = 0; i < matrix.size(); ++i){
-#endif //__APPLE__
+#endif //__USE_GCD__
         vector_type distr(n,0);
         distr[i] = n;
         computeStationaryDistribution(matrix,&distr,5,1);
         res[i] = distr[i]/n;
       }
-#ifdef __APPLE__
+#ifdef __USE_GCD__
       );
 #endif
     }

@@ -40,7 +40,7 @@
 #include "hdi/utils/scoped_timers.h"
 #include <random>
 
-#ifdef __APPLE__
+#ifdef __USE_GCD__
 #include <dispatch/dispatch.h>
 #endif
 
@@ -451,13 +451,13 @@ namespace hdi{
     template <typename scalar_type>
     void TSNERandomWalks<scalar_type>::computeLowDimensionalDistribution(){
       const int n = getNumberOfLandmarks();
-#ifdef __APPLE__
+#ifdef __USE_GCD__
       std::cout << "GCD dispatch, tsne_random_walks_inl 455.\n";
       dispatch_apply(n, dispatch_get_global_queue(0, 0), ^(size_t j) {
 #else
       #pragma omp parallel for
       for(int j = 0; j < n; ++j){
-#endif //__APPLE__
+#endif //__USE_GCD__
         _Q[j*n + j] = 0;
         for(int i = j+1; i < n; ++i){
           const double euclidean_dist_sq(
@@ -473,7 +473,7 @@ namespace hdi{
           _Q[i*n + j] = static_cast<scalar_type>(v);
         }
       }
-#ifdef __APPLE__
+#ifdef __USE_GCD__
       );
 #endif
       double sum_Q = 0;

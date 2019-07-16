@@ -464,13 +464,13 @@ namespace hdi{
     template <typename scalar_type>
     void SPTree<scalar_type>::computeEdgeForces(unsigned int* row_P, unsigned int* col_P, hp_scalar_type* val_P, hp_scalar_type multiplier, int N, hp_scalar_type* pos_f)const
     {
-#ifdef __APPLE__
+#ifdef __USE_GCD__
       std::cout << "GCD dispatch, sptree_inl 468.\n";
       dispatch_apply(N, dispatch_get_global_queue(0, 0), ^(size_t n) {
 #else
       #pragma omp parallel for
       for(int n = 0; n < N; n++) {
-#endif //__APPLE__
+#endif //__USE_GCD__
         std::vector<hp_scalar_type> buff(_emb_dimension,0);
         // Loop over all edges in the graph
         unsigned int ind1, ind2;
@@ -491,7 +491,7 @@ namespace hdi{
             pos_f[ind1 + d] += D * buff[d];
         }
       }
-#ifdef __APPLE__
+#ifdef __USE_GCD__
       );
 #endif
     }

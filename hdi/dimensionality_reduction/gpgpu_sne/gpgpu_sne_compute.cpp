@@ -1,3 +1,5 @@
+#ifndef __APPLE__
+
 #include "gpgpu_sne_compute.h"
 #include "compute_shaders.glsl"
 
@@ -369,3 +371,6 @@ namespace hdi {
     }
   }
 }
+
+
+#endif // __APPLE__

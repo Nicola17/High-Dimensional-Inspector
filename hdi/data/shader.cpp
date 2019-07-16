@@ -54,7 +54,9 @@ void Shader::create()
   case VERTEX: gl_type = GL_VERTEX_SHADER; break;
   case FRAGMENT: gl_type = GL_FRAGMENT_SHADER; break;
   case GEOMETRY: gl_type = GL_GEOMETRY_SHADER; break;
+#ifdef GLAD_GL_VERSION_4_3
   case COMPUTE: gl_type = GL_COMPUTE_SHADER; break;
+#endif // GLAD_GL_VERSION_4_3
   }
 
   _handle = glCreateShader(gl_type);

@@ -29,6 +29,7 @@
 * OF SUCH DAMAGE.
 *
 */
+#ifndef __APPLE__
 
 #pragma once
 
@@ -128,3 +129,5 @@ namespace hdi {
     };
   }
 }
+
+#endif // __APPLE__

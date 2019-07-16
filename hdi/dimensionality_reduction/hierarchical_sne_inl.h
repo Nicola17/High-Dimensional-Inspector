@@ -49,11 +49,9 @@
 #include "hdi/data/io.h"
 #include "hdi/utils/log_progress.h"
 
-#ifdef __APPLE__
-#include <dispatch/dispatch.h>
-#else
-#define __block
-#endif
+//#ifdef __USE_GCD__
+//#include <dispatch/dispatch.h>
+//#endif
 
 #pragma warning( push )
 #pragma warning( disable : 4267)
@@ -275,13 +273,13 @@ namespace hdi{
         utils::secureLog(_logger,"\tFMC computation...");
         utils::ScopedTimer<scalar_type, utils::Seconds> timer(_statistics._init_probabilities_time);
         
-#ifdef __APPLE__
-        std::cout << "GCD dispatch, hierarchical_sne_inl 253.\n";
-        dispatch_apply(_num_dps, dispatch_get_global_queue(0, 0), ^(size_t d) {
-#else
+//#ifdef __USE_GCD__
+//        std::cout << "GCD dispatch, hierarchical_sne_inl 253.\n";
+//        dispatch_apply(_num_dps, dispatch_get_global_queue(0, 0), ^(size_t d) {
+//#else
         #pragma omp parallel for
         for(int_type d = 0; d < _num_dps; ++d){
-#endif //__APPLE__
+//#endif //__USE_GCD__
           //It could be that the point itself is not the nearest one if two points are identical... I want the point itself to be the first one!
           if(neighborhood_graph[d*nn] != d){
             int to_swap = d*nn;
@@ -309,9 +307,9 @@ namespace hdi{
             distance_based_probabilities[d*nn+n] = temp_probability[n];
           }
         }
-#ifdef __APPLE__
-        );
-#endif
+//#ifdef __USE_GCD__
+//        );
+//#endif
       }
     }
 
@@ -337,13 +335,13 @@ namespace hdi{
         scale._landmark_weight.resize(_num_dps,1);
         scale._transition_matrix.resize(_num_dps);
 
-#ifdef __APPLE__
-        std::cout << "GCD dispatch, hierarchical_sne_inl 253.\n";
-        dispatch_apply(_num_dps, dispatch_get_global_queue(0, 0), ^(size_t i) {
-#else
+//#ifdef __USE_GCD__
+//        std::cout << "GCD dispatch, hierarchical_sne_inl 253.\n";
+//        dispatch_apply(_num_dps, dispatch_get_global_queue(0, 0), ^(size_t i) {
+//#else
         #pragma omp parallel for
         for(int i = 0; i < _num_dps; ++i){
-#endif //__APPLE__
+//#endif //__USE_GCD__
           scalar_type sum = 0;
           for(int n = 1; n < nn; ++n){
             int idx = i*nn+n;
@@ -352,9 +350,9 @@ namespace hdi{
             scale._transition_matrix[i][neighborhood_graph[idx]] = v;
           }
         }
-#ifdef __APPLE__
-        );
-#endif
+//#ifdef __USE_GCD__
+//        );
+//#endif
 
         std::iota(scale._landmark_to_original_data_idx.begin(),scale._landmark_to_original_data_idx.end(),0);
         std::iota(scale._landmark_to_previous_scale_idx.begin(),scale._landmark_to_previous_scale_idx.end(),0);
@@ -435,25 +433,28 @@ namespace hdi{
       const unsigned_int_type previous_scale_dp = previous_scale._transition_matrix.size();
       int count = 0;
       int thresh = _params._mcmcs_num_walks * _params._mcmcs_landmark_thresh;
-      __block std::vector<unsigned_int_type> importance_sampling(previous_scale_dp,0);
+      //__block std::vector<unsigned_int_type> importance_sampling(previous_scale_dp,0);
+      std::vector<unsigned_int_type> importance_sampling(previous_scale_dp,0);
 
       {
         utils::ScopedTimer<scalar_type, utils::Seconds> timer(_statistics._mcmc_sampling_time);
 
-        __block std::default_random_engine generator(seed());
-        __block std::uniform_real_distribution<double> distribution_real(0.0, 1.0);
+        //__block std::default_random_engine generator(seed());
+        //__block std::uniform_real_distribution<double> distribution_real(0.0, 1.0);
+        std::default_random_engine generator(seed());
+        std::uniform_real_distribution<double> distribution_real(0.0, 1.0);
         selected_landmarks = 0;
 
         utils::secureLog(_logger,"Monte Carlo Approximation...");
         unsigned_int_type invalid = std::numeric_limits<unsigned_int_type>::max();
 
-#ifdef __APPLE__
-        std::cout << "GCD dispatch, hierarchical_sne_inl 391.\n";
-        dispatch_apply(previous_scale_dp, dispatch_get_global_queue(0, 0), ^(size_t d) {
-#else
+//#ifdef __USE_GCD__
+//        std::cout << "GCD dispatch, hierarchical_sne_inl 391.\n";
+//        dispatch_apply(previous_scale_dp, dispatch_get_global_queue(0, 0), ^(size_t d) {
+//#else
         #pragma omp parallel for
         for(int d = 0; d < previous_scale_dp; ++d){
-#endif //__APPLE__
+//#endif //__USE_GCD__
           for(int p = 0; p < _params._mcmcs_num_walks; ++p){
             int idx = d;
             idx = randomWalk(idx,_params._mcmcs_walk_length,previous_scale._transition_matrix,distribution_real,generator);
@@ -462,9 +463,9 @@ namespace hdi{
             }
           }
         }
-#ifdef __APPLE__
-        );
-#endif
+//#ifdef __USE_GCD__
+//        );
+//#endif
         _statistics._landmarks_selection_num_walks = previous_scale_dp*_params._mcmcs_num_walks;
 
         for(int i = 0; i < previous_scale_dp; ++i){
@@ -519,22 +520,25 @@ namespace hdi{
       utils::secureLogValue(_logger,"\t#landmarks",selected_landmarks);
 
       {//Area of influence
-        __block std::default_random_engine generator(seed());
-        __block std::uniform_real_distribution<double> distribution_real(0.0, 1.0);
+        //__block std::default_random_engine generator(seed());
+        //__block std::uniform_real_distribution<double> distribution_real(0.0, 1.0);
+        std::default_random_engine generator(seed());
+        std::uniform_real_distribution<double> distribution_real(0.0, 1.0);
         const unsigned_int_type max_jumps = 100;//1000.*selected_landmarks/previous_scale_dp;
         const unsigned_int_type walks_per_dp = _params._num_walks_per_landmark;
         utils::secureLog(_logger,"\tComputing area of influence...");
         {
           utils::ScopedTimer<scalar_type, utils::Seconds> timer(_statistics._aoi_time);
-          __block unsigned_int_type num_elem_in_Is(0);
-#ifdef __APPLE__
-          std::cout << "GCD dispatch, hierarchical_sne_inl 473.\n";
-          dispatch_queue_t criticalQueue = dispatch_queue_create("critical", NULL);
-          dispatch_apply(previous_scale_dp, dispatch_get_global_queue(0, 0), ^(size_t d) {
-#else
+          //__block unsigned_int_type num_elem_in_Is(0);
+          unsigned_int_type num_elem_in_Is(0);
+//#ifdef __USE_GCD__
+//          std::cout << "GCD dispatch, hierarchical_sne_inl 473.\n";
+//          dispatch_queue_t criticalQueue = dispatch_queue_create("critical", NULL);
+//          dispatch_apply(previous_scale_dp, dispatch_get_global_queue(0, 0), ^(size_t d) {
+//#else
           #pragma omp parallel for
           for(int d = 0; d < previous_scale_dp; ++d){
-#endif //__APPLE__
+//#endif //__USE_GCD__
             std::unordered_map<unsigned_int_type, unsigned_int_type> landmarks_reached;
             for(int i = 0; i < walks_per_dp; ++i){
               auto res = randomWalk(d,scale._previous_scale_to_landmark_idx,max_jumps,previous_scale._transition_matrix,distribution_real,generator);
@@ -546,11 +550,11 @@ namespace hdi{
             }
 
             
-#ifdef __APPLE__
-            dispatch_sync(criticalQueue, ^
-#else
+//#ifdef __USE_GCD__
+//            dispatch_sync(criticalQueue, ^
+//#else
             #pragma omp critical
-#endif
+//#endif
             {
               num_elem_in_Is += landmarks_reached.size();
 
@@ -571,13 +575,13 @@ namespace hdi{
                 scale._landmark_weight[l.first] += prob * previous_scale._landmark_weight[d];
               }
             }
-#ifdef __APPLE__
-            );
-#endif
+//#ifdef __USE_GCD__
+//            );
+//#endif
           }
-#ifdef __APPLE__
-          );
-#endif
+//#ifdef __USE_GCD__
+//          );
+//#endif
           _statistics._aoi_num_walks = previous_scale_dp * walks_per_dp;
           _statistics._aoi_sparsity = 1 - scalar_type(num_elem_in_Is) / (previous_scale_dp*selected_landmarks);
         }
@@ -606,6 +610,8 @@ namespace hdi{
       }
 
       utils::secureLogValue(_logger,"Min memory requirements (MB)",scale.mimMemoryOccupation());
+        
+      return true;
     }
 
     template <typename scalar_type, typename sparse_scalar_matrix_type>
@@ -651,14 +657,14 @@ namespace hdi{
             progress.setNumTicks(previous_scale_dp/50000);
             progress.setName("Area of influence");
             progress.start();
-  #ifdef __APPLE__
-            std::cout << "GCD dispatch, hierarchical_sne_inl 587.\n";
-            dispatch_queue_t criticalQueue = dispatch_queue_create("critical", NULL);
-            dispatch_apply(previous_scale_dp, dispatch_get_global_queue(0, 0), ^(size_t d) {
-  #else
+  //#ifdef __USE_GCD__
+  //          std::cout << "GCD dispatch, hierarchical_sne_inl 587.\n";
+  //          dispatch_queue_t criticalQueue = dispatch_queue_create("critical", NULL);
+  //          dispatch_apply(previous_scale_dp, dispatch_get_global_queue(0, 0), ^(size_t d) {
+  //#else
           #pragma omp parallel for
             for(int d = 0; d < previous_scale_dp; ++d){
-  #endif //__APPLE__
+  //#endif //__USE_GCD__
               //map because it must be ordered for the initialization of the maps
               std::map<unsigned_int_type, scalar_type> landmarks_reached;
               for(int i = 0; i < walks_per_dp; ++i){
@@ -679,9 +685,9 @@ namespace hdi{
               map_helpers_type::shrinkToFit(scale._area_of_influence[d]);
               progress.step();
             }
-  #ifdef __APPLE__
-            );
-  #endif
+  //#ifdef __USE_GCD__
+  //          );
+  //#endif
             progress.finish();
           }
           utils::secureLog(_logger,"\tCaching weights...");
@@ -708,13 +714,13 @@ namespace hdi{
             progress.setNumTicks(scale._transition_matrix.size()/5000);
             progress.setName("Similarities");
             progress.start();
-  #ifdef __APPLE__
-            std::cout << "GCD dispatch, hierarchical_sne_inl 602.\n";
-            dispatch_apply(scale._transition_matrix.size(), dispatch_get_global_queue(0, 0), ^(size_t l) {
-  #else
+//  #ifdef __USE_GCD__
+//            std::cout << "GCD dispatch, hierarchical_sne_inl 602.\n";
+//            dispatch_apply(scale._transition_matrix.size(), dispatch_get_global_queue(0, 0), ^(size_t l) {
+//  #else
             #pragma omp parallel for
             for(int l = 0; l < scale._transition_matrix.size(); ++l){
-  #endif //__APPLE__
+//  #endif //__USE_GCD__
               //ordered for efficient initialization
               std::map<typename sparse_scalar_matrix_type::value_type::key_type, typename sparse_scalar_matrix_type::value_type::mapped_type> temp_trans_mat; // use map here
               for(const auto& d: inverse_aoi[l]){
@@ -738,9 +744,9 @@ namespace hdi{
               map_helpers_type::shrinkToFit(scale._transition_matrix[l]);
               progress.step();
             }
-  #ifdef __APPLE__
-            );
-  #endif
+//  #ifdef __USE_GCD__
+//            );
+//  #endif
             progress.finish();
           }
           _statistics._aoi_num_walks = previous_scale_dp * walks_per_dp;
@@ -769,6 +775,8 @@ namespace hdi{
           _statistics._fmc_effective_sparsity = 1 - scalar_type(num_effective_elem_in_Ts) / (selected_landmarks*selected_landmarks);
         }
       }
+        
+      return true;
     }
 
     template <typename scalar_type, typename sparse_scalar_matrix_type>
@@ -807,13 +815,13 @@ namespace hdi{
       scale = (scale<0)?(_hierarchy.size()-1):scale;
       checkAndThrowLogic(scale < _hierarchy.size(),"getInterpolationWeights: Invalid scale");
 
-#ifdef __APPLE__
-      std::cout << "GCD dispatch, hierarchical_sne_inl 724.\n";
-      dispatch_apply(_num_dps, dispatch_get_global_queue(0, 0), ^(size_t i) {
-#else
+//#ifdef __USE_GCD__
+//      std::cout << "GCD dispatch, hierarchical_sne_inl 724.\n";
+//      dispatch_apply(_num_dps, dispatch_get_global_queue(0, 0), ^(size_t i) {
+//#else
       #pragma omp parallel for
       for(int i = 0; i < _num_dps; ++i){
-#endif //__APPLE__
+//#endif //__USE_GCD__
         influence[i] = _hierarchy[1]._area_of_influence[i];
         for(int s = 2; s <= scale; ++s){
           typename sparse_scalar_matrix_type::value_type temp_link;
@@ -825,9 +833,9 @@ namespace hdi{
           influence[i] = temp_link;
         }
       }
-#ifdef __APPLE__
-      );
-#endif
+//#ifdef __USE_GCD__
+//      );
+//#endif
     }
     template <typename scalar_type, typename sparse_scalar_matrix_type>
     void HierarchicalSNE<scalar_type,sparse_scalar_matrix_type>::getInterpolationWeights(const std::vector<unsigned int>& data_points, sparse_scalar_matrix_type& influence, int scale)const{
@@ -838,13 +846,13 @@ namespace hdi{
       scale = (scale<0)?(_hierarchy.size()-1):scale;
       checkAndThrowLogic(scale < _hierarchy.size(),"getInterpolationWeights: Invalid scale");
 
-#ifdef __APPLE__
-      std::cout << "GCD dispatch, hierarchical_sne_inl 755.\n";
-      dispatch_apply(n, dispatch_get_global_queue(0, 0), ^(size_t i) {
-#else
+//#ifdef __USE_GCD__
+//      std::cout << "GCD dispatch, hierarchical_sne_inl 755.\n";
+//      dispatch_apply(n, dispatch_get_global_queue(0, 0), ^(size_t i) {
+//#else
       #pragma omp parallel for
       for(int i = 0; i < n; ++i){
-#endif //__APPLE__
+//#endif //__USE_GCD__
         influence[i] = _hierarchy[1]._area_of_influence[data_points[i]];
         for(int s = 2; s <= scale; ++s){
           typename sparse_scalar_matrix_type::value_type temp_link;
@@ -856,9 +864,9 @@ namespace hdi{
           influence[i] = temp_link;
         }
       }
-#ifdef __APPLE__
-      );
-#endif
+//#ifdef __USE_GCD__
+//      );
+//#endif
     }
 
     template <typename scalar_type, typename sparse_scalar_matrix_type>
@@ -905,13 +913,13 @@ namespace hdi{
       closeness.clear();
       closeness.resize(subset_orig_scale.size());
       
-#ifdef __APPLE__
-      std::cout << "GCD dispatch, hierarchical_sne_inl 814.\n";
-      dispatch_apply(subset_orig_scale.size(), dispatch_get_global_queue(0, 0), ^(size_t i) {
-#else
+//#ifdef __USE_GCD__
+//      std::cout << "GCD dispatch, hierarchical_sne_inl 814.\n";
+//      dispatch_apply(subset_orig_scale.size(), dispatch_get_global_queue(0, 0), ^(size_t i) {
+//#else
 #pragma omp parallel for
       for(int i = 0; i < subset_orig_scale.size(); ++i){
-#endif //__APPLE__
+//#endif //__USE_GCD__
         assert(subset_orig_scale[i] < _hierarchy[orig_scale+1]._area_of_influence.size());
         closeness[i] = _hierarchy[orig_scale+1]._area_of_influence[subset_orig_scale[i]];
 
@@ -925,9 +933,9 @@ namespace hdi{
           closeness[i] = temp_link;
         }
       }
-#ifdef __APPLE__
-      );
-#endif
+//#ifdef __USE_GCD__
+//      );
+//#endif
     }
 
     template <typename scalar_type, typename sparse_scalar_matrix_type>
@@ -948,13 +956,13 @@ namespace hdi{
         }
       }else{
         
-#ifdef __APPLE__
-        std::cout << "GCD dispatch, hierarchical_sne_inl 854.\n";
-        dispatch_apply(scale(0).size(), dispatch_get_global_queue(0, 0), ^(size_t i) {
-#else
+//#ifdef __USE_GCD__
+//        std::cout << "GCD dispatch, hierarchical_sne_inl 854.\n";
+//        dispatch_apply(scale(0).size(), dispatch_get_global_queue(0, 0), ^(size_t i) {
+//#else
 #pragma omp parallel for
         for(int i = 0; i < scale(0).size(); ++i){
-#endif //__APPLE__
+//#endif //__USE_GCD__
 
           typename sparse_scalar_matrix_type::value_type closeness = scale(1)._area_of_influence[i];
           for(int s = 2; s <= scale_id; ++s){
@@ -973,9 +981,9 @@ namespace hdi{
             }
           }
         }
-#ifdef __APPLE__
-        );
-#endif
+//#ifdef __USE_GCD__
+//        );
+//#endif
       }
 
     }
@@ -1088,6 +1096,7 @@ namespace hdi{
           }
         }
       }
+      return 0;
     }
 
     template <typename scalar_type, typename sparse_scalar_matrix_type>
@@ -1267,18 +1276,18 @@ namespace hdi{
     void HierarchicalSNE<scalar_type,sparse_scalar_matrix_type>::ClusterTree::computePointsToClusterAssociation(const HierarchicalSNE& hsne, std::vector<std::tuple<unsigned_int_type,int_type,scalar_type>>& res){
       res.resize(hsne.scale(0).size());
       
-#ifdef __APPLE__
-      std::cout << "GCD dispatch, hierarchical_sne_inl 1227.\n";
-      dispatch_apply(res.size(), dispatch_get_global_queue(0, 0), ^(size_t i) {
-#else
+//#ifdef __USE_GCD__
+//      std::cout << "GCD dispatch, hierarchical_sne_inl 1227.\n";
+//      dispatch_apply(res.size(), dispatch_get_global_queue(0, 0), ^(size_t i) {
+//#else
 #pragma omp parallel for
       for(int i = 0; i < res.size(); ++i){
-#endif //__APPLE__
+//#endif //__USE_GCD__
         computePointToClusterAssociation(hsne,i,res[i]);
       }
-#ifdef __APPLE__
-      );
-#endif
+//#ifdef __USE_GCD__
+//      );
+//#endif
 
     }
 

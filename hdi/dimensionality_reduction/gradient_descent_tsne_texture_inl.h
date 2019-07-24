@@ -117,18 +117,17 @@ namespace hdi {
       computeHighDimensionalDistribution(probabilities);
       initializeEmbeddingPosition(params._seed);
 
-#ifdef GLAD_GL_VERSION_4_3
-        //if (GLAD_GL_VERSION_4_3)
+#ifndef __APPLE__
+        if (GLAD_GL_VERSION_4_3)
         {
             _gpgpu_compute_tsne.initialize(_embedding, _params, _P);
         }
-        //else if (GLAD_GL_VERSION_3_3)
-#else
+        else if (GLAD_GL_VERSION_3_3)
+#endif // __APPLE__
         {
             std::cout << "Compute shaders not available, using rasterization fallback" << std::endl;
             _gpgpu_raster_tsne.initialize(_embedding, _params, _P);
         }
-#endif
 
       _iteration = 0;
 
@@ -154,18 +153,18 @@ namespace hdi {
       _P = distribution;
       initializeEmbeddingPosition(params._seed);
 
-#ifdef GLAD_GL_VERSION_4_3
-        //if (GLAD_GL_VERSION_4_3)
-        {
+#ifndef __APPLE__
+        if (GLAD_GL_VERSION_4_3)
+		{
+			utils::secureLog(_logger, "Init GPGPU gradient descent using compute shaders.");
             _gpgpu_compute_tsne.initialize(_embedding, _params, _P);
         }
-        //else if (GLAD_GL_VERSION_3_3)
-#else
+		else if (GLAD_GL_VERSION_3_3)
+#endif // __APPLE__
         {
-            std::cout << "Compute shaders not available, using rasterization fallback" << std::endl;
+			utils::secureLog(_logger, "Init GPU gradient descent. Compute shaders not available, using rasterization fallback.");
             _gpgpu_raster_tsne.initialize(_embedding, _params, _P);
         }
-#endif
 
 
       _iteration = 0;
@@ -254,17 +253,16 @@ namespace hdi {
 
     void GradientDescentTSNETexture::doAnIterationImpl(double mult) {
       // Compute gradient of the KL function using a compute shader approach
-#ifdef GLAD_GL_VERSION_4_3
-        //if (GLAD_GL_VERSION_4_3)
+#ifndef __APPLE__
+        if (GLAD_GL_VERSION_4_3)
         {
             _gpgpu_compute_tsne.compute(_embedding, exaggerationFactor(), _iteration, mult);
         }
-        //else if (GLAD_GL_VERSION_3_3)
-#else
+		else if (GLAD_GL_VERSION_3_3)
+#endif // __APPLE__
         {
             _gpgpu_raster_tsne.compute(_embedding, exaggerationFactor(), _iteration, mult);
         }
-#endif
       
       ++_iteration;
     }

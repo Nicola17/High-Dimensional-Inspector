@@ -98,17 +98,16 @@ namespace hdi {
 
       //! Set the adaptive texture scaling
       void setResolutionFactor(float factor) {
-#ifdef GLAD_GL_VERSION_4_3
-        //if (GLAD_GL_VERSION_4_3)
+#ifndef __APPLE__
+        if (GLAD_GL_VERSION_4_3)
         {
           _gpgpu_compute_tsne.setScalingFactor(factor);
         }
-        //else if (GLAD_GL_VERSION_3_3)
-#else
+		else if (GLAD_GL_VERSION_3_3)
+#endif // __APPLE__
         {
           _gpgpu_raster_tsne.setScalingFactor(factor);
         }
-#endif
       }
 
       //! Exageration baseline
@@ -148,9 +147,9 @@ namespace hdi {
       scalar_vector_type _Q; //! Conditional probalility distribution in the Low-dimensional space
       scalar_type _normalization_Q; //! Normalization factor of Q - Z in the original paper
 
-#ifdef GLAD_GL_VERSION_4_3
+#ifndef __APPLE__
       GpgpuSneCompute _gpgpu_compute_tsne;
-#endif
+#endif // __APPLE__
       GpgpuSneRaster _gpgpu_raster_tsne;
 
       std::array<scalar_type, 4> _temp;

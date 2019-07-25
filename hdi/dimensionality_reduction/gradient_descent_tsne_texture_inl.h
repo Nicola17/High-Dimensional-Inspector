@@ -115,19 +115,19 @@ namespace hdi {
       utils::secureLogValue(_logger, "Number of data points", _P.size());
 
       computeHighDimensionalDistribution(probabilities);
-      initializeEmbeddingPosition(params._seed);
+      initializeEmbeddingPosition(params._seed, params._rngRange);
 
 #ifndef __APPLE__
-        if (GLAD_GL_VERSION_4_3)
-        {
-            _gpgpu_compute_tsne.initialize(_embedding, _params, _P);
-        }
-        else if (GLAD_GL_VERSION_3_3)
+      if (GLAD_GL_VERSION_4_3)
+      {
+        _gpgpu_compute_tsne.initialize(_embedding, _params, _P);
+      }
+      else if (GLAD_GL_VERSION_3_3)
 #endif // __APPLE__
-        {
-            std::cout << "Compute shaders not available, using rasterization fallback" << std::endl;
-            _gpgpu_raster_tsne.initialize(_embedding, _params, _P);
-        }
+      {
+        std::cout << "Compute shaders not available, using rasterization fallback" << std::endl;
+        _gpgpu_raster_tsne.initialize(_embedding, _params, _P);
+      }
 
       _iteration = 0;
 
@@ -151,20 +151,20 @@ namespace hdi {
       utils::secureLogValue(_logger, "Number of data points", _P.size());
 
       _P = distribution;
-      initializeEmbeddingPosition(params._seed);
+      initializeEmbeddingPosition(params._seed, params._rngRange);
 
 #ifndef __APPLE__
-        if (GLAD_GL_VERSION_4_3)
-		{
-			utils::secureLog(_logger, "Init GPGPU gradient descent using compute shaders.");
-            _gpgpu_compute_tsne.initialize(_embedding, _params, _P);
-        }
-		else if (GLAD_GL_VERSION_3_3)
+      if (GLAD_GL_VERSION_4_3)
+      {
+        utils::secureLog(_logger, "Init GPGPU gradient descent using compute shaders.");
+        _gpgpu_compute_tsne.initialize(_embedding, _params, _P);
+      }
+      else if (GLAD_GL_VERSION_3_3)
 #endif // __APPLE__
-        {
-			utils::secureLog(_logger, "Init GPU gradient descent. Compute shaders not available, using rasterization fallback.");
-            _gpgpu_raster_tsne.initialize(_embedding, _params, _P);
-        }
+      {
+        utils::secureLog(_logger, "Init GPU gradient descent. Compute shaders not available, using rasterization fallback.");
+        _gpgpu_raster_tsne.initialize(_embedding, _params, _P);
+      }
 
 
       _iteration = 0;
@@ -254,16 +254,15 @@ namespace hdi {
     void GradientDescentTSNETexture::doAnIterationImpl(double mult) {
       // Compute gradient of the KL function using a compute shader approach
 #ifndef __APPLE__
-        if (GLAD_GL_VERSION_4_3)
-        {
-            _gpgpu_compute_tsne.compute(_embedding, exaggerationFactor(), _iteration, mult);
-        }
-		else if (GLAD_GL_VERSION_3_3)
+      if (GLAD_GL_VERSION_4_3)
+      {
+        _gpgpu_compute_tsne.compute(_embedding, exaggerationFactor(), _iteration, mult);
+      }
+      else if (GLAD_GL_VERSION_3_3)
 #endif // __APPLE__
-        {
-            _gpgpu_raster_tsne.compute(_embedding, exaggerationFactor(), _iteration, mult);
-        }
-      
+      {
+        _gpgpu_raster_tsne.compute(_embedding, exaggerationFactor(), _iteration, mult);
+      }
       ++_iteration;
     }
 

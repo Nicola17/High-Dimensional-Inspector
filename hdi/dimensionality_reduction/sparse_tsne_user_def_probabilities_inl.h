@@ -190,8 +190,8 @@ namespace hdi{
       else{
         std::srand(seed);
       }
-
-      for(auto& v : (*_embedding_container)){
+        
+      for (int i = 0; i < _embedding->numDataPoints(); ++i) {
         double x(0.);
         double y(0.);
         double radius(0.);
@@ -202,9 +202,10 @@ namespace hdi{
         } while((radius >= 1.0) || (radius == 0.0));
 
         radius = sqrt(-2 * log(radius) / radius);
-        x *= radius;
-        y *= radius;
-        v = static_cast<scalar_type>(x * multiplier);
+        x *= radius * multiplier;
+        y *= radius * multiplier;
+        _embedding->dataAt(i, 0) = x;
+        _embedding->dataAt(i, 1) = y;
       }
     }
 

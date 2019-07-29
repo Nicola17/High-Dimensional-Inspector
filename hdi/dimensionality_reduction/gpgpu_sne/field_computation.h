@@ -1,6 +1,10 @@
 #pragma once
 
-#include "hdi/utils/glad/glad.h"
+#ifdef __APPLE__
+    #include <OpenGL/gl3.h>
+#else // __APPLE__
+    #include "hdi/utils/glad/glad.h"
+#endif // __APPLE__
 
 #include "hdi/data/shader.h"
 
@@ -41,6 +45,9 @@ private:
   float _view_matrix[16];
 };
 
+
+#ifndef __APPLE__
+
 class ComputeFieldComputation
 {
 public:
@@ -66,3 +73,5 @@ private:
 
   GLuint _field_fbo;
 };
+
+#endif

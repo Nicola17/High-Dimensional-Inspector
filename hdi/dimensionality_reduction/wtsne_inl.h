@@ -41,10 +41,8 @@
 #include "weighted_sptree.h"
 #include <random>
 
-#ifdef __APPLE__
+#ifdef __USE_GCD__
 #include <dispatch/dispatch.h>
-#else
-#define __block
 #endif
 
 #pragma warning( push )
@@ -309,13 +307,13 @@ namespace hdi{
       
       
       // Loop over all edges in the graph
-#ifdef __APPLE__
+#ifdef __USE_GCD__
       std::cout << "GCD dispatch, wtsne_inl 303.\n";
       dispatch_apply(n, dispatch_get_global_queue(0, 0), ^(size_t j) {
 #else
       #pragma omp parallel for
       for(int j = 0; j < n; ++j){
-#endif //__APPLE__
+#endif //__USE_GCD__
         //_Q[j*n + j] = 0;
         for(int i = j+1; i < n; ++i){
           const double euclidean_dist_sq(
@@ -331,7 +329,7 @@ namespace hdi{
           _Q[i*n + j] = static_cast<scalar_type>(v);
         }
       }
-#ifdef __APPLE__
+#ifdef __USE_GCD__
       );
 #endif
       for(int j = 0; j < n; ++j){
@@ -383,21 +381,29 @@ namespace hdi{
 
       scalar_type sum_Q = .0;
       std::vector<hp_scalar_type> positive_forces(getNumberOfDataPoints()*_params._embedding_dimensionality);
-      __block std::vector<hp_scalar_type> negative_forces(getNumberOfDataPoints()*_params._embedding_dimensionality);
+#ifdef __USE_GCD__
+        __block std::vector<hp_scalar_type> negative_forces(getNumberOfDataPoints()*_params._embedding_dimensionality);
+#else
+        std::vector<hp_scalar_type> negative_forces(getNumberOfDataPoints()*_params._embedding_dimensionality);
+#endif //__USE_GCD__
 
       sptree.computeEdgeForces(_P, exaggeration, positive_forces.data());
 
-      __block std::vector<hp_scalar_type> sum_Q_subvalues(getNumberOfDataPoints(),0);
-#ifdef __APPLE__
+#ifdef __USE_GCD__
+        __block std::vector<hp_scalar_type> sum_Q_subvalues(getNumberOfDataPoints(),0);
+#else
+        std::vector<hp_scalar_type> sum_Q_subvalues(getNumberOfDataPoints(),0);
+#endif //__USE_GCD__
+#ifdef __USE_GCD__
       std::cout << "GCD dispatch, wtsne_inl 303.\n";
       dispatch_apply(getNumberOfDataPoints(), dispatch_get_global_queue(0, 0), ^(size_t n) {
 #else
       #pragma omp parallel for
       for(int n = 0; n < getNumberOfDataPoints(); n++){
-#endif //__APPLE__
+#endif //__USE_GCD__
         sptree.computeNonEdgeForces(n, _theta, negative_forces.data() + n * _params._embedding_dimensionality, sum_Q_subvalues[n]);
       }
-#ifdef __APPLE__
+#ifdef __USE_GCD__
       );
 #endif
 

@@ -97,6 +97,8 @@ namespace hdi{
         unsigned_int_type _mcmcs_num_walks; //! Num walks per landmark in the MCMCS (beta in the paper)
         scalar_type _mcmcs_landmark_thresh; //! Threshold for landmark selection (beta threshold in the paper)
         unsigned_int_type _mcmcs_walk_length; //! MCMC walk length (theta in the paper)
+        bool _hard_cut_off; //! Select landmarks based on a user provided hard percentage cut off, instead of data-driven
+        float _hard_cut_off_percentage; //! percentage of previous level landmarks to use in next level when using the hard cut off
 
         //if the MCMCS is not selected a random sampling will be used
         scalar_type _rs_reduction_factor_per_layer; //! Reduction factor per layer used in the random sampling (RS)
@@ -262,6 +264,8 @@ namespace hdi{
 
       //! Return the indexes of landmarks at "scale_id-1" that are influenced by the landmarks in idxes of scale "scale_id"
       void getInfluencedLandmarksInPreviousScale(unsigned_int_type scale_id, std::vector<unsigned_int_type>& idxes, std::map<unsigned_int_type,scalar_type>& neighbors)const;
+      //! Return the indexes of landmarks at "scale_id-1" that are influenced by the landmarks in idxes of scale "scale_id"
+      void getInfluencingLandmarksInNextScale(unsigned_int_type scale_id, std::vector<unsigned_int_type>& idxes, std::map<unsigned_int_type, scalar_type>& neighbors)const;
       //! Return a sparse matrix that assigns to each data point the probability of being influenced by landmarks in the top scale. It can be used for interpolation like in hybri schemes
       //! \note a negative value of the scale parameter will force the algo to use the top one
       void getInterpolationWeights(sparse_scalar_matrix_type& influence, int scale = -1)const;

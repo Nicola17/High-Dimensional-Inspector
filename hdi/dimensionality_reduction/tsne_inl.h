@@ -41,7 +41,7 @@
 #include <time.h>
 #include <cmath>
 
-#ifdef __APPLE__
+#ifdef __USE_GCD__
 #include <dispatch/dispatch.h>
 #endif
 
@@ -161,13 +161,13 @@ namespace hdi{
     void TSNE<scalar_type>::computeHighDimensionalDistances(){
       utils::secureLog(_logger,"Computing High-dimensional distances...");
       const int n = size();
-#ifdef __APPLE__
+#ifdef __USE_GCD__
       std::cout << "GCD dispatch, tsne_inl 165.\n";
       dispatch_apply(n, dispatch_get_global_queue(0, 0), ^(size_t j) {
 #else
       #pragma omp parallel for
       for(int j = 0; j < n; ++j){
-#endif //__APPLE__
+#endif //__USE_GCD__
         _distances_squared[j*n + j] = 0;
         for(int i = j+1; i < n; ++i){
           scalar_type res(utils::euclideanDistance<scalar_type>(_high_dimensional_data[i],_high_dimensional_data[i]+_dimensionality, _high_dimensional_data[j],_high_dimensional_data[j]+_dimensionality));
@@ -176,7 +176,7 @@ namespace hdi{
           _distances_squared[i*n + j] = res;
         }
       }
-#ifdef __APPLE__
+#ifdef __USE_GCD__
       );
 #endif
     }
@@ -185,13 +185,13 @@ namespace hdi{
     void TSNE<scalar_type>::computeGaussianDistributions(double perplexity){
       utils::secureLog(_logger,"Computing gaussian distributions...");
       const int n = size();
-#ifdef __APPLE__
+#ifdef __USE_GCD__
       std::cout << "GCD dispatch, tsne_inl 189.\n";
       dispatch_apply(n, dispatch_get_global_queue(0, 0), ^(size_t j) {
 #else
       #pragma omp parallel for
       for(int j = 0; j < n; ++j){
-#endif //__APPLE__
+#endif //__USE_GCD__
         const auto sigma =  utils::computeGaussianDistributionWithFixedPerplexity<scalar_vector_type>(
                   _distances_squared.begin() + j*n,
                   _distances_squared.begin() + (j + 1)*n,
@@ -205,7 +205,7 @@ namespace hdi{
         _P[j*n + j] = 0.;
         _sigmas[j] = static_cast<scalar_type>(sigma);
       }
-#ifdef __APPLE__
+#ifdef __USE_GCD__
       );
 #endif
     }
@@ -279,13 +279,13 @@ namespace hdi{
     template <typename scalar_type>
     void TSNE<scalar_type>::computeLowDimensionalDistribution(){
       const int n = size();
-#ifdef __APPLE__
+#ifdef __USE_GCD__
       std::cout << "GCD dispatch, tsne_inl 283.\n";
       dispatch_apply(n, dispatch_get_global_queue(0, 0), ^(size_t j) {
 #else
       #pragma omp parallel for
       for(int j = 0; j < n; ++j){
-#endif //__APPLE__
+#endif //__USE_GCD__
         _Q[j*n + j] = 0;
         for(int i = j+1; i < n; ++i){
           const double euclidean_dist_sq(
@@ -301,7 +301,7 @@ namespace hdi{
           _Q[i*n + j] = static_cast<scalar_type>(v);
         }
       }
-#ifdef __APPLE__
+#ifdef __USE_GCD__
       );
 #endif
       double sum_Q = 0;

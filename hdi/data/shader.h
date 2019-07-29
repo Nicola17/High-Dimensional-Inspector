@@ -1,6 +1,10 @@
 #pragma once
 
-#include "hdi/utils/glad/glad.h"
+#ifdef __APPLE__
+    #include <OpenGL/gl3.h>
+#else // __APPLE__
+    #include "hdi/utils/glad/glad.h"
+#endif // __APPLE__
 
 #include <exception>
 

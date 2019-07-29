@@ -6,7 +6,6 @@ include_directories ("${CMAKE_CURRENT_BINARY_DIR}")
 
 if (CMAKE_GENERATOR STREQUAL Xcode)
   set(CMAKE_OSX_DEPLOYMENT_TARGET "10.12" CACHE STRING "Minimum OS X deployment version")
-  set_target_properties(${PROJECT} PROPERTIES XCODE_ATTRIBUTE_COMPILER_INDEX_STORE_ENABLE "NO")
 
   set (LLVM_ROOT_DIR "/usr/local/opt/llvm")
   find_package( LLVM )

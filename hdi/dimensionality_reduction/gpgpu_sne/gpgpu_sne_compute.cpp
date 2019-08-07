@@ -318,8 +318,9 @@ namespace hdi {
       glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 4, _compute_buffers[INTERP_FIELDS]);
       glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 5, _compute_buffers[GRADIENTS]);
 
+      unsigned int grid_size = sqrt(num_points) + 1;
       // Compute the gradients of the KL function
-	  glDispatchCompute(num_points / 2, 2, 1);
+      glDispatchCompute(grid_size, grid_size, 1);
 
       glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
     }

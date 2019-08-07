@@ -217,15 +217,16 @@ namespace hdi {
 
     void GpgpuSneCompute::compute(embedding_type* embedding, float exaggeration, float iteration, float mult) {
       float* points = embedding->getContainer().data();
+      unsigned int num_points = embedding->numDataPoints();
 
       if (iteration < 0.5)
       {
         glBindBuffer(GL_SHADER_STORAGE_BUFFER, _compute_buffers[POSITION]);
-        glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, embedding->numDataPoints() * sizeof(Point2D), points);
+        glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, num_points * sizeof(Point2D), points);
       }
 
       // Compute the bounds of the given embedding and add a 10% border around it
-      computeEmbeddingBounds1(embedding->numDataPoints(), points, 0.1f);
+      computeEmbeddingBounds1(num_points, points, 0.1f);
 
       glBindBuffer(GL_SHADER_STORAGE_BUFFER, _compute_buffers[BOUNDS]);
       glGetBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(Point2D) * 2, &_bounds);
@@ -237,7 +238,7 @@ namespace hdi {
       uint32_t height = _adaptive_resolution ? std::max((unsigned int)(range.y * _resolutionScaling), MINIMUM_FIELDS_SIZE) : FIXED_FIELDS_SIZE;
 
       // Compute the fields texture
-      fieldComputation.compute(width, height, _function_support, embedding->numDataPoints(), _compute_buffers[POSITION], _compute_buffers[BOUNDS], _bounds.min.x, _bounds.min.y, _bounds.max.x, _bounds.max.y);
+      fieldComputation.compute(width, height, _function_support, num_points, _compute_buffers[POSITION], _compute_buffers[BOUNDS], _bounds.min.x, _bounds.min.y, _bounds.max.x, _bounds.max.y);
 
       // Calculate the normalization sum and sample the field values for every point
       float sum_Q = 0;
@@ -249,12 +250,12 @@ namespace hdi {
       }
 
       // Compute the gradients of the KL-function
-      computeGradients(embedding->numDataPoints(), sum_Q, exaggeration);
+      computeGradients(num_points, sum_Q, exaggeration);
 
       // Update the point positions
-      updatePoints(embedding->numDataPoints(), points, embedding, iteration, mult);
-      computeEmbeddingBounds1(embedding->numDataPoints(), points);
-      updateEmbedding(embedding, exaggeration, iteration, mult);
+      updatePoints(num_points, points, embedding, iteration, mult);
+      computeEmbeddingBounds1(num_points, points);
+      updateEmbedding(num_points, exaggeration, iteration, mult);
 
       glBindBuffer(GL_SHADER_STORAGE_BUFFER, _compute_buffers[POSITION]);
       glGetBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, embedding->numDataPoints() * sizeof(Point2D), points);
@@ -318,8 +319,8 @@ namespace hdi {
       glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 4, _compute_buffers[INTERP_FIELDS]);
       glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 5, _compute_buffers[GRADIENTS]);
 
-      unsigned int grid_size = sqrt(num_points) + 1;
       // Compute the gradients of the KL function
+      unsigned int grid_size = sqrt(num_points) + 1;
       glDispatchCompute(grid_size, grid_size, 1);
 
       glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
@@ -345,13 +346,15 @@ namespace hdi {
       glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, _compute_buffers[GAIN]);
 
       // Update the points
-      glDispatchCompute((num_points * 2 / 64) + 1, 1, 1);
+      unsigned int num_workgroups = (num_points * 2 / 64) + 1;
+      unsigned int grid_size = sqrt(num_workgroups) + 1;
+      glDispatchCompute(grid_size, grid_size, 1);
     }
 
-    void GpgpuSneCompute::updateEmbedding(embedding_type* embedding, float exaggeration, float iteration, float mult) {
+    void GpgpuSneCompute::updateEmbedding(unsigned int num_points, float exaggeration, float iteration, float mult) {
       _center_and_scale_program.bind();
 
-      _center_and_scale_program.uniform1ui("num_points", embedding->numDataPoints());
+      _center_and_scale_program.uniform1ui("num_points", num_points);
 
       // Bind required buffers to shader program
       glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, _compute_buffers[POSITION]);
@@ -368,7 +371,9 @@ namespace hdi {
       }
 
       // Compute the bounds
-      glDispatchCompute((embedding->numDataPoints() / 128) + 1, 1, 1);
+      unsigned int num_workgroups = (num_points / 128) + 1;
+      unsigned int grid_size = sqrt(num_workgroups) + 1;
+      glDispatchCompute(grid_size, grid_size, 1);
     }
   }
 }

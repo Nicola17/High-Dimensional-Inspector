@@ -165,8 +165,8 @@ const char* update_source = GLSL(430,
   uniform float mult;
 
   void main() {
-    uint i = gl_GlobalInvocationID.x;
-    uint groupSize = gl_WorkGroupSize.x;
+    uint workGroupID = gl_WorkGroupID.y * gl_NumWorkGroups.x + gl_WorkGroupID.x;
+    uint i = workGroupID * gl_WorkGroupSize.x + gl_LocalInvocationID.x;
 
     if (i >= num_points * 2)
       return;
@@ -276,8 +276,8 @@ const char* center_and_scale_source = GLSL(430,
   uniform float diameter;
 
   void main() {
-    uint i = gl_GlobalInvocationID.x;
-    uint groupSize = gl_WorkGroupSize.x;
+    uint workGroupID = gl_WorkGroupID.y * gl_NumWorkGroups.x + gl_WorkGroupID.x;
+    uint i = workGroupID * gl_WorkGroupSize.x + gl_LocalInvocationID.x;
 
     if (i >= num_points)
       return;

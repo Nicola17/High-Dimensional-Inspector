@@ -235,7 +235,7 @@ namespace hdi {
       {
         sum_Q += std::max<float>(interpolated_fields_ptr[i * 4] - 1, 0.);
       }
-      std::cout << sum_Q << std::endl;
+      //std::cout << sum_Q << std::endl;
 
       if (sum_Q == 0) {
         return;

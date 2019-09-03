@@ -1,3 +1,5 @@
+#ifndef __APPLE__
+
 #include "gpgpu_sne_compute.h"
 #include "compute_shaders.glsl"
 
@@ -317,7 +319,7 @@ namespace hdi {
       glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 5, _compute_buffers[GRADIENTS]);
 
       // Compute the gradients of the KL function
-      glDispatchCompute(num_points, 1, 1);
+	  glDispatchCompute(num_points / 2, 2, 1);
 
       glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
     }
@@ -369,3 +371,6 @@ namespace hdi {
     }
   }
 }
+
+
+#endif // __APPLE__

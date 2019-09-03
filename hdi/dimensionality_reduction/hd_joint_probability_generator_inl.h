@@ -43,10 +43,8 @@
 #include <unordered_set>
 #include <numeric>
 
-#ifdef __APPLE__
+#ifdef __USE_GCD__
 #include <dispatch/dispatch.h>
-#else
-#define __block
 #endif
 
 #pragma warning( push )
@@ -187,15 +185,19 @@ namespace hdi{
       const int n = distribution.size();
 
       const unsigned int nn = params._perplexity*params._perplexity_multiplier + 1;
-      __block scalar_vector_type temp_vector(distances_squared.size(),0);
+#ifdef __USE_GCD__
+        __block scalar_vector_type temp_vector(distances_squared.size(),0);
+#else
+        scalar_vector_type temp_vector(distances_squared.size(),0);
+#endif //__USE_GCD__
       
-#ifdef __APPLE__
+#ifdef __USE_GCD__
       std::cout << "GCD dispatch, hd_joint_probability_generator 193.\n";
       dispatch_apply(n, dispatch_get_global_queue(0, 0), ^(size_t j) {
 #else
       #pragma omp parallel for
       for(int j = 0; j < n; ++j){
-#endif //__APPLE__
+#endif //__USE_GCD__
         const auto sigma =  utils::computeGaussianDistributionWithFixedPerplexity<scalar_vector_type>(
                   distances_squared.begin() + j*nn, //check squared
                   distances_squared.begin() + (j + 1)*nn,
@@ -207,7 +209,7 @@ namespace hdi{
                   0
                 );
       }
-#ifdef __APPLE__
+#ifdef __USE_GCD__
       );
 #endif
 
@@ -227,13 +229,13 @@ namespace hdi{
       const unsigned int nn = params._perplexity*params._perplexity_multiplier + 1;
       const int n = indices.size()/nn;
       
-#ifdef __APPLE__
+#ifdef __USE_GCD__
       std::cout << "GCD dispatch, hd_joint_probability_generator 232.\n";
       dispatch_apply(n, dispatch_get_global_queue(0, 0), ^(size_t j) {
 #else
       #pragma omp parallel for
       for(int j = 0; j < n; ++j){
-#endif //__APPLE__
+#endif //__USE_GCD__
         const auto sigma =  utils::computeGaussianDistributionWithFixedPerplexity<scalar_vector_type>(
                   distances_squared.begin() + j*nn, //check squared
                   distances_squared.begin() + (j + 1)*nn,
@@ -245,7 +247,7 @@ namespace hdi{
                   0
                 );
       }
-#ifdef __APPLE__
+#ifdef __USE_GCD__
       );
 #endif
     }
@@ -269,17 +271,21 @@ namespace hdi{
       utils::secureLog(_logger,"Computing joint-probability distribution...");
       const int n = num_dps;
       const unsigned int nn = num_dps;
+#ifdef __USE_GCD__
       __block scalar_vector_type temp_vector(num_dps*num_dps,0);
+#else
+      scalar_vector_type temp_vector(num_dps*num_dps,0);
+#endif //__USE_GCD__
       distribution.clear();
       distribution.resize(n);
 
-#ifdef __APPLE__
+#ifdef __USE_GCD__
       std::cout << "GCD dispatch, hd_joint_probability_generator 193.\n";
       dispatch_apply(n, dispatch_get_global_queue(0, 0), ^(size_t j) {
 #else
       #pragma omp parallel for
       for(int j = 0; j < n; ++j){
-#endif //__APPLE__
+#endif //__USE_GCD__
         const auto sigma =  utils::computeGaussianDistributionWithFixedPerplexity<scalar_vector_type>(
                   squared_distance_matrix.begin() + j*nn, //check squared
                   squared_distance_matrix.begin() + (j + 1)*nn,
@@ -291,7 +297,7 @@ namespace hdi{
                   j
                 );
       }
-#ifdef __APPLE__
+#ifdef __USE_GCD__
       );
 #endif
 

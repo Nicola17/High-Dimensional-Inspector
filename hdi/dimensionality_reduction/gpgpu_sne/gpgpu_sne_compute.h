@@ -29,6 +29,7 @@
 * OF SUCH DAMAGE.
 *
 */
+#ifndef __APPLE__
 
 #pragma once
 
@@ -40,6 +41,7 @@
 #include "field_computation.h"
 
 #include <array>
+#include <cstdint>
 
 namespace hdi {
   namespace dr {
@@ -127,3 +129,5 @@ namespace hdi {
     };
   }
 }
+
+#endif // __APPLE__

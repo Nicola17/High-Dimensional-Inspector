@@ -32,7 +32,12 @@
 
 #pragma once
 
-#include "hdi/utils/glad/glad.h"
+#ifdef __APPLE__
+    #include <OpenGL/gl3.h>
+#else // __APPLE__
+    #include "hdi/utils/glad/glad.h"
+#endif // __APPLE__
+
 #include "hdi/data/shader.h"
 #include "hdi/data/embedding.h"
 #include "hdi/data/map_mem_eff.h"
@@ -40,6 +45,7 @@
 #include "field_computation.h"
 
 #include <array>
+#include <cstdint>
 
 namespace hdi {
   namespace dr {

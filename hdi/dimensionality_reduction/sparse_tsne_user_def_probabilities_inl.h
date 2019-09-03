@@ -41,10 +41,8 @@
 #include "sptree.h"
 #include <random>
 
-#ifdef __APPLE__
+#ifdef __USE_GCD__
 #include <dispatch/dispatch.h>
-#else
-#define __block
 #endif
 
 #pragma warning( push )
@@ -75,20 +73,20 @@ namespace hdi{
       _theta(0),
       _exaggeration_baseline(1)
     {
-  
+
     }
 
     template <typename scalar, typename sparse_scalar_matrix>
     void SparseTSNEUserDefProbabilities<scalar, sparse_scalar_matrix>::reset(){
       _initialized = false;
     }
-  
+
     template <typename scalar, typename sparse_scalar_matrix>
     void SparseTSNEUserDefProbabilities<scalar, sparse_scalar_matrix>::clear(){
       _embedding->clear();
       _initialized = false;
     }
-  
+
     template <typename scalar, typename sparse_scalar_matrix>
     void SparseTSNEUserDefProbabilities<scalar, sparse_scalar_matrix>::getEmbeddingPosition(scalar_vector_type& embedding_position, data_handle_type handle)const{
       if(!_initialized){
@@ -99,7 +97,7 @@ namespace hdi{
         (*_embedding_container)[i] = (*_embedding_container)[handle*_params._embedding_dimensionality + i];
       }
     }
-  
+
 
   /////////////////////////////////////////////////////////////////////////
 
@@ -111,7 +109,7 @@ namespace hdi{
         _params = params;
         unsigned int size = probabilities.size();
         unsigned int size_sq = probabilities.size()*probabilities.size();
-        
+
         _embedding = embedding;
         _embedding_container = &(embedding->getContainer());
         _embedding->resize(_params._embedding_dimensionality,size);
@@ -121,11 +119,11 @@ namespace hdi{
         _previous_gradient.resize(size*params._embedding_dimensionality,0);
         _gain.resize(size*params._embedding_dimensionality,1);
       }
-      
+
       utils::secureLogValue(_logger,"Number of data points",_P.size());
 
       computeHighDimensionalDistribution(probabilities);
-      initializeEmbeddingPosition(params._seed);
+      initializeEmbeddingPosition(params._seed, params._rngRange);
 
       _iteration = 0;
 
@@ -154,7 +152,7 @@ namespace hdi{
       utils::secureLogValue(_logger,"Number of data points",_P.size());
 
       _P = distribution;
-      initializeEmbeddingPosition(params._seed);
+      initializeEmbeddingPosition(params._seed, params._rngRange);
 
       _iteration = 0;
 
@@ -192,8 +190,8 @@ namespace hdi{
       else{
         std::srand(seed);
       }
-
-      for(auto& v : (*_embedding_container)){
+        
+      for (int i = 0; i < _embedding->numDataPoints(); ++i) {
         double x(0.);
         double y(0.);
         double radius(0.);
@@ -204,12 +202,13 @@ namespace hdi{
         } while((radius >= 1.0) || (radius == 0.0));
 
         radius = sqrt(-2 * log(radius) / radius);
-        x *= radius;
-        y *= radius;
-        v = static_cast<scalar_type>(x * multiplier);
+        x *= radius * multiplier;
+        y *= radius * multiplier;
+        _embedding->dataAt(i, 0) = x;
+        _embedding->dataAt(i, 1) = y;
       }
     }
-    
+
     template <typename scalar, typename sparse_scalar_matrix>
     void SparseTSNEUserDefProbabilities<scalar, sparse_scalar_matrix>::doAnIteration(double mult){
       if(!_initialized){
@@ -265,17 +264,17 @@ namespace hdi{
       //Update the embedding based on the gradient
       updateTheEmbedding();
     }
-    
+
     template <typename scalar, typename sparse_scalar_matrix>
     void SparseTSNEUserDefProbabilities<scalar, sparse_scalar_matrix>::computeLowDimensionalDistribution(){
       const int n = getNumberOfDataPoints();
-#ifdef __APPLE__
+#ifdef __USE_GCD__
       //std::cout << "GCD dispatch, sparse_tsne_user_def_probabilities 285.\n";
       dispatch_apply(n, dispatch_get_global_queue(0, 0), ^(size_t j) {
 #else
       #pragma omp parallel for
       for(int j = 0; j < n; ++j){
-#endif //__APPLE__
+#endif //__USE_GCD__
         _Q[j*n + j] = 0;
         for(int i = j+1; i < n; ++i){
           const double euclidean_dist_sq(
@@ -291,9 +290,9 @@ namespace hdi{
           _Q[i*n + j] = static_cast<scalar_type>(v);
         }
       }
-#ifdef __APPLE__
+#ifdef __USE_GCD__
       );
-#endif
+#endif // __USE_GCD__
       double sum_Q = 0;
       for(auto& v : _Q){
         sum_Q += v;
@@ -327,7 +326,7 @@ namespace hdi{
             const int idx = i*n + j;
             const double distance((*_embedding_container)[i * dim + d] - (*_embedding_container)[j * dim + d]);
             double p_ij = elem.second/n;
-            
+
             const double positive(p_ij * _Q[idx] * distance);
             _gradient[i * dim + d] += static_cast<scalar_type>(4*exaggeration*positive);
           }
@@ -348,16 +347,16 @@ namespace hdi{
       sptree.computeEdgeForces(_P, exaggeration, positive_forces.data());
 
       /*__block*/ std::vector<hp_scalar_type> sum_Q_subvalues(getNumberOfDataPoints(),0);
-//#ifdef __APPLE__
+//#ifdef __USE_GCD__
 //      std::cout << "GCD dispatch, sparse_tsne_user_def_probabilities 365.\n";
 //      dispatch_apply(getNumberOfDataPoints(), dispatch_get_global_queue(0, 0), ^(size_t n) {
 //#else
       #pragma omp parallel for
       for(int n = 0; n < getNumberOfDataPoints(); n++){
-//#endif //__APPLE__
+//#endif //__USE_GCD__
         sptree.computeNonEdgeForcesOMP(n, _theta, negative_forces.data() + n * _params._embedding_dimensionality, sum_Q_subvalues[n]);
       }
-//#ifdef __APPLE__
+//#ifdef __USE_GCD__
 //      );
 //#endif
 
@@ -406,5 +405,4 @@ namespace hdi{
     }
   }
 }
-#endif 
-
+#endif

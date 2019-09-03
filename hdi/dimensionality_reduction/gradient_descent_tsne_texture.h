@@ -98,11 +98,13 @@ namespace hdi {
 
       //! Set the adaptive texture scaling
       void setResolutionFactor(float factor) {
+#ifndef __APPLE__
         if (GLAD_GL_VERSION_4_3)
         {
           _gpgpu_compute_tsne.setScalingFactor(factor);
         }
-        else if (GLAD_GL_VERSION_3_3)
+		else if (GLAD_GL_VERSION_3_3)
+#endif // __APPLE__
         {
           _gpgpu_raster_tsne.setScalingFactor(factor);
         }
@@ -134,7 +136,9 @@ namespace hdi {
 
     private:
       data::Embedding<scalar_type>* _embedding; //! embedding
-      typename data::Embedding<scalar_type>::scalar_vector_type* _embedding_container;
+	  data::Embedding<scalar_type>::scalar_vector_type* _embedding_container;
+	  // TH: the below does not work in VS2013
+	  // typename data::Embedding<scalar_type>::scalar_vector_type* _embedding_container;
       bool _initialized; //! Initialization flag
 
       double _exaggeration_baseline;
@@ -143,7 +147,9 @@ namespace hdi {
       scalar_vector_type _Q; //! Conditional probalility distribution in the Low-dimensional space
       scalar_type _normalization_Q; //! Normalization factor of Q - Z in the original paper
 
+#ifndef __APPLE__
       GpgpuSneCompute _gpgpu_compute_tsne;
+#endif // __APPLE__
       GpgpuSneRaster _gpgpu_raster_tsne;
 
       std::array<scalar_type, 4> _temp;

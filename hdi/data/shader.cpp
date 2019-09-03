@@ -54,7 +54,9 @@ void Shader::create()
   case VERTEX: gl_type = GL_VERTEX_SHADER; break;
   case FRAGMENT: gl_type = GL_FRAGMENT_SHADER; break;
   case GEOMETRY: gl_type = GL_GEOMETRY_SHADER; break;
+#ifndef __APPLE__
   case COMPUTE: gl_type = GL_COMPUTE_SHADER; break;
+#endif // __APPLE__
   }
 
   _handle = glCreateShader(gl_type);
@@ -146,7 +148,9 @@ void ShaderProgram::build()
   catch (ErrorMessageException& e)
   {
     destroy();
-    throw ShaderLoadingException(e);
+	throw e;
+	//TH: the below does not work in VS 2013
+	//throw ShaderLoadingException(e);
   }
 }
 

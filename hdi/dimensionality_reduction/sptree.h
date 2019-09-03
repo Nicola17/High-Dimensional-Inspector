@@ -70,7 +70,7 @@
 #include <unordered_map>
 #include <map>
 
-#ifdef __APPLE__
+#ifdef __USE_GCD__
 #include <dispatch/dispatch.h>
 #endif
 
@@ -176,13 +176,13 @@ namespace hdi{
       const int n = sparse_matrix.size();
 
       // Loop over all edges in the graph
-#ifdef __APPLE__
+#ifdef __USE_GCD__
       //std::cout << "GCD dispatch, sptree 180.\n";
       dispatch_apply(n, dispatch_get_global_queue(0, 0), ^(size_t j) {
 #else
 #pragma omp parallel for
       for(int j = 0; j < n; ++j) {
-#endif //__APPLE__
+#endif //__USE_GCD__
         std::vector<hp_scalar_type> buff(_emb_dimension,0);
         unsigned int ind1, ind2;
         hp_scalar_type q_ij_1;
@@ -204,7 +204,7 @@ namespace hdi{
             pos_f[ind1 + d] += res * buff[d] * multiplier; //(p_ij*q_j*mult) * (yi-yj)
         }
       }
-#ifdef __APPLE__
+#ifdef __USE_GCD__
       );
 #endif
     }

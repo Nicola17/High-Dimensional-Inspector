@@ -39,7 +39,7 @@
 #include "hdi/data/nano_flann.h"
 #include <unordered_set>
 
-#ifdef __APPLE__
+#ifdef __USE_GCD__
 #include <dispatch/dispatch.h>
 #endif
 
@@ -112,14 +112,14 @@ namespace hdi {
         tree.create(obj_X);
       }
       
-#ifdef __APPLE__
+#ifdef __USE_GCD__
       std::cout << "GCD dispatch, evaluation 116.\n";
       dispatch_queue_t criticalQueue = dispatch_queue_create("critical", NULL);
       dispatch_apply(pnts_to_evaluate.size(), dispatch_get_global_queue(0, 0), ^(size_t i) {
 #else
       #pragma omp parallel for
       for(int i = 0; i < pnts_to_evaluate.size(); ++i){
-#endif //__APPLE__
+#endif //__USE_GCD__
         unsigned int id = pnts_to_evaluate[i];
 
         std::vector<DataPoint> indices_hd;
@@ -147,21 +147,21 @@ namespace hdi {
           float precision_val = float(num_positive) / k;
           float recall_val = float(num_positive) / K;
 
-#ifdef __APPLE__
+#ifdef __USE_GCD__
           dispatch_sync(criticalQueue, ^{
 #else
 #pragma critical
             {
-#endif //__APPLE__
+#endif //__USE_GCD__
             precision[k-1] += precision_val;
             recall[k-1] += recall_val;
           }
-#ifdef __APPLE__
+#ifdef __USE_GCD__
           );
 #endif
         }
       }
-#ifdef __APPLE__
+#ifdef __USE_GCD__
       );
 #endif
 
@@ -201,14 +201,14 @@ namespace hdi {
         tree.create(obj_X);
       }
 
-#ifdef __APPLE__
+#ifdef __USE_GCD__
       std::cout << "GCD dispatch, evaluation 205.\n";
       dispatch_queue_t criticalQueue = dispatch_queue_create("critical", NULL);
       dispatch_apply(pnts_to_evaluate.size(), dispatch_get_global_queue(0, 0), ^(size_t i) {
 #else
       #pragma omp parallel for
       for(int i = 0; i < pnts_to_evaluate.size(); ++i){
-#endif //__APPLE__
+#endif //__USE_GCD__
         unsigned int id_pd = emb_id_to_panel_data_id[pnts_to_evaluate[i]];
         unsigned int id_em = pnts_to_evaluate[i];
 
@@ -237,21 +237,21 @@ namespace hdi {
           float precision_val = float(num_positive) / k;
           float recall_val = float(num_positive) / K;
           
-#ifdef __APPLE__
+#ifdef __USE_GCD__
           dispatch_sync(criticalQueue, ^{
 #else
           #pragma critical
           {
-#endif //__APPLE__
+#endif //__USE_GCD__
             precision[k-1] += precision_val;
             recall[k-1] += recall_val;
           }
-#ifdef __APPLE__
+#ifdef __USE_GCD__
           );
 #endif
         }
       }
-#ifdef __APPLE__
+#ifdef __USE_GCD__
       );
 #endif
 

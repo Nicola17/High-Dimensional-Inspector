@@ -3,6 +3,7 @@
 #include <cmath>
 #include <vector>
 #include <iostream>
+#include <cstdint>
 
 #define GLSL(version, shader)  "#version " #version "\n" #shader
 
@@ -275,6 +276,8 @@ void RasterFieldComputation::compute(unsigned int width, unsigned int height, fl
   glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, num_points);
 }
 
+#ifndef __APPLE__
+
 void ComputeFieldComputation::init(unsigned int num_points)
 {
   // Load in shader programs
@@ -376,3 +379,5 @@ void ComputeFieldComputation::compute(unsigned int width, unsigned int height, f
 
   glMemoryBarrier(GL_TEXTURE_FETCH_BARRIER_BIT);
 }
+
+#endif

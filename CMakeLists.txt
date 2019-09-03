@@ -1,6 +1,12 @@
 cmake_minimum_required (VERSION 2.8.11)
 project (HighDimInspector)
 
+# Use "-fPIC" / "-fPIE" for all targets by default, including static libs
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+
+# CMake doesn't add "-pie" by default for executables (CMake issue #14983)
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -pie")
+
 option(HDI_BUILD_VISUALIZATION "Build the visualization library" ON)
 option(HDI_USE_ROARING "Use roaring bitmaps" ON)
 

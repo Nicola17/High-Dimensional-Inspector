@@ -109,6 +109,7 @@ namespace hdi {
         _embedding = embedding;
         _embedding_container = &(embedding->getContainer());
         _embedding->resize(_params._embedding_dimensionality, size);
+        _P.clear();
         _P.resize(size);
       }
 
